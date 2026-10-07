@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#00b0ef"/>
+      <stop offset="1" stop-color="#0058cc"/>
+    </linearGradient>
+    <linearGradient id="s" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect x="64" y="64" width="896" height="896" rx="200" fill="url(#g)"/>
+  <rect x="64" y="64" width="896" height="448" rx="200" fill="url(#s)"/>
+  <!-- three people, the CRM mark -->
+  <g fill="#ffffff">
+    <circle cx="512" cy="360" r="112"/>
+    <path d="M292 720c0-121 98-220 220-220s220 99 220 220v40H292z"/>
+    <g opacity="0.72">
+      <circle cx="268" cy="410" r="82"/>
+      <path d="M118 680c0-88 68-160 150-160 44 0 82 20 108 52-52 44-86 108-92 180H118z"/>
+      <circle cx="756" cy="410" r="82"/>
+      <path d="M906 680c0-88-68-160-150-160-44 0-82 20-108 52 52 44 86 108 92 180h166z"/>
+    </g>
+  </g>
+</svg>

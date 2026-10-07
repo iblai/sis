@@ -1,0 +1,874 @@
+{
+  "common": {
+    "actions": "操作",
+    "admin": "管理",
+    "all": "全部",
+    "cancel": "取消",
+    "clear": "清除",
+    "clickToEdit": "点击编辑",
+    "confirm": "确认",
+    "create": "创建",
+    "delete": "删除",
+    "description": "说明",
+    "done": "完成",
+    "edit": "编辑",
+    "email": "邮箱",
+    "empty": "空",
+    "errorForbidden": "你没有执行此操作的权限",
+    "errorGeneric": "出了点问题",
+    "errorLoadTitle": "无法加载",
+    "errorNetwork": "无法连接到服务器。",
+    "loading": "加载中…",
+    "name": "姓名",
+    "next": "下一页",
+    "no": "否",
+    "none": "无",
+    "open": "打开",
+    "page": "第 {page} 页，共 {total} 页",
+    "previous": "上一页",
+    "remove": "移除",
+    "save": "保存",
+    "search": "搜索",
+    "showing": "第 {from}–{to} 项，共 {count, plural, one {# {label}} other {# {label}}}",
+    "user": "用户",
+    "yes": "是"
+  },
+  "shell": {
+    "adminMode": "管理模式",
+    "adminModeHint": "管理模式显示设置、用户与角色及所有写入操作；用户模式是成员看到的样子",
+    "platform": "平台",
+    "toggleSidebar": "切换侧边栏",
+    "toggleSidebarHint": "折叠或展开侧边栏（⌘B）"
+  },
+  "nav": {
+    "attendance": "考勤",
+    "courses": "课程",
+    "credentials": "证书",
+    "grades": "成绩",
+    "groups": "分组",
+    "home": "首页",
+    "messages": "消息",
+    "reports": "报表",
+    "search": "搜索",
+    "setup": "设置",
+    "staff": "教职工",
+    "students": "学生"
+  },
+  "breadcrumbs": {
+    "admin": "管理",
+    "label": "面包屑导航",
+    "notifications": "通知",
+    "users": "用户与角色"
+  },
+  "admin": {
+    "users": {
+      "description": "本平台的成员、分组、角色与策略——SDK 的管理界面",
+      "invite": "邀请用户",
+      "pendingInvites": "待处理的邀请",
+      "title": "用户与角色"
+    }
+  },
+  "auth": {
+    "completingSignIn": "正在完成登录…"
+  },
+  "errors": {
+    "badRequest": {
+      "body": "该链接有些地方不对。",
+      "title": "请求错误"
+    },
+    "code": "错误 {code}",
+    "fallbackBody": "请重试。",
+    "forbidden": {
+      "body": "你的账号不是所请求平台的成员，或该平台拒绝了登录。请切换到其他平台，或换一个账号登录。",
+      "bodyNamed": "你不是 {platform} 的成员，或它拒绝了登录。请切换到其他平台，或换一个账号登录。",
+      "title": "无权访问此平台"
+    },
+    "goHome": "回到首页",
+    "noPlatform": {
+      "body": "ibl.ai/sis 在学校平台内运行。你的账号尚不属于任何学校平台——请让学校邀请你，或切换到下面的平台之一。",
+      "title": "ibl.ai/sis 在学校平台内运行"
+    },
+    "notFound": {
+      "body": "找不到你要找的内容。",
+      "title": "未找到"
+    },
+    "signInAgain": "重新登录"
+  },
+  "language": {
+    "hint": "本应用及其他 ibl.ai 应用的语言",
+    "label": "语言"
+  },
+  "notifications": {
+    "description": "与你相关的学校事件和平台提醒",
+    "title": "通知"
+  },
+  "palette": {
+    "description": "搜索学生、教职工和课程，或跳转到某个页面。",
+    "goTo": "前往",
+    "importStudents": "导入学生",
+    "inviteStaff": "邀请教职工",
+    "inviteStudent": "邀请学生",
+    "newEmail": "新邮件",
+    "newGroup": "新建分组",
+    "newSection": "新建班级",
+    "noResults": "没有结果。",
+    "placeholder": "搜索学生、教职工和课程…",
+    "toClose": "关闭",
+    "toNavigate": "导航",
+    "toOpen": "打开"
+  },
+  "picker": {
+    "clear": "清除",
+    "noMatches": "没有匹配的人。",
+    "searchPlaceholder": "按姓名、用户名或邮箱搜索…",
+    "searching": "搜索中…",
+    "typeToSearch": "输入以搜索名录",
+    "user": "选择一位用户"
+  },
+  "fields": {
+    "about": "关于{label}",
+    "aboutThisField": "关于此字段",
+    "aboutThisMetric": "关于此指标",
+    "pagination": {
+      "items": "项",
+      "none": "没有{label}"
+    },
+    "select": "请选择…",
+    "whatIsThis": "这是什么？"
+  },
+  "dashboard": {
+    "myCredentials": {
+      "body": "已颁发给你的证书都在你的档案中。",
+      "link": "打开我的证书",
+      "title": "我的证书"
+    },
+    "mySections": {
+      "info": "你在学习平台上的选课，以及它报告的成绩和进度",
+      "title": "我的班级"
+    },
+    "onboarding": {
+      "body": "添加学年、学期和年级，邀请学生，并把课程运行变成班级。",
+      "inviteStudent": "邀请一位学生",
+      "newSection": "创建一个班级",
+      "setUp": "设置学校",
+      "steps": {
+        "sections": {
+          "body": "班级是某个学期的一次课程运行——在“课程”中重新运行一门现有课程即可。",
+          "title": "创建班级"
+        },
+        "setup": {
+          "body": "学年、学期、年级、节次、教室、科目以及学生档案字段。",
+          "title": "设置学校"
+        },
+        "students": {
+          "body": "逐个邀请学生，或把 CSV 直接导入某个班级。",
+          "title": "引入学生"
+        }
+      },
+      "title": "设置你的学校"
+    },
+    "overview": "概览",
+    "panel": {
+      "aboutThisPanel": "关于此面板",
+      "viewAll": "查看全部"
+    },
+    "panels": {
+      "active": {
+        "info": "所选时段内每天在学习平台上有活动的学习者",
+        "series": "活跃学习者",
+        "title": "活跃学习者"
+      },
+      "cached": "分析数据在一小时内刷新",
+      "empty": "此时段还没有数据。",
+      "enrollments": {
+        "info": "所选时段内每天的新选课",
+        "series": "选课",
+        "title": "选课"
+      },
+      "learners": {
+        "info": "分析数据最近看到的学习者",
+        "title": "学习者"
+      },
+      "mostActive": {
+        "info": "所选时段内学习时长最多的课程运行",
+        "title": "最活跃的课程"
+      }
+    },
+    "period": "最近 {days} 天",
+    "periodLabel": "时段",
+    "stats": {
+      "active": {
+        "hint": "{count, plural, one {# 位已注册} other {# 位已注册}}",
+        "info": "来自平台分析数据的时段内活跃学习者",
+        "label": "活跃学习者"
+      },
+      "courses": {
+        "hint": "{count, plural, one {# 个学期} other {# 个学期}}",
+        "info": "本平台在学习平台上的课程运行",
+        "label": "班级"
+      },
+      "grade": {
+        "hint": "覆盖所有课程运行",
+        "info": "分析数据报告的本平台平均课程成绩",
+        "label": "平均成绩"
+      },
+      "students": {
+        "hint": "{count, plural, one {# 位教职工} other {# 位教职工}}",
+        "info": "名录中列为学生的平台成员",
+        "label": "学生"
+      }
+    },
+    "welcome": "这是你学校的近况。",
+    "welcomeNamed": "欢迎回来，{name}。这是你学校的近况。"
+  },
+  "students": {
+    "columns": {
+      "joined": "加入时间",
+      "lastLogin": "最近登录"
+    },
+    "countLabel": "名学生",
+    "description": "名录中列为学生的每一位平台成员",
+    "empty": {
+      "body": "邀请一位学生，或把 CSV 导入某个班级即可开始。",
+      "noMatch": "没有匹配的学生",
+      "title": "还没有学生"
+    },
+    "fields": {
+      "date_of_birth": "出生日期",
+      "emergency_contact_name": "紧急联系人",
+      "emergency_contact_phone": "紧急联系电话",
+      "enrollment_status": "学籍状态",
+      "gender": "性别",
+      "grade_level": "年级",
+      "guardian_name": "监护人",
+      "guardian_phone": "监护人电话",
+      "homeroom": "班主任班级",
+      "nationality": "国籍",
+      "primary_language": "主要语言",
+      "student_id": "学号"
+    },
+    "import": "导入 CSV",
+    "importDialog": {
+      "allGood": "所有行都已接受。",
+      "csv": "CSV 行",
+      "description": "每位学生一行：邮箱、用户名、姓名、国家。已有账号会被选课；平台允许自动注册时，新邮箱会获得账号。",
+      "done": "{count, plural, one {已导入 # 位学生} other {已导入 # 位学生}}，{refused} 位被拒绝",
+      "file": "或选择一个 CSV 文件",
+      "pickSection": "选择一个班级",
+      "preview": "{count, plural, one {# 行就绪} other {# 行就绪}}，{errors} 行有错误",
+      "result": "学习平台的回应",
+      "section": "导入到班级",
+      "submit": "导入 {count, plural, one {# 位学生} other {# 位学生}}",
+      "title": "导入学生"
+    },
+    "invite": "邀请学生",
+    "pending": "{count, plural, one {# 个待处理邀请} other {# 个待处理邀请}}",
+    "record": {
+      "active": "活跃",
+      "baseFields": "个人信息",
+      "customFields": "学校档案",
+      "deactivate": "停用",
+      "deactivated": "成员资格已停用",
+      "guardians": "监护人",
+      "inactive": "停用",
+      "joined": "加入时间",
+      "lastAccess": "最近访问",
+      "lastAccessHint": "来自平台分析数据；一小时内刷新",
+      "noFields": "还没有学校档案字段——请在“设置 → 学生字段”中添加。",
+      "reactivate": "重新启用",
+      "reactivated": "成员资格已重新启用",
+      "saved": "档案已保存",
+      "sections": "班级",
+      "sectionsAndGuardians": "班级与联系人",
+      "statusLabel": "状态",
+      "summary": "摘要",
+      "tabs": {
+        "attendance": "考勤",
+        "credentials": "证书",
+        "enrollment": "选课",
+        "grades": "成绩",
+        "guardians": "监护人",
+        "overview": "概览",
+        "record": "档案"
+      },
+      "visibleToStudent": "学生也能读取这份档案——这里的任何内容都不会对其隐藏。"
+    },
+    "searchPlaceholder": "搜索学生…",
+    "status": {
+      "active": "活跃",
+      "all": "任意状态",
+      "inactive": "停用",
+      "label": "状态"
+    }
+  },
+  "enrollment": {
+    "active": "已选课",
+    "columns": {
+      "grade": "成绩",
+      "progress": "进度",
+      "section": "班级",
+      "since": "起始",
+      "status": "状态",
+      "term": "学期"
+    },
+    "drop": "退课",
+    "dropHint": "为学生退课需要使用学习平台上的教师仪表盘",
+    "dropped": "已退课",
+    "enroll": "选课",
+    "enrollDialog": {
+      "description": "课程邀请会立即在学习平台上为学生选课。",
+      "done": "已选课",
+      "pickSection": "选择一个班级",
+      "section": "班级",
+      "submit": "选课",
+      "title": "加入班级"
+    },
+    "hint": "选课来自学习平台；成绩和进度是它所报告的数据。",
+    "none": "还没有班级。",
+    "passing": "及格",
+    "pendingInvitations": "{count, plural, one {# 个邀请待处理：} other {# 个邀请待处理：}}"
+  },
+  "grades": {
+    "allTerms": "所有学期",
+    "certificate": "证书",
+    "columns": {
+      "credits": "学分",
+      "letter": "等级",
+      "percent": "成绩",
+      "section": "班级",
+      "status": "状态"
+    },
+    "completion": "完成度",
+    "details": "详情",
+    "ends": "结束",
+    "gpa": {
+      "hint": "计入 {credits} 学分，{excluded} 个班级未计入",
+      "info": "按学校的 GPA 等级表，对本学期有等级和学分的班级计算绩点 × 学分",
+      "label": "学期 GPA"
+    },
+    "gradedWork": "已评分作业",
+    "hint": "成绩和等级来自学习平台；GPA 使用此处设置的学分和等级表。",
+    "instructorDashboard": "教师仪表盘",
+    "myStanding": "我的情况",
+    "noGradedWork": "还没有已评分的作业。",
+    "none": "本学期没有班级。",
+    "notPassing": "未及格",
+    "openInLms": "在学习平台中打开",
+    "page": {
+      "allTerms": "所有学期",
+      "cached": "一小时内刷新",
+      "columns": {
+        "average": "平均成绩",
+        "gpa": "GPA",
+        "section": "班级",
+        "student": "学生",
+        "term": "学期"
+      },
+      "description": "各班级的平均成绩，以及按年级的学期报告",
+      "level": "年级",
+      "noMembers": "该年级分组没有成员。",
+      "noSections": "本学期没有班级。",
+      "pickLevel": "学期报告对象…",
+      "reportStarted": "课程成绩报表正在生成——可在“报表”中查看",
+      "runReport": "课程成绩报表",
+      "sections": "班级",
+      "term": "学期",
+      "termReport": "学期报告 · {group}（{count, plural, one {# 位学生} other {# 位学生}}）",
+      "termReportHint": "选择一个学期和一个带有年级分组的年级，查看每位学生的等级和 GPA。"
+    },
+    "passing": "及格",
+    "term": "学期",
+    "unavailable": "不可用"
+  },
+  "attendance": {
+    "absent": "缺勤",
+    "activityBased": "基于活动",
+    "activityHint": "“出勤”表示当天在课程中有学习时长；缺勤不会被任何人记录或请假。",
+    "allSections": "所有班级",
+    "allTerms": "所有学期",
+    "date": "日期",
+    "dayDescription": "某一天各班级中有活动的人",
+    "nextMonth": "下个月",
+    "nextWeek": "下一周",
+    "noSections": "本学期没有班级。",
+    "noStudents": "名册上没有学习者。",
+    "present": "出勤",
+    "presentCount": "出勤人数",
+    "presentCountN": "{count, plural, one {# 人出勤} other {# 人出勤}}",
+    "previousMonth": "上个月",
+    "previousWeek": "上一周",
+    "rate": "出勤率",
+    "rateInfo": "时段内出勤天数占上课日的比例",
+    "section": "班级",
+    "status": {
+      "absent": "缺勤",
+      "no-school": "不上课",
+      "present": "出勤"
+    },
+    "student": "学生",
+    "term": "学期",
+    "unavailable": "不可用",
+    "weekday": {
+      "fri": "周五",
+      "mon": "周一",
+      "sat": "周六",
+      "sun": "周日",
+      "thu": "周四",
+      "tue": "周二",
+      "wed": "周三"
+    }
+  },
+  "credentials": {
+    "bulkIssue": {
+      "course": "对应班级",
+      "description": "证书将按该班级颁发给每位接收者；已颁发的会跳过。",
+      "done": "{count, plural, one {已颁发 # 份证书} other {已颁发 # 份证书}}",
+      "groupSize": "{count, plural, one {# 位成员} other {# 位成员}}",
+      "oneStudent": "一位学生",
+      "pickCourse": "选择一个班级",
+      "pickGroup": "选择一个分组",
+      "pickStudent": "选择一位学生",
+      "submit": "颁发",
+      "title": "颁发“{name}”",
+      "to": "对象",
+      "wholeGroup": "某个分组的所有成员"
+    },
+    "columns": {
+      "course": "班级",
+      "credential": "证书",
+      "expires": "过期",
+      "issued": "颁发时间",
+      "status": "状态"
+    },
+    "issue": "颁发证书",
+    "issueDialog": {
+      "course": "班级",
+      "credential": "证书",
+      "description": "按某个班级向这位学生颁发平台的一种证书。",
+      "done": "证书已颁发",
+      "narrative": "备注",
+      "pickCourse": "选择一个班级",
+      "pickCredential": "选择一种证书",
+      "submit": "颁发",
+      "title": "颁发证书"
+    },
+    "none": "还没有颁发过证书。",
+    "page": {
+      "certificatesHint": "学习平台会为所有及格者生成结业证书。",
+      "certificatesStarted": "已开始生成结业证书",
+      "countLabel": "种证书",
+      "description": "平台的证书、它们的接收者，以及学习平台的结业证书",
+      "empty": {
+        "body": "证书在平台上定义；有了之后即可在此颁发。",
+        "title": "尚未定义证书"
+      },
+      "generateCertificates": "生成结业证书",
+      "issue": "颁发",
+      "pickSection": "选择一个班级"
+    },
+    "revoke": "撤销",
+    "revokeBody": "证书会以“已撤销”状态保留在记录中，并附上你给出的原因。",
+    "revokeDefaultReason": "由学校撤销",
+    "revokeReason": "原因",
+    "revokeTitle": "撤销“{name}”？",
+    "revoked": "证书已撤销",
+    "status": {
+      "revoked": "已撤销",
+      "valid": "有效"
+    },
+    "studentHint": "在平台上颁发的证书；学习平台的结业证书显示在各班级中。"
+  },
+  "guardians": {
+    "add": "添加监护人",
+    "added": "监护人已添加",
+    "groupName": "{username} 的监护人",
+    "hint": "监护人是会收到学生通知副本的平台用户。请先邀请其加入平台。",
+    "none": "还没有监护人。",
+    "pickUser": "选择监护人的账号",
+    "remove": "移除监护人",
+    "removed": "监护人已移除"
+  },
+  "courses": {
+    "columns": {
+      "credits": "学分",
+      "dates": "日期",
+      "gradeLevel": "年级",
+      "schedule": "时间安排",
+      "section": "班级",
+      "subject": "科目",
+      "term": "学期"
+    },
+    "description": "班级即平台的课程运行，并在此设定学期、科目、教室和节次",
+    "empty": {
+      "body": "为某个学期重新运行一门课程来创建班级，或在 Studio 中创建课程。",
+      "noMatch": "没有匹配的班级",
+      "title": "还没有班级"
+    },
+    "filters": {
+      "allLevels": "所有年级",
+      "allSubjects": "所有科目",
+      "allTerms": "所有学期"
+    },
+    "instructorDashboard": "教师仪表盘",
+    "mine": "你已加入的班级",
+    "newSection": "新建班级",
+    "openInLms": "在学习平台中打开",
+    "searchPlaceholder": "搜索班级…",
+    "seats": "{count} 个席位",
+    "sectionDialog": {
+      "datesNotSet": "班级已创建；请在“设置”中设定其日期。",
+      "description": "班级是把一门现有课程重新运行到某个学期：内容相同，但有自己的名册和成绩册。",
+      "done": "班级“{name}”已创建",
+      "gradeLevel": "年级",
+      "name": "班级名称",
+      "noTerms": "请先在“设置”中添加学期",
+      "pickSource": "选择要重新运行的课程",
+      "pickTerm": "选择一个学期",
+      "run": "运行标识",
+      "source": "要重新运行的课程",
+      "subject": "科目",
+      "submit": "创建班级",
+      "term": "学期",
+      "title": "新建班级"
+    },
+    "selfPaced": "自定进度",
+    "settings": {
+      "addCutoff": "添加等级",
+      "addGrader": "添加类型",
+      "addTeacher": "添加教师",
+      "applyTerm": "使用某个学期的日期…",
+      "assignmentType": "作业类型",
+      "conflict": "其他人同时修改了班级——请刷新后重试。",
+      "count": "数量",
+      "courseInstructors": "课程讲师",
+      "courseStaff": "课程人员",
+      "credits": "学分",
+      "cutoff": "分数线",
+      "cutoffs": "等级分数线",
+      "dates": "学期与日期",
+      "days": "上课日",
+      "drop": "舍弃",
+      "end": "结束",
+      "enrollEnd": "选课结束",
+      "enrollStart": "选课开始",
+      "gradeLevel": "年级",
+      "grading": "评分规则",
+      "hint": "日期和评分规则保存在 Studio 的课程运行上；教师是学习平台上的课程角色；其余是学校自己的数据。",
+      "letter": "等级",
+      "noSetup": "请先设置学校，才能把这个班级放入某个学期。",
+      "period": "节次",
+      "pickTeacher": "选择一位教职工",
+      "removeTeacher": "移除教师",
+      "roleRefused": "学习平台拒绝了角色变更",
+      "room": "教室",
+      "saved": "已保存",
+      "seats": "席位",
+      "section": "班级",
+      "selfPaced": "自定进度",
+      "start": "开始",
+      "subject": "科目",
+      "teacherAdded": "教师已添加",
+      "teacherRemoved": "教师已移除",
+      "teachers": "教师",
+      "teachersHint": "学习平台上的课程人员。添加教师也会为其选课。",
+      "term": "学期",
+      "weight": "权重 %",
+      "weightTotal": "权重合计 {total}%"
+    },
+    "tabs": {
+      "attendance": "考勤",
+      "gradebook": "成绩册",
+      "roster": "名册",
+      "settings": "设置"
+    },
+    "weekday": {
+      "fri": "周五",
+      "mon": "周一",
+      "sat": "周六",
+      "sun": "周日",
+      "thu": "周四",
+      "tue": "周二",
+      "wed": "周三"
+    }
+  },
+  "roster": {
+    "columns": {
+      "lastLogin": "最近登录",
+      "mode": "模式"
+    },
+    "count": "{count, plural, one {已选课 # 位学习者} other {已选课 # 位学习者}}",
+    "email": "给名册发邮件",
+    "enroll": "选课",
+    "enrollHint": "课程邀请会立即为现有成员选课。",
+    "export": "导出 CSV",
+    "import": "导入 CSV",
+    "invited": "已为 {name} 选课",
+    "noMatch": "没有匹配的学习者",
+    "none": "还没有学习者选课。",
+    "pickUser": "选择要选课的成员",
+    "searchPlaceholder": "搜索名册…"
+  },
+  "gradebook": {
+    "columns": {
+      "learner": "学习者",
+      "total": "总分"
+    },
+    "count": "{count} / {total} 位学习者",
+    "editor": {
+      "comment": "原因",
+      "commentPlaceholder": "为什么修改这个成绩",
+      "defaultComment": "在 ibl.ai/sis 中修改",
+      "earned": "得分",
+      "history": "历史",
+      "noHistory": "还没有修改记录。",
+      "possible": "满分",
+      "saved": "成绩已保存"
+    },
+    "embed": {
+      "description": "学习平台的成绩册，以你的身份登录。",
+      "title": "成绩册"
+    },
+    "flagOff": {
+      "body": "本平台未开放成绩册 API；请改用内嵌的成绩册。",
+      "title": "成绩册 API 未启用"
+    },
+    "frozen": "成绩已冻结",
+    "hint": "点击分数即可附原因修改；总分和等级由学习平台计算。",
+    "noMatch": "没有匹配的学习者",
+    "none": "成绩册里还没有学习者。",
+    "openEmbed": "在成绩册中打开",
+    "searchPlaceholder": "查找学习者…"
+  },
+  "staff": {
+    "columns": {
+      "lastLogin": "最近登录",
+      "role": "角色"
+    },
+    "countLabel": "位教职工",
+    "description": "平台的教师和管理员",
+    "empty": {
+      "body": "邀请一位教职工加入平台；在此版本中教师即平台管理员。",
+      "noMatch": "没有匹配的教职工",
+      "title": "还没有教职工"
+    },
+    "invite": "邀请教职工",
+    "member": {
+      "active": "活跃",
+      "admin": "平台管理员",
+      "adminGranted": "已成为平台管理员",
+      "adminHint": "管理员管理整个学校并教授每个班级",
+      "adminRemoved": "不再是平台管理员",
+      "checkSections": "检查班级",
+      "courseInstructor": "讲师",
+      "courseStaff": "人员",
+      "joined": "加入时间",
+      "makeAdmin": "设为管理员",
+      "makeTeacher": "设为教师",
+      "no": "否",
+      "removeAdmin": "取消管理员",
+      "removeTeacher": "取消教师",
+      "roles": "角色",
+      "sectionsHint": "此人在学习平台上拥有课程角色的班级。",
+      "sectionsTaught": "任教班级",
+      "teacher": "教师",
+      "teacherGranted": "已成为教师",
+      "teacherHint": "教师在学习平台上拥有 org-staff 角色：每个班级的课程人员",
+      "teacherRemoved": "不再是教师",
+      "v1Note": "在此版本中教师即平台管理员；“教师”角色为下一版本做准备。",
+      "yes": "是"
+    },
+    "roles": {
+      "admin": "管理员",
+      "teacher": "教师"
+    },
+    "searchPlaceholder": "搜索教职工…"
+  },
+  "groups": {
+    "countLabel": "个分组",
+    "description": "班主任班级、年级分组以及任何其他学生集合",
+    "detail": {
+      "add": "添加",
+      "addMember": "添加成员",
+      "added": "已添加 {name}",
+      "announce": "发公告",
+      "bulkAdd": "全部添加",
+      "bulkAdded": "{count, plural, one {已添加 # 位成员} other {已添加 # 位成员}}",
+      "bulkHint": "用户名或邮箱，每行一个。",
+      "bulkMissing": "未找到：{names}",
+      "bulkTitle": "批量添加",
+      "deleteBody": "成员保留各自的账号；只有分组会被删除。",
+      "deleteTitle": "删除“{name}”？",
+      "deleted": "分组已删除",
+      "description": "此分组的成员",
+      "noMembers": "还没有成员。",
+      "pickUser": "选择一位成员",
+      "removed": "成员已移除"
+    },
+    "dialog": {
+      "created": "分组“{name}”已创建",
+      "description": "一组平台用户——班主任班级、年级分组、社团。",
+      "editTitle": "编辑分组",
+      "title": "新建分组",
+      "updated": "分组已更新"
+    },
+    "empty": {
+      "body": "创建一个班主任班级或年级分组，然后添加其学生。",
+      "noMatch": "没有匹配的分组",
+      "title": "还没有分组"
+    },
+    "new": "新建分组",
+    "searchPlaceholder": "搜索分组…"
+  },
+  "reports": {
+    "description": "平台的报表，以及学习平台按班级提供的下载",
+    "download": "下载 CSV",
+    "expires": "{when} 过期",
+    "from": "起",
+    "lms": {
+      "description": "教师仪表盘为某个班级生成的报表及其最近任务",
+      "downloads": "下载",
+      "pickSection": "选择一个班级",
+      "rosterCsv": "申请名册 CSV",
+      "rosterRequested": "名册 CSV 正在生成",
+      "tasks": "最近任务",
+      "title": "班级报表"
+    },
+    "none": "没有可用的报表。",
+    "run": "运行",
+    "started": "“{name}”正在运行",
+    "state": {
+      "completed": "已完成",
+      "expired": "已过期",
+      "failed": "失败",
+      "pending": "等待中",
+      "running": "运行中"
+    },
+    "to": "止"
+  },
+  "messages": {
+    "announcement": {
+      "audience": "接收者",
+      "body": "正文",
+      "channelEmail": "邮件",
+      "channelInApp": "应用内",
+      "description": "预览会统计接收者；发送通过平台的通知系统进行。",
+      "everyone": "平台上的所有人",
+      "group": "一个分组",
+      "hint": "平台公告：发给所有人、某个分组或指定用户——通过邮件和应用内通知。",
+      "pickGroup": "选择一个分组",
+      "preview": "预览",
+      "previewCount": "{count, plural, one {# 位接收者} other {# 位接收者}}",
+      "send": "发送",
+      "sent": "{count, plural, one {已发送 # 条通知} other {已发送 # 条通知}}",
+      "subject": "标题",
+      "title": "公告",
+      "usernames": "指定用户"
+    },
+    "description": "通过学习平台给某个班级发邮件，或向整个平台发公告",
+    "email": {
+      "hint": "由学习平台发送给该班级的学习者或人员。",
+      "learners": "学习者",
+      "message": "正文",
+      "myself": "我自己",
+      "pickSection": "选择一个班级",
+      "schedule": "定时发送",
+      "scheduleSend": "定时",
+      "scheduled": "邮件已定时",
+      "scheduledItem": "定时邮件",
+      "scheduledTitle": "已定时",
+      "section": "班级",
+      "send": "发送",
+      "sent": "邮件已发送",
+      "staff": "人员",
+      "subject": "主题",
+      "title": "班级邮件"
+    }
+  },
+  "setup": {
+    "description": "学校自己的数据：学年与学期、年级、节次、教室、科目以及学生档案",
+    "editor": {
+      "add": "添加一行",
+      "conflict": "其他人同时修改了这个列表——请刷新后重试。",
+      "empty": "还没有内容——添加一行。",
+      "saved": "已保存"
+    },
+    "fields": {
+      "active": "启用",
+      "add": "添加字段",
+      "added": "字段“{name}”已添加",
+      "choices": "选项",
+      "choicesPlaceholder": "用逗号分隔的选项",
+      "deleteBody": "学生档案中已保存的值会保留。",
+      "deleteTitle": "删除“{name}”？",
+      "deleted": "字段已删除",
+      "description": "学生档案的字段。可填入默认字段，也可自行添加。",
+      "export": "导出",
+      "import": "导入",
+      "imported": "字段已导入",
+      "none": "还没有字段。",
+      "required": "必填",
+      "seed": "填入默认字段",
+      "seeded": "{count, plural, =0 {所有默认字段均已存在} one {已添加 # 个字段} other {已添加 # 个字段}}",
+      "slug": "键名",
+      "type": "类型"
+    },
+    "invalidVersion": "本平台上的学校数据使用了比本应用更新的格式。",
+    "levels": {
+      "createGroup": "创建年级分组",
+      "groupCreated": "分组“{name}”已创建——保存列表以完成关联",
+      "groupLinked": "分组 #{id}",
+      "groupName": "{name} 年级分组",
+      "hint": "每个年级都可以有一个年级分组；学生档案会在分组间移动学生。",
+      "name": "年级",
+      "order": "顺序"
+    },
+    "periods": {
+      "endTime": "结束",
+      "hint": "作息时间表：每个班级在一个节次上课。",
+      "name": "节次",
+      "startTime": "开始"
+    },
+    "rooms": {
+      "capacity": "容量",
+      "hint": "班级上课的地点。",
+      "name": "教室"
+    },
+    "school": {
+      "addLetter": "添加等级",
+      "address": "地址",
+      "gpaHint": "每个等级对应的绩点，用于计算学期 GPA。",
+      "gpaScale": "GPA 等级表",
+      "hint": "向教职工显示的联系方式。",
+      "letter": "等级",
+      "phone": "电话",
+      "points": "绩点",
+      "saved": "已保存",
+      "timezone": "时区",
+      "title": "学校"
+    },
+    "subjects": {
+      "hint": "班级归属的科目。",
+      "name": "科目"
+    },
+    "tabs": {
+      "fields": "学生字段",
+      "levels": "年级",
+      "periods": "节次",
+      "rooms": "教室",
+      "school": "学校",
+      "subjects": "科目",
+      "terms": "学年与学期"
+    },
+    "terms": {
+      "end": "结束",
+      "hint": "学期属于某个学年；班级是某个学期的一次课程运行。",
+      "start": "开始",
+      "termName": "学期",
+      "title": "学期",
+      "year": "学年",
+      "yearName": "学年",
+      "years": "学年",
+      "yearsHint": "一个学年包含它的各个学期。"
+    }
+  }
+}

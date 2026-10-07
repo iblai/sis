@@ -1,0 +1,89 @@
+{
+  "version": 1,
+  "checkpoints": [
+    {
+      "id": "A1",
+      "journey": "auth",
+      "name": "a fresh profile is sent to the Auth SPA with no tenant= and lands on a platform, never main",
+      "spec": "journeys/auth.journey.spec.ts"
+    },
+    {
+      "id": "A2",
+      "journey": "auth",
+      "name": "tokens and the platform list are stored; the URL platform equals the session platform",
+      "spec": "journeys/auth.journey.spec.ts"
+    },
+    {
+      "id": "A3",
+      "journey": "auth",
+      "name": "/students without a platform redirects to /platform/<t>/students with the query kept",
+      "spec": "journeys/auth.journey.spec.ts"
+    },
+    {
+      "id": "A4",
+      "journey": "auth",
+      "name": "/platform/main shows the notice, not the shell",
+      "spec": "journeys/auth.journey.spec.ts"
+    },
+    {
+      "id": "S1",
+      "journey": "shell",
+      "name": "sidebar reaches every admin row",
+      "spec": "journeys/shell.journey.spec.ts"
+    },
+    {
+      "id": "S2",
+      "journey": "shell",
+      "name": "⌘K lists Students/Staff/Courses and Invite student",
+      "spec": "journeys/shell.journey.spec.ts"
+    },
+    {
+      "id": "S3",
+      "journey": "shell",
+      "name": "profile menu names the platform",
+      "spec": "journeys/shell.journey.spec.ts"
+    },
+    {
+      "id": "S4",
+      "journey": "shell",
+      "name": "Setup hidden outside Admin mode and /setup redirects home",
+      "spec": "journeys/shell.journey.spec.ts"
+    },
+    {
+      "id": "S5",
+      "journey": "shell",
+      "name": "the home period select calls the overview endpoints",
+      "spec": "journeys/shell.journey.spec.ts"
+    },
+    {
+      "id": "C1",
+      "journey": "sis",
+      "name": "Setup adds a term and keeps it",
+      "spec": "journeys/sis.journey.spec.ts"
+    },
+    {
+      "id": "C3",
+      "journey": "sis",
+      "name": "the Courses list shows the platform's runs",
+      "spec": "journeys/sis.journey.spec.ts"
+    },
+    {
+      "id": "C4",
+      "journey": "sis",
+      "name": "a section's roster and its teachers",
+      "spec": "journeys/sis.journey.spec.ts"
+    },
+    {
+      "id": "C6",
+      "journey": "sis",
+      "name": "a group is created",
+      "spec": "journeys/sis.journey.spec.ts"
+    },
+    {
+      "id": "C9",
+      "journey": "sis",
+      "name": "a student's record saves a field",
+      "spec": "journeys/sis.journey.spec.ts"
+    }
+  ]
+}

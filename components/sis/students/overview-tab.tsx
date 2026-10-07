@@ -1,0 +1,115 @@
+"use client";
+
+import { useLocale, useTranslations } from "next-intl";
+import { Skeleton } from "@/components/ui/skeleton";
+import { FieldRow } from "@/components/sis/inline-field";
+import { StatusPill } from "@/components/sis/status-pill";
+import { useSession } from "@/hooks/use-session";
+import { useLearnerLastAccessQuery, useWatchedGroupsQuery } from "@/lib/sis/api";
+import { useUserEnrollmentsQuery } from "@/lib/sis/lms-api";
+import { formatDate, formatDateTime } from "@/lib/sis/format";
+import type { Demographics, UserPlatformLink } from "@/lib/sis/types";
+
+const str = (v: unknown) => (typeof v === "string" && v ? v : "—");
+
+/** The student at a glance: record summary, guardians, sections, last access. */
+export function OverviewTab({
+  username,
+  link,
+  demographics,
+}: {
+  username: string;
+  link?: UserPlatformLink;
+  demographics?: Demographics;
+}) {
+  const t = useTranslations("students.record");
+  const tf = useTranslations("students.fields");
+  const locale = useLocale();
+  const { tenantKey, isAdmin } = useSession();
+  const enrollments = useUserEnrollmentsQuery(username, { skip: !username });
+  const guardians = useWatchedGroupsQuery(
+    { platformKey: tenantKey, limit: 100 },
+    { skip: !isAdmin },
+  );
+  const lastAccess = useLearnerLastAccessQuery(
+    { platformKey: tenantKey, username },
+    { skip: !isAdmin },
+  );
+  const custom = demographics?.custom_fields ?? {};
+  const watchers = (guardians.data?.results ?? [])
+    .filter((g) => g.watched_users.some((u) => u.username === username))
+    .flatMap((g) => g.watchers);
+  const access = lastAccess.data?.data as Record<string, unknown> | string | undefined;
+  const lastSeen =
+    typeof access === "string"
+      ? access
+      : access && typeof access === "object"
+        ? ((access.last_access as string | undefined) ?? (access.date as string | undefined))
+        : undefined;
+
+  return (
+    <div className="grid gap-4 lg:grid-cols-2">
+      <section className="rounded-xl border border-[var(--border-color,#e5e7eb)] bg-white p-4">
+        <h2 className="text-sm font-semibold text-gray-900">{t("summary")}</h2>
+        <dl className="mt-2">
+          <FieldRow label={t("statusLabel")}>
+            <StatusPill
+              label={link?.active === false ? t("inactive") : t("active")}
+              tone={link?.active === false ? "muted" : "ok"}
+            />
+          </FieldRow>
+          <FieldRow label={tf("student_id")}>{str(custom.student_id)}</FieldRow>
+          <FieldRow label={tf("grade_level")}>{str(custom.grade_level)}</FieldRow>
+          <FieldRow label={tf("enrollment_status")}>{str(custom.enrollment_status)}</FieldRow>
+          <FieldRow label={tf("homeroom")}>{str(custom.homeroom)}</FieldRow>
+          <FieldRow label={tf("date_of_birth")}>
+            {formatDate(demographics?.date_of_birth, locale)}
+          </FieldRow>
+          <FieldRow label={t("joined")}>{formatDate(link?.added_on, locale)}</FieldRow>
+          {isAdmin ? (
+            <FieldRow label={t("lastAccess")} hint={t("lastAccessHint")}>
+              {lastAccess.isLoading ? (
+                <Skeleton className="h-4 w-24" />
+              ) : lastSeen ? (
+                formatDateTime(lastSeen, locale)
+              ) : (
+                "—"
+              )}
+            </FieldRow>
+          ) : null}
+        </dl>
+      </section>
+      <section className="rounded-xl border border-[var(--border-color,#e5e7eb)] bg-white p-4">
+        <h2 className="text-sm font-semibold text-gray-900">{t("sectionsAndGuardians")}</h2>
+        <dl className="mt-2">
+          <FieldRow label={t("sections")}>
+            {enrollments.isLoading ? (
+              <Skeleton className="h-4 w-12" />
+            ) : (
+              String((enrollments.data ?? []).filter((e) => e.is_active).length)
+            )}
+          </FieldRow>
+          {isAdmin ? (
+            <FieldRow label={t("guardians")}>
+              {guardians.isLoading ? (
+                <Skeleton className="h-4 w-24" />
+              ) : watchers.length ? (
+                watchers.map((w) => w.email || w.username).join(", ")
+              ) : (
+                "—"
+              )}
+            </FieldRow>
+          ) : null}
+          <FieldRow label={tf("guardian_name")}>{str(custom.guardian_name)}</FieldRow>
+          <FieldRow label={tf("guardian_phone")}>{str(custom.guardian_phone)}</FieldRow>
+          <FieldRow label={tf("emergency_contact_name")}>
+            {str(custom.emergency_contact_name)}
+          </FieldRow>
+          <FieldRow label={tf("emergency_contact_phone")}>
+            {str(custom.emergency_contact_phone)}
+          </FieldRow>
+        </dl>
+      </section>
+    </div>
+  );
+}

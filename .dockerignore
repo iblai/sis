@@ -1,0 +1,14 @@
+node_modules
+.next
+out
+.git
+playwright
+e2e/playwright
+test-results
+playwright-report
+coverage
+.env*
+iblai.env*
+e2e/.env*
+CLAUDE.local.md
+.claude
