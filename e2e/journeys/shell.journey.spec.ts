@@ -20,7 +20,6 @@ test.describe("shell journey", () => {
       ["Staff", "staff"],
       ["Courses", "courses"],
       ["Groups", "groups"],
-      ["Attendance", "attendance"],
       ["Grades", "grades"],
       ["Credentials", "credentials"],
       ["Reports", "reports"],

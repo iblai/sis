@@ -28,8 +28,8 @@ import { useBreadcrumbs } from "@/components/sis/breadcrumbs";
 import { useIsLiveAdmin } from "@/components/sis/admin-mode";
 import { useDebounced } from "@/hooks/use-debounced";
 import { useSession } from "@/hooks/use-session";
-import { useSearchUsersQuery } from "@/lib/sis/api";
-import { displayName, formatRelative } from "@/lib/sis/format";
+import { usePlatformUsersQuery } from "@/lib/sis/api";
+import { displayName, formatDate, roleOf } from "@/lib/sis/format";
 
 const PAGE_SIZE = 25;
 
@@ -41,7 +41,7 @@ export default function StaffPage() {
   );
 }
 
-/** Staff: the users search with the Instructor and Admin roles. Teachers are platform admins in this version. */
+/** Staff: the platform's members with the admin or the staff flag. Teachers are platform admins in this version. */
 function StaffView() {
   const t = useTranslations("staff");
   const tn = useTranslations("nav");
@@ -49,21 +49,20 @@ function StaffView() {
   const locale = useLocale();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { tenantKey, username, href } = useSession();
+  const { tenantKey, href } = useSession();
   const isLiveAdmin = useIsLiveAdmin();
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(1);
   const q = useDebounced(query.trim(), 300);
   useBreadcrumbs([{ label: tn("staff"), href: href("/staff") }]);
-  const { data, isLoading, isFetching, error } = useSearchUsersQuery({
+  const { data, isLoading, isFetching, error } = usePlatformUsersQuery({
     platformKey: tenantKey,
-    username,
     query: q,
-    role: ["Instructor", "Admin"],
-    limit: PAGE_SIZE,
-    offset: (page - 1) * PAGE_SIZE,
+    page,
+    page_size: PAGE_SIZE,
   });
-  const rows = (data?.results ?? []).filter((u) => u.role === "Instructor" || u.role === "Admin");
+  // The directory has no role filter yet: the page keeps the members with a flag.
+  const rows = (data?.results ?? []).filter((u) => roleOf(u) !== "student");
   const inviteOpen = searchParams.get("invite") === "1";
   const count = data?.count ?? 0;
 
@@ -72,7 +71,6 @@ function StaffView() {
       <PageHeader
         icon={<UserCog />}
         title={tn("staff")}
-        count={data?.count}
         description={t("description")}
         actions={
           isLiveAdmin ? (
@@ -122,37 +120,34 @@ function StaffView() {
             <TableHeader>
               <TableRow>
                 <TableHead>{tc("name")}</TableHead>
-                <TableHead>{tc("email")}</TableHead>
+                <TableHead className="hidden md:table-cell">{tc("email")}</TableHead>
                 <TableHead>{t("columns.role")}</TableHead>
-                <TableHead>{t("columns.lastLogin")}</TableHead>
+                <TableHead className="hidden md:table-cell">{t("columns.joined")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {rows.map((u) => (
-                <TableRow key={u.id}>
+                <TableRow key={u.user_id}>
                   <TableCell>
                     <Link
                       href={href(`/staff/${encodeURIComponent(u.username)}`)}
                       className="flex items-center gap-2 font-medium text-gray-900 hover:underline"
                     >
-                      <EntityAvatar
-                        name={displayName(u)}
-                        seed={u.username}
-                        src={u.profile_image}
-                        size="sm"
-                      />
+                      <EntityAvatar name={displayName(u)} seed={u.username} size="sm" />
                       <span className="truncate">{displayName(u)}</span>
                     </Link>
                   </TableCell>
-                  <TableCell className="text-muted-foreground">{u.email}</TableCell>
+                  <TableCell className="text-muted-foreground hidden md:table-cell">
+                    {u.email}
+                  </TableCell>
                   <TableCell>
                     <StatusPill
-                      label={u.role === "Admin" ? t("roles.admin") : t("roles.teacher")}
-                      tone={u.role === "Admin" ? "ok" : "muted"}
+                      label={u.is_admin ? t("roles.admin") : t("roles.teacher")}
+                      tone={u.is_admin ? "ok" : "muted"}
                     />
                   </TableCell>
-                  <TableCell className="text-muted-foreground">
-                    {formatRelative(u.last_login, locale)}
+                  <TableCell className="text-muted-foreground hidden md:table-cell">
+                    {formatDate(u.added_on, locale)}
                   </TableCell>
                 </TableRow>
               ))}
@@ -163,8 +158,8 @@ function StaffView() {
       <PaginationBar
         data={{
           count,
-          next_page: page * PAGE_SIZE < count ? page + 1 : null,
-          previous_page: page > 1 ? page - 1 : null,
+          next_page: data?.next_page ?? null,
+          previous_page: data?.previous_page ?? null,
           results: rows,
         }}
         page={page}

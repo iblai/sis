@@ -1,9 +1,10 @@
 /**
  * RTK Query slice for Studio (the CMS) through the gateway (`<apiBase>/studio`)
  * with `Authorization: JWT <edx_jwt_token>` and no credentials — never the
- * SDK's Studio service, which sends credentials a `*` origin refuses. A new
- * section is a rerun (`/api/ibl/manage/course/`, open to the org admin); a
- * term's dates and the grading policy live on the run.
+ * SDK's Studio service, which sends credentials a `*` origin refuses. The
+ * section list is Studio's own course home (what the caller can author); a
+ * new section is a rerun (`/api/ibl/manage/course/`, open to the org admin);
+ * a term's dates and the grading policy live on the run.
  */
 import { createApi } from "@reduxjs/toolkit/query/react";
 import config from "@/lib/iblai/config";
@@ -15,16 +16,23 @@ import type {
   ManagedCourse,
   RerunCourseRequest,
   StudioCourseDetails,
+  StudioHomeCoursesResponse,
 } from "./types";
 
 export const studioApi = createApi({
   reducerPath: "studioApi",
   baseQuery: makeBaseQuery(config.studioUrl(), LOCAL_STORAGE_KEYS.EDX_TOKEN_KEY, "JWT"),
-  tagTypes: ["CourseDetails", "CourseGrading", "ManagedCourse"],
+  tagTypes: ["CourseDetails", "CourseGrading", "ManagedCourse", "HomeCourses"],
   keepUnusedDataFor: 60,
   endpoints: (b) => ({
+    /** The org's course runs the caller can author, active and archived, in one call. */
+    homeCourses: b.query<StudioHomeCoursesResponse, { org: string }>({
+      query: ({ org }) => `/api/contentstore/v1/home/courses${qs({ org })}`,
+      providesTags: ["HomeCourses"],
+    }),
     rerunCourse: b.mutation<ManagedCourse, RerunCourseRequest>({
       query: (body) => ({ url: "/api/ibl/manage/course/", method: "POST", body }),
+      invalidatesTags: ["HomeCourses"],
     }),
     managedCourse: b.query<ManagedCourse, string>({
       query: (courseKey) => `/api/ibl/manage/course/${qs({ course_key: courseKey })}`,
@@ -61,6 +69,7 @@ export const studioApi = createApi({
 });
 
 export const {
+  useHomeCoursesQuery,
   useRerunCourseMutation,
   useManagedCourseQuery,
   useCourseDetailsQuery,

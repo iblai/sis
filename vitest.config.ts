@@ -9,13 +9,13 @@ export default defineConfig({
       provider: "v8",
       // The pure modules the unit tests own; components and the API slices are exercised by e2e.
       include: [
-        "lib/sis/attendance.ts",
         "lib/sis/csv.ts",
         "lib/sis/dates.ts",
         "lib/sis/errors.ts",
         "lib/sis/format.ts",
         "lib/sis/grades.ts",
         "lib/sis/metadata.ts",
+        "lib/sis/over-time.ts",
         "lib/sis/permissions.ts",
         "lib/sis/qs.ts",
         "lib/sis/sections.ts",

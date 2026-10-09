@@ -15,12 +15,12 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { EntityAvatar } from "@/components/sis/entity-avatar";
 import { useDebounced } from "@/hooks/use-debounced";
 import { useSession } from "@/hooks/use-session";
-import { errorMessage, useSearchUsersQuery } from "@/lib/sis/api";
-import { displayName } from "@/lib/sis/format";
-import type { DirectoryUser, UserRole } from "@/lib/sis/types";
+import { errorMessage, usePlatformUsersQuery } from "@/lib/sis/api";
+import { displayName, roleOf } from "@/lib/sis/format";
+import type { MemberRole, PlatformUser } from "@/lib/sis/types";
 import { cn } from "@/lib/utils";
 
-/** A combobox over the platform's user directory — the server matches, never "the first 100 rows". */
+/** A combobox over the platform's directory — the server matches username and email, never "the first 100 rows". */
 export function UserPicker({
   value,
   onChange,
@@ -30,10 +30,10 @@ export function UserPicker({
   size = "default",
   className,
 }: {
-  value: DirectoryUser | null;
-  onChange: (user: DirectoryUser | null) => void;
+  value: PlatformUser | null;
+  onChange: (user: PlatformUser | null) => void;
   /** Keep only these roles (the directory also carries staff). */
-  roles?: UserRole[];
+  roles?: MemberRole[];
   placeholder?: string;
   disabled?: boolean;
   size?: "sm" | "default";
@@ -41,7 +41,7 @@ export function UserPicker({
 }) {
   const t = useTranslations("picker");
   const tc = useTranslations("common");
-  const { tenantKey, username } = useSession();
+  const { tenantKey } = useSession();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const q = useDebounced(query.trim(), 250);
@@ -49,13 +49,11 @@ export function UserPicker({
     currentData: data,
     isFetching,
     error,
-  } = useSearchUsersQuery(
-    { platformKey: tenantKey, username, query: q, role: roles, limit: 10 },
+  } = usePlatformUsersQuery(
+    { platformKey: tenantKey, query: q, page_size: 10 },
     { skip: q.length === 0 },
   );
-  const results = (data?.results ?? []).filter(
-    (u) => !roles || !u.role || roles.includes(u.role as UserRole),
-  );
+  const results = (data?.results ?? []).filter((u) => !roles || roles.includes(roleOf(u)));
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -77,7 +75,7 @@ export function UserPicker({
         </span>
         <ChevronsUpDown className="text-muted-foreground size-3.5" />
       </PopoverTrigger>
-      <PopoverContent align="start" className="w-[--anchor-width] min-w-72 p-0">
+      <PopoverContent align="start" className="w-(--anchor-width) min-w-72 p-0">
         <Command shouldFilter={false}>
           <CommandInput
             autoFocus
@@ -116,7 +114,7 @@ export function UserPicker({
               <CommandGroup>
                 {results.map((row) => (
                   <CommandItem
-                    key={row.id}
+                    key={row.user_id}
                     value={row.username}
                     onSelect={() => {
                       onChange(row);

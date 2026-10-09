@@ -106,7 +106,7 @@ export function CredentialsTab({ username }: { username: string }) {
                 <TableHead>{t("columns.credential")}</TableHead>
                 <TableHead>{t("columns.course")}</TableHead>
                 <TableHead>{t("columns.issued")}</TableHead>
-                <TableHead>{t("columns.expires")}</TableHead>
+                <TableHead className="hidden md:table-cell">{t("columns.expires")}</TableHead>
                 <TableHead>{t("columns.status")}</TableHead>
                 {isLiveAdmin ? <TableHead /> : null}
               </TableRow>
@@ -126,7 +126,7 @@ export function CredentialsTab({ username }: { username: string }) {
                   <TableCell className="text-muted-foreground">
                     {formatDate(a.issuedOn, locale)}
                   </TableCell>
-                  <TableCell className="text-muted-foreground">
+                  <TableCell className="text-muted-foreground hidden md:table-cell">
                     {formatDate(a.expires, locale)}
                   </TableCell>
                   <TableCell>

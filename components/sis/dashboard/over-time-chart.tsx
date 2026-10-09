@@ -3,7 +3,7 @@
 import { useLocale, useTranslations } from "next-intl";
 import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { formatDay } from "@/lib/sis/format";
-import { secondsByDay } from "@/lib/sis/attendance";
+import { byDay } from "@/lib/sis/over-time";
 import type { OverTime } from "@/lib/sis/types";
 
 /** One AXD over-time series as daily bars. */
@@ -18,8 +18,8 @@ export function OverTimeChart({
 }) {
   const t = useTranslations("dashboard");
   const locale = useLocale();
-  const byDay = secondsByDay(series?.data);
-  const data = Object.entries(byDay)
+  const days = byDay(series?.data);
+  const data = Object.entries(days)
     .sort(([a], [b]) => (a < b ? -1 : 1))
     .map(([day, value]) => ({ day, value }));
   if (!data.length || data.every((d) => d.value === 0)) {

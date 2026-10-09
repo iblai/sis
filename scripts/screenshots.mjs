@@ -53,7 +53,6 @@ const shots = [
   ["home", ""],
   ["students", "/students"],
   ["courses", "/courses"],
-  ["attendance", "/attendance"],
   ["setup-terms", "/setup?tab=terms"],
 ];
 for (const [name, route] of shots) {

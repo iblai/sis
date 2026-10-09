@@ -22,17 +22,14 @@ import { PaginationBar } from "@/components/sis/pagination-bar";
 import { EmptyState } from "@/components/sis/empty-state";
 import { LoadError } from "@/components/sis/load-error";
 import { EntityAvatar } from "@/components/sis/entity-avatar";
-import { SimpleSelect } from "@/components/sis/simple-select";
-import { StatusPill } from "@/components/sis/status-pill";
 import { LoadingScreen } from "@/components/loading-screen";
 import { useBreadcrumbs } from "@/components/sis/breadcrumbs";
 import { useIsLiveAdmin } from "@/components/sis/admin-mode";
 import { ImportDialog } from "@/components/sis/students/import-dialog";
 import { useDebounced } from "@/hooks/use-debounced";
 import { useSession } from "@/hooks/use-session";
-import { usePlatformInvitationsQuery, useSearchUsersQuery } from "@/lib/sis/api";
-import { displayName, formatDate, formatRelative } from "@/lib/sis/format";
-import type { UserStatus } from "@/lib/sis/types";
+import { usePlatformInvitationsQuery, usePlatformUsersQuery } from "@/lib/sis/api";
+import { displayName, formatDate, roleOf } from "@/lib/sis/format";
 
 const PAGE_SIZE = 25;
 
@@ -44,7 +41,7 @@ export default function StudentsPage() {
   );
 }
 
-/** The directory of students: the users search with `role=Student`, invitations and the LMS import. */
+/** The directory of students: the platform's members with neither flag, invitations and the LMS import. */
 function StudentsView() {
   const t = useTranslations("students");
   const tn = useTranslations("nav");
@@ -52,26 +49,22 @@ function StudentsView() {
   const locale = useLocale();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { tenantKey, username, href } = useSession();
+  const { tenantKey, href } = useSession();
   const isLiveAdmin = useIsLiveAdmin();
   const [query, setQuery] = useState("");
-  const [status, setStatus] = useState<"" | UserStatus>("");
   const [page, setPage] = useState(1);
   const [showPending, setShowPending] = useState(false);
   const q = useDebounced(query.trim(), 300);
   useBreadcrumbs([{ label: tn("students"), href: href("/students") }]);
 
-  const { data, isLoading, isFetching, error } = useSearchUsersQuery({
+  const { data, isLoading, isFetching, error } = usePlatformUsersQuery({
     platformKey: tenantKey,
-    username,
     query: q,
-    role: ["Student"],
-    status: status ? [status] : undefined,
-    limit: PAGE_SIZE,
-    offset: (page - 1) * PAGE_SIZE,
+    page,
+    page_size: PAGE_SIZE,
   });
-  // The role filter is also applied here, should the server ignore it.
-  const rows = (data?.results ?? []).filter((u) => u.role !== "Instructor" && u.role !== "Admin");
+  // The directory has no role filter yet: the page keeps the members with neither flag.
+  const rows = (data?.results ?? []).filter((u) => roleOf(u) === "student");
   const pending = usePlatformInvitationsQuery(
     { platformKey: tenantKey, active: true, page_size: 50 },
     { skip: !isLiveAdmin },
@@ -84,8 +77,8 @@ function StudentsView() {
   const count = data?.count ?? 0;
   const paginated = {
     count,
-    next_page: page * PAGE_SIZE < count ? page + 1 : null,
-    previous_page: page > 1 ? page - 1 : null,
+    next_page: data?.next_page ?? null,
+    previous_page: data?.previous_page ?? null,
     results: rows,
   };
 
@@ -94,7 +87,6 @@ function StudentsView() {
       <PageHeader
         icon={<Users />}
         title={tn("students")}
-        count={data?.count}
         description={t("description")}
         actions={
           isLiveAdmin ? (
@@ -117,37 +109,19 @@ function StudentsView() {
           ) : null
         }
         toolbar={
-          <>
-            <div className="relative w-full max-w-xs">
-              <Search className="text-muted-foreground pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2" />
-              <Input
-                value={query}
-                onChange={(e) => {
-                  setQuery(e.target.value);
-                  setPage(1);
-                }}
-                placeholder={t("searchPlaceholder")}
-                className="h-8 pl-8 text-sm"
-                aria-label={tc("search")}
-              />
-            </div>
-            <SimpleSelect
-              value={status}
-              onChange={(v) => {
-                setStatus(v as "" | UserStatus);
+          <div className="relative w-full max-w-xs">
+            <Search className="text-muted-foreground pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2" />
+            <Input
+              value={query}
+              onChange={(e) => {
+                setQuery(e.target.value);
                 setPage(1);
               }}
-              options={[
-                { value: "active", label: t("status.active") },
-                { value: "inactive", label: t("status.inactive") },
-              ]}
-              allowEmpty
-              emptyLabel={t("status.all")}
-              size="sm"
-              className="w-36"
-              aria-label={t("status.label")}
+              placeholder={t("searchPlaceholder")}
+              className="h-8 pl-8 text-sm"
+              aria-label={tc("search")}
             />
-          </>
+          </div>
         }
       />
       <div className="flex-1 overflow-auto">
@@ -187,41 +161,27 @@ function StudentsView() {
             <TableHeader>
               <TableRow>
                 <TableHead>{tc("name")}</TableHead>
-                <TableHead>{tc("email")}</TableHead>
-                <TableHead>{t("status.label")}</TableHead>
-                <TableHead>{t("columns.joined")}</TableHead>
-                <TableHead>{t("columns.lastLogin")}</TableHead>
+                <TableHead className="hidden md:table-cell">{tc("email")}</TableHead>
+                <TableHead className="hidden md:table-cell">{t("columns.joined")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {rows.map((u) => (
-                <TableRow key={u.id}>
+                <TableRow key={u.user_id}>
                   <TableCell>
                     <Link
                       href={href(`/students/${encodeURIComponent(u.username)}`)}
                       className="flex items-center gap-2 font-medium text-gray-900 hover:underline"
                     >
-                      <EntityAvatar
-                        name={displayName(u)}
-                        seed={u.username}
-                        src={u.profile_image}
-                        size="sm"
-                      />
+                      <EntityAvatar name={displayName(u)} seed={u.username} size="sm" />
                       <span className="truncate">{displayName(u)}</span>
                     </Link>
                   </TableCell>
-                  <TableCell className="text-muted-foreground">{u.email}</TableCell>
-                  <TableCell>
-                    <StatusPill
-                      label={u.status === "inactive" ? t("status.inactive") : t("status.active")}
-                      tone={u.status === "inactive" ? "muted" : "ok"}
-                    />
+                  <TableCell className="text-muted-foreground hidden md:table-cell">
+                    {u.email}
                   </TableCell>
-                  <TableCell className="text-muted-foreground">
-                    {formatDate(u.joined_date, locale)}
-                  </TableCell>
-                  <TableCell className="text-muted-foreground">
-                    {formatRelative(u.last_login, locale)}
+                  <TableCell className="text-muted-foreground hidden md:table-cell">
+                    {formatDate(u.added_on, locale)}
                   </TableCell>
                 </TableRow>
               ))}

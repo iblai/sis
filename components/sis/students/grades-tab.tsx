@@ -197,7 +197,7 @@ function GradeRow({
       </TableRow>
       {open && data ? (
         <TableRow className="bg-gray-50/60 hover:bg-gray-50/60">
-          <TableCell colSpan={6}>
+          <TableCell colSpan={6} className="whitespace-normal">
             <SectionScores progress={data} locale={locale} />
           </TableCell>
         </TableRow>
@@ -214,7 +214,7 @@ function SectionScores({ progress, locale }: { progress: Progress; locale: strin
   );
   if (!graded.length) return null;
   return (
-    <ul className="grid gap-1 text-xs sm:grid-cols-2">
+    <ul className="grid grid-cols-1 gap-1 text-xs sm:grid-cols-2">
       {graded.map((x) => (
         <li key={x.block_key} className="flex items-center justify-between gap-3">
           <span className="min-w-0 truncate">

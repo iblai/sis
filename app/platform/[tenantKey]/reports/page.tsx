@@ -209,14 +209,14 @@ function SectionReports() {
           <h2 className="text-sm font-semibold text-gray-900">{t("title")}</h2>
           <p className="text-muted-foreground text-xs">{t("description")}</p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <SimpleSelect
             value={courseId}
             onChange={setCourseId}
             options={sections.rows.map((r) => ({ value: r.course.id, label: r.course.name }))}
             placeholder={t("pickSection")}
             size="sm"
-            className="w-64"
+            className="w-full sm:w-64"
             aria-label={t("pickSection")}
           />
           {isLiveAdmin ? (
@@ -233,7 +233,7 @@ function SectionReports() {
         </div>
       </div>
       {courseId ? (
-        <div className="grid gap-4 lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           <div>
             <p className="text-muted-foreground text-xs font-medium">{t("downloads")}</p>
             {downloads.error ? (
@@ -250,7 +250,7 @@ function SectionReports() {
                       href={d.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-[#0058cc] hover:underline"
+                      className="break-all text-[#0058cc] hover:underline"
                     >
                       {d.name}
                     </a>

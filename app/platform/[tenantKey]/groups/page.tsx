@@ -132,7 +132,9 @@ function GroupsView() {
                       {g.name}
                     </Link>
                   </TableCell>
-                  <TableCell className="text-muted-foreground">{g.description || "—"}</TableCell>
+                  <TableCell className="text-muted-foreground whitespace-normal">
+                    {g.description || "—"}
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>

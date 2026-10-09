@@ -100,62 +100,60 @@ export function GradebookTab({ courseId }: { courseId: string }) {
       ) : (grid.data?.results.length ?? 0) === 0 ? (
         <EmptyState title={q ? t("noMatch") : t("none")} />
       ) : (
-        <div className="overflow-auto rounded-xl border border-[var(--border-color,#e5e7eb)] bg-white">
-          <table className="min-w-full text-sm">
-            <thead className="text-muted-foreground text-left text-xs">
-              <tr className="border-b border-gray-100">
-                <th className="sticky left-0 z-10 bg-white px-3 py-2 font-medium">
-                  {t("columns.learner")}
-                </th>
-                <th className="px-3 py-2 font-medium">{t("columns.total")}</th>
-                {columns.map((c) => (
-                  <th
-                    key={c.module_id}
-                    className="max-w-32 truncate px-3 py-2 font-medium"
-                    title={c.display_name}
-                  >
-                    {c.short_label || c.display_name}
+        <div className="rounded-xl border border-[var(--border-color,#e5e7eb)] bg-white">
+          <div className="overflow-auto">
+            <table className="min-w-full text-sm">
+              <thead className="text-muted-foreground text-left text-xs">
+                <tr className="border-b border-gray-100">
+                  <th className="sticky left-0 z-10 bg-white px-3 py-2 font-medium">
+                    {t("columns.learner")}
                   </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
-              {grid.data!.results.map((row) => (
-                <tr key={row.user_id} className={grid.isFetching ? "opacity-70" : undefined}>
-                  <td className="sticky left-0 z-10 bg-white px-3 py-1.5">
-                    <Link
-                      href={href(`/students/${encodeURIComponent(row.username)}`)}
-                      className="font-medium text-gray-900 hover:underline"
-                    >
-                      {row.full_name || row.username}
-                    </Link>
-                    <span className="text-muted-foreground block text-xs">{row.username}</span>
-                  </td>
-                  <td className="px-3 py-1.5 tabular-nums">
-                    {formatPercent(row.percent, locale)}
-                    {row.letter_grade ? (
-                      <span className="text-muted-foreground ml-1">{row.letter_grade}</span>
-                    ) : null}
-                  </td>
-                  {columns.map((c) => {
-                    const cell = row.section_breakdown.find((b) => b.module_id === c.module_id);
-                    return (
-                      <td key={c.module_id} className="px-1 py-1">
-                        <GradeCell
-                          courseId={courseId}
-                          row={row}
-                          column={c}
-                          cell={cell}
-                          editable={isLiveAdmin && !frozen}
-                          locale={locale}
-                        />
-                      </td>
-                    );
-                  })}
+                  <th className="px-3 py-2 font-medium">{t("columns.total")}</th>
+                  {columns.map((c) => (
+                    <th key={c.module_id} className="px-3 py-2 font-medium" title={c.display_name}>
+                      <div className="max-w-32 truncate">{c.short_label || c.display_name}</div>
+                    </th>
+                  ))}
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {grid.data!.results.map((row) => (
+                  <tr key={row.user_id} className={grid.isFetching ? "opacity-70" : undefined}>
+                    <td className="sticky left-0 z-10 bg-white px-3 py-1.5">
+                      <Link
+                        href={href(`/students/${encodeURIComponent(row.username)}`)}
+                        className="font-medium text-gray-900 hover:underline"
+                      >
+                        {row.full_name || row.username}
+                      </Link>
+                      <span className="text-muted-foreground block text-xs">{row.username}</span>
+                    </td>
+                    <td className="px-3 py-1.5 tabular-nums">
+                      {formatPercent(row.percent, locale)}
+                      {row.letter_grade ? (
+                        <span className="text-muted-foreground ml-1">{row.letter_grade}</span>
+                      ) : null}
+                    </td>
+                    {columns.map((c) => {
+                      const cell = row.section_breakdown.find((b) => b.module_id === c.module_id);
+                      return (
+                        <td key={c.module_id} className="px-1 py-1">
+                          <GradeCell
+                            courseId={courseId}
+                            row={row}
+                            column={c}
+                            cell={cell}
+                            editable={isLiveAdmin && !frozen}
+                            locale={locale}
+                          />
+                        </td>
+                      );
+                    })}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
           <div className="text-muted-foreground flex items-center justify-between border-t border-gray-100 px-3 py-2 text-xs">
             <span>
               {t("count", {

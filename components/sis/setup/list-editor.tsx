@@ -107,6 +107,7 @@ export function ListEditor<T extends { id: string }>({
                           options={c.options}
                           allowEmpty
                           size="sm"
+                          className="min-w-32"
                           aria-label={c.label}
                         />
                       ) : (
@@ -125,7 +126,7 @@ export function ListEditor<T extends { id: string }>({
                                   : e.target.value,
                             } as Partial<T>)
                           }
-                          className="h-8 text-sm"
+                          className="h-8 min-w-32 text-sm"
                           aria-label={c.label}
                         />
                       )}

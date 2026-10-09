@@ -43,6 +43,8 @@ const nextConfig: NextConfig = {
   // dev double-mount, wedging voice input at "Processing…". Host workaround
   // (see /iblai-vibe-agent-chat "Known issues"); production runs effects once.
   reactStrictMode: false,
+  // `next dev` would otherwise append its "AI agents" block to AGENTS.md on every start.
+  agentRules: false,
   images: { remotePatterns },
   poweredByHeader: false,
   async headers() {

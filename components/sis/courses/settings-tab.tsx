@@ -25,12 +25,7 @@ import {
 } from "@/lib/sis/studio-api";
 import { WEEKDAYS, type Section, type Weekday } from "@/lib/sis/metadata";
 import { upsertSection, type SectionRow } from "@/lib/sis/sections";
-import type {
-  CourseGrading,
-  CourseRole,
-  DirectoryUser,
-  StudioCourseDetails,
-} from "@/lib/sis/types";
+import type { CourseGrading, CourseRole, PlatformUser, StudioCourseDetails } from "@/lib/sis/types";
 
 const Card = ({ title, children }: { title: string; children: React.ReactNode }) => (
   <section className="space-y-3 rounded-xl border border-[var(--border-color,#e5e7eb)] bg-white p-4">
@@ -43,7 +38,7 @@ const Card = ({ title, children }: { title: string; children: React.ReactNode })
 export function SettingsTab({ courseId, row }: { courseId: string; row?: SectionRow }) {
   const t = useTranslations("courses.settings");
   return (
-    <div className="grid gap-4 lg:grid-cols-2">
+    <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
       <DatesCard courseId={courseId} />
       <SectionCard courseId={courseId} row={row} />
       <TeachersCard courseId={courseId} />
@@ -136,7 +131,7 @@ function DatesForm({ courseId, details }: { courseId: string; details: StudioCou
           aria-label={t("applyTerm")}
         />
       ) : null}
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         {field("start", t("start"))}
         {field("end", t("end"))}
         {field("enrollStart", t("enrollStart"))}
@@ -234,7 +229,7 @@ function SectionCard({ courseId, row }: { courseId: string; row?: SectionRow }) 
   };
   return (
     <Card title={t("section")}>
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         {pick("termId", t("term"), meta.terms)}
         {pick("subjectId", t("subject"), meta.subjects)}
         {pick("gradeLevelId", t("gradeLevel"), meta.gradeLevels)}
@@ -315,7 +310,7 @@ function TeachersCard({ courseId }: { courseId: string }) {
   const toastError = useToastError();
   const staff = useRoleMembersQuery({ courseId, rolename: "staff" });
   const instructors = useRoleMembersQuery({ courseId, rolename: "instructor" });
-  const [picked, setPicked] = useState<DirectoryUser | null>(null);
+  const [picked, setPicked] = useState<PlatformUser | null>(null);
   const [modify, { isLoading }] = useModifyAccessMutation();
   const change = async (identifier: string, rolename: CourseRole, action: "allow" | "revoke") => {
     try {
@@ -462,79 +457,81 @@ function GradingForm({ courseId, grading }: { courseId: string; grading: CourseG
     setGraders((g) => g.map((x, j) => (j === i ? { ...x, ...patch } : x)));
   return (
     <Card title={t("grading")}>
-      <table className="w-full text-xs">
-        <thead className="text-muted-foreground text-left">
-          <tr>
-            <th className="py-1 font-medium">{t("assignmentType")}</th>
-            <th className="py-1 font-medium">{t("count")}</th>
-            <th className="py-1 font-medium">{t("drop")}</th>
-            <th className="py-1 font-medium">{t("weight")}</th>
-            <th aria-label={tc("actions")} />
-          </tr>
-        </thead>
-        <tbody>
-          {graders.map((g, i) => (
-            <tr key={i}>
-              <td className="py-1 pr-2">
-                <Input
-                  value={g.type}
-                  disabled={!isLiveAdmin}
-                  onChange={(e) =>
-                    edit(i, {
-                      type: e.target.value,
-                      short_label: g.short_label || e.target.value.slice(0, 3),
-                    })
-                  }
-                  className="h-7 text-xs"
-                />
-              </td>
-              <td className="py-1 pr-2">
-                <Input
-                  type="number"
-                  min={1}
-                  value={g.min_count}
-                  disabled={!isLiveAdmin}
-                  onChange={(e) => edit(i, { min_count: Number(e.target.value) })}
-                  className="h-7 w-16 text-xs"
-                />
-              </td>
-              <td className="py-1 pr-2">
-                <Input
-                  type="number"
-                  min={0}
-                  value={g.drop_count}
-                  disabled={!isLiveAdmin}
-                  onChange={(e) => edit(i, { drop_count: Number(e.target.value) })}
-                  className="h-7 w-16 text-xs"
-                />
-              </td>
-              <td className="py-1 pr-2">
-                <Input
-                  type="number"
-                  min={0}
-                  max={100}
-                  value={g.weight}
-                  disabled={!isLiveAdmin}
-                  onChange={(e) => edit(i, { weight: Number(e.target.value) })}
-                  className="h-7 w-16 text-xs"
-                />
-              </td>
-              <td className="py-1">
-                {isLiveAdmin ? (
-                  <Button
-                    variant="ghost"
-                    size="icon-xs"
-                    onClick={() => setGraders((x) => x.filter((_, j) => j !== i))}
-                    aria-label={tc("remove")}
-                  >
-                    <X />
-                  </Button>
-                ) : null}
-              </td>
+      <div className="overflow-x-auto">
+        <table className="w-full text-xs">
+          <thead className="text-muted-foreground text-left">
+            <tr>
+              <th className="py-1 font-medium">{t("assignmentType")}</th>
+              <th className="py-1 font-medium">{t("count")}</th>
+              <th className="py-1 font-medium">{t("drop")}</th>
+              <th className="py-1 font-medium">{t("weight")}</th>
+              <th aria-label={tc("actions")} />
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {graders.map((g, i) => (
+              <tr key={i}>
+                <td className="py-1 pr-2">
+                  <Input
+                    value={g.type}
+                    disabled={!isLiveAdmin}
+                    onChange={(e) =>
+                      edit(i, {
+                        type: e.target.value,
+                        short_label: g.short_label || e.target.value.slice(0, 3),
+                      })
+                    }
+                    className="h-7 min-w-28 text-xs"
+                  />
+                </td>
+                <td className="py-1 pr-2">
+                  <Input
+                    type="number"
+                    min={1}
+                    value={g.min_count}
+                    disabled={!isLiveAdmin}
+                    onChange={(e) => edit(i, { min_count: Number(e.target.value) })}
+                    className="h-7 w-16 text-xs"
+                  />
+                </td>
+                <td className="py-1 pr-2">
+                  <Input
+                    type="number"
+                    min={0}
+                    value={g.drop_count}
+                    disabled={!isLiveAdmin}
+                    onChange={(e) => edit(i, { drop_count: Number(e.target.value) })}
+                    className="h-7 w-16 text-xs"
+                  />
+                </td>
+                <td className="py-1 pr-2">
+                  <Input
+                    type="number"
+                    min={0}
+                    max={100}
+                    value={g.weight}
+                    disabled={!isLiveAdmin}
+                    onChange={(e) => edit(i, { weight: Number(e.target.value) })}
+                    className="h-7 w-16 text-xs"
+                  />
+                </td>
+                <td className="py-1">
+                  {isLiveAdmin ? (
+                    <Button
+                      variant="ghost"
+                      size="icon-xs"
+                      onClick={() => setGraders((x) => x.filter((_, j) => j !== i))}
+                      aria-label={tc("remove")}
+                    >
+                      <X />
+                    </Button>
+                  ) : null}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
       <div className="flex items-center justify-between">
         <p className={total === 100 ? "text-muted-foreground text-xs" : "text-xs text-rose-600"}>
           {t("weightTotal", { total })}

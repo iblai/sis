@@ -111,7 +111,7 @@ function CoursesView() {
                 allowEmpty
                 emptyLabel={t("filters.allTerms")}
                 size="sm"
-                className="w-40"
+                className="w-[calc(50%-0.25rem)] sm:w-40"
                 aria-label={t("columns.term")}
               />
             ) : null}
@@ -123,7 +123,7 @@ function CoursesView() {
                 allowEmpty
                 emptyLabel={t("filters.allSubjects")}
                 size="sm"
-                className="w-40"
+                className="w-[calc(50%-0.25rem)] sm:w-40"
                 aria-label={t("columns.subject")}
               />
             ) : null}
@@ -135,7 +135,7 @@ function CoursesView() {
                 allowEmpty
                 emptyLabel={t("filters.allLevels")}
                 size="sm"
-                className="w-40"
+                className="w-[calc(50%-0.25rem)] sm:w-40"
                 aria-label={t("columns.gradeLevel")}
               />
             ) : null}
@@ -164,11 +164,11 @@ function CoursesView() {
               <TableRow>
                 <TableHead>{t("columns.section")}</TableHead>
                 <TableHead>{t("columns.term")}</TableHead>
-                <TableHead>{t("columns.subject")}</TableHead>
-                <TableHead>{t("columns.gradeLevel")}</TableHead>
-                <TableHead>{t("columns.schedule")}</TableHead>
-                <TableHead>{t("columns.credits")}</TableHead>
-                <TableHead>{t("columns.dates")}</TableHead>
+                <TableHead className="hidden md:table-cell">{t("columns.subject")}</TableHead>
+                <TableHead className="hidden md:table-cell">{t("columns.gradeLevel")}</TableHead>
+                <TableHead className="hidden md:table-cell">{t("columns.schedule")}</TableHead>
+                <TableHead className="hidden md:table-cell">{t("columns.credits")}</TableHead>
+                <TableHead className="hidden md:table-cell">{t("columns.dates")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -187,11 +187,13 @@ function CoursesView() {
                     </span>
                   </TableCell>
                   <TableCell className="text-muted-foreground">{r.term?.name ?? "—"}</TableCell>
-                  <TableCell className="text-muted-foreground">{r.subject?.name ?? "—"}</TableCell>
-                  <TableCell className="text-muted-foreground">
+                  <TableCell className="text-muted-foreground hidden md:table-cell">
+                    {r.subject?.name ?? "—"}
+                  </TableCell>
+                  <TableCell className="text-muted-foreground hidden md:table-cell">
                     {r.gradeLevel?.name ?? "—"}
                   </TableCell>
-                  <TableCell className="text-muted-foreground">
+                  <TableCell className="text-muted-foreground hidden md:table-cell">
                     {[
                       r.period?.name,
                       r.room?.name,
@@ -200,11 +202,11 @@ function CoursesView() {
                       .filter(Boolean)
                       .join(" · ") || "—"}
                   </TableCell>
-                  <TableCell className="text-muted-foreground tabular-nums">
+                  <TableCell className="text-muted-foreground hidden tabular-nums md:table-cell">
                     {r.section?.credits ?? "—"}
                     {r.section?.seats ? ` · ${t("seats", { count: r.section.seats })}` : ""}
                   </TableCell>
-                  <TableCell className="text-muted-foreground">
+                  <TableCell className="text-muted-foreground hidden md:table-cell">
                     {formatDate(r.course.start, locale)} – {formatDate(r.course.end, locale)}
                   </TableCell>
                 </TableRow>

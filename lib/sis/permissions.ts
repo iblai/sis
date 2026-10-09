@@ -12,9 +12,7 @@ export function canOpen(
   if (/^\/(admin|setup)(\/|$)/.test(rest)) return session.isAdmin && session.adminMode;
   const own = rest.match(/^\/students\/([^/]+)/);
   if (own) return session.isAdmin || decodeURIComponent(own[1]) === session.username;
-  if (
-    /^\/(students|staff|groups|attendance|grades|credentials|reports|messages)(\/|$)/.test(rest)
-  ) {
+  if (/^\/(students|staff|groups|grades|credentials|reports|messages)(\/|$)/.test(rest)) {
     return session.isAdmin;
   }
   return true;

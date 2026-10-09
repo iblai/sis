@@ -3,14 +3,7 @@
 import { Suspense, useCallback, useMemo } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import {
-  BookOpen,
-  CalendarCheck2,
-  ExternalLink,
-  GraduationCap,
-  Settings,
-  Users,
-} from "lucide-react";
+import { BookOpen, ExternalLink, GraduationCap, Settings, Users } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PageHeader } from "@/components/sis/page-header";
@@ -20,15 +13,15 @@ import { FieldRow } from "@/components/sis/inline-field";
 import { useBreadcrumbs } from "@/components/sis/breadcrumbs";
 import { RosterTab } from "@/components/sis/courses/roster-tab";
 import { GradebookTab } from "@/components/sis/courses/gradebook-tab";
-import { CourseAttendanceTab } from "@/components/sis/courses/course-attendance-tab";
 import { SettingsTab } from "@/components/sis/courses/settings-tab";
 import { useSections } from "@/hooks/use-sections";
 import { useSession } from "@/hooks/use-session";
-import { useCourseQuery, useProgressQuery } from "@/lib/sis/lms-api";
+import { useCourseMetadataQuery, useProgressQuery } from "@/lib/sis/lms-api";
+import { courseRunParts } from "@/lib/sis/sections";
 import config from "@/lib/iblai/config";
 import { formatDate, formatPercent } from "@/lib/sis/format";
 
-const TABS = ["roster", "gradebook", "attendance", "settings"] as const;
+const TABS = ["roster", "gradebook", "settings"] as const;
 type Tab = (typeof TABS)[number];
 
 export default function CoursePage() {
@@ -39,7 +32,7 @@ export default function CoursePage() {
   );
 }
 
-/** One section: roster, gradebook and attendance from the LMS and the AXD, settings on Studio and the metadata. */
+/** One section: roster and gradebook from the LMS, settings on Studio and the metadata. */
 function CourseView() {
   const t = useTranslations("courses");
   const tn = useTranslations("nav");
@@ -50,8 +43,13 @@ function CourseView() {
   const { isAdmin, href } = useSession();
   const sections = useSections({ skip: !isAdmin });
   const row = sections.byCourseId.get(courseId);
-  const course = useCourseQuery(courseId, { skip: !!row });
-  const info = row?.course ?? course.data;
+  const meta = useCourseMetadataQuery(courseId, { skip: !!row });
+  const parts = courseRunParts(courseId);
+  const info =
+    row?.course ??
+    (meta.data
+      ? { name: meta.data.title, number: meta.data.number ?? parts?.number, run: parts?.run }
+      : undefined);
   const name = info?.name ?? courseId;
   const base = href(`/courses/${encodeURIComponent(courseId)}`);
   useBreadcrumbs([
@@ -69,7 +67,6 @@ function CourseView() {
   const icons = {
     roster: Users,
     gradebook: GraduationCap,
-    attendance: CalendarCheck2,
     settings: Settings,
   } as const;
 
@@ -109,7 +106,10 @@ function CourseView() {
           <StudentCourseView courseId={courseId} />
         ) : (
           <Tabs value={tab} onValueChange={(v) => setTab(v as Tab)} className="gap-4">
-            <TabsList variant="line" className="h-9 flex-wrap border-b border-gray-200 pb-1">
+            <TabsList
+              variant="line"
+              className="flex-wrap border-b border-gray-200 pb-1 group-data-horizontal/tabs:h-auto"
+            >
               {TABS.map((key) => {
                 const Icon = icons[key];
                 return (
@@ -124,9 +124,6 @@ function CourseView() {
             </TabsContent>
             <TabsContent value="gradebook">
               <GradebookTab courseId={courseId} />
-            </TabsContent>
-            <TabsContent value="attendance">
-              <CourseAttendanceTab courseId={courseId} />
             </TabsContent>
             <TabsContent value="settings">
               <SettingsTab courseId={courseId} row={row} />
@@ -151,7 +148,7 @@ function StudentCourseView({ courseId }: { courseId: string }) {
     s.subsections.filter((x) => x.has_graded_assignment),
   );
   return (
-    <div className="grid gap-4 lg:grid-cols-2">
+    <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
       <section className="rounded-xl border border-[var(--border-color,#e5e7eb)] bg-white p-4">
         <h2 className="text-sm font-semibold text-gray-900">{t("myStanding")}</h2>
         <dl className="mt-2">

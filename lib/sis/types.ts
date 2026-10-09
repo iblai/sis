@@ -6,47 +6,7 @@
 
 // ------------------------------------------------------------------ DM: users
 
-export type UserRole = "Student" | "Instructor" | "Admin";
-export type UserStatus = "active" | "inactive";
-
-/** One row of the users search (`/api/search/users/orgs/{key}/users/{caller}/`). */
-export interface DirectoryUser {
-  id: number;
-  username: string;
-  email: string;
-  first_name?: string | null;
-  last_name?: string | null;
-  full_name?: string | null;
-  profile_image?: string | null;
-  role?: UserRole | string;
-  status?: UserStatus | string;
-  joined_date?: string | null;
-  last_login?: string | null;
-  metadata?: Record<string, unknown>;
-}
-
-export interface UserSearchResponse {
-  results: DirectoryUser[];
-  count: number;
-  next: string | null;
-  previous: string | null;
-  current_page: number;
-  total_pages: number;
-  facets?: Record<string, { key: string; doc_count: number }[]>;
-}
-
-export interface UserSearchParams {
-  platformKey: string;
-  /** The caller — the search is scoped `users/{username}/`. */
-  username: string;
-  query?: string;
-  role?: UserRole[];
-  status?: UserStatus[];
-  limit?: number;
-  offset?: number;
-}
-
-/** A row of `/api/core/platform/users/` — the platform's member directory. */
+/** A row of `/api/core/platform/users/` — the platform's directory (the link JSON; active members only). */
 export interface PlatformUser {
   user_id: number;
   username: string;
@@ -65,6 +25,9 @@ export interface PlatformUsersResponse {
   previous_page: number | null;
   results: PlatformUser[];
 }
+
+/** What a member is to the school, from the link's two flags: neither flag is a student. */
+export type MemberRole = "student" | "teacher" | "admin";
 
 /** `/api/core/users/platforms/` — one user ↔ platform link. */
 export interface UserPlatformLink {
@@ -371,6 +334,7 @@ export interface LmsCourseMedia {
   course_image?: { uri?: string };
 }
 
+/** A course run as the app sees it, built from Studio's course list (`fromStudioCourse`). */
 export interface LmsCourse {
   id: string;
   course_id: string;
@@ -389,9 +353,35 @@ export interface LmsCourse {
   invitation_only?: boolean;
 }
 
-export interface LmsCoursesResponse {
-  results: LmsCourse[];
-  pagination: { next: string | null; previous: string | null; count: number; num_pages: number };
+/** One row of Studio's `GET /api/contentstore/v1/home/courses` (`courses` and `archived_courses`). */
+export interface StudioHomeCourse {
+  course_key: string;
+  display_name: string;
+  org?: string;
+  number?: string;
+  run?: string;
+  lms_link?: string | null;
+  url?: string | null;
+  is_active?: boolean;
+}
+
+export interface StudioHomeCoursesResponse {
+  courses: StudioHomeCourse[];
+  archived_courses?: StudioHomeCourse[];
+  in_process_course_actions?: unknown[];
+}
+
+/** `GET /api/course_home/v1/course_metadata/{C}` — the course home header, for staff and the enrolled. */
+export interface CourseHomeMetadata {
+  id?: string;
+  title: string;
+  number?: string;
+  org?: string;
+  start?: string | null;
+  end?: string | null;
+  is_self_paced?: boolean;
+  is_enrolled?: boolean;
+  is_staff?: boolean;
 }
 
 export interface RosterStudent {

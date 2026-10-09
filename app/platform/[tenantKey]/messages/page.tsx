@@ -48,7 +48,7 @@ function MessagesView() {
     <>
       <PageHeader icon={<Megaphone />} title={tn("messages")} description={t("description")} />
       <div className="flex-1 overflow-auto p-4 md:p-6">
-        <div className="grid gap-4 lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           <SectionEmail initialCourseId={searchParams.get("course") ?? ""} />
           <Announcement initialGroupId={searchParams.get("group") ?? ""} />
         </div>

@@ -1,4 +1,4 @@
-import type { LmsCourse } from "./types";
+import type { LmsCourse, StudioHomeCourse } from "./types";
 import type { GradeLevel, Period, Room, Section, SisMetadata, Subject, Term } from "./metadata";
 
 /** An LMS course run joined with the school's section data and its teachers. */
@@ -25,6 +25,20 @@ export function courseRunParts(
 ): { org: string; number: string; run: string } | null {
   const m = courseId.match(/^course-v1:([^+]+)\+([^+]+)\+([^+]+)$/);
   return m ? { org: m[1], number: m[2], run: m[3] } : null;
+}
+
+/** A Studio course-home row as the app's course run; an archived run is hidden. */
+export function fromStudioCourse(row: StudioHomeCourse, archived = false): LmsCourse {
+  const parts = courseRunParts(row.course_key);
+  return {
+    id: row.course_key,
+    course_id: row.course_key,
+    name: row.display_name || row.course_key,
+    org: row.org || parts?.org || "",
+    number: row.number || parts?.number || "",
+    run: row.run || parts?.run,
+    hidden: archived || row.is_active === false,
+  };
 }
 
 export function joinSections(

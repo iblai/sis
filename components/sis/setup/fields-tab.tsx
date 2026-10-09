@@ -197,8 +197,8 @@ export function FieldsTab() {
                     <td className="px-3 py-2 font-medium text-gray-900">{f.name}</td>
                     <td className="text-muted-foreground px-3 py-2 font-mono text-xs">{f.slug}</td>
                     <td className="text-muted-foreground px-3 py-2">{f.field_type}</td>
-                    <td className="text-muted-foreground max-w-48 truncate px-3 py-2 text-xs">
-                      {f.choices?.join(", ") || "—"}
+                    <td className="text-muted-foreground px-3 py-2 text-xs">
+                      <div className="max-w-48 truncate">{f.choices?.join(", ") || "—"}</div>
                     </td>
                     <td className="px-3 py-2">
                       <Checkbox
@@ -242,7 +242,7 @@ export function FieldsTab() {
           value={draft.name}
           onChange={(e) => setDraft((d) => ({ ...d, name: e.target.value }))}
           placeholder={tc("name")}
-          className="h-8 w-44 text-sm"
+          className="h-8 w-full text-sm sm:w-44"
           aria-label={tc("name")}
           required
         />
@@ -250,7 +250,7 @@ export function FieldsTab() {
           value={draft.slug}
           onChange={(e) => setDraft((d) => ({ ...d, slug: slugOf(e.target.value) }))}
           placeholder={slugOf(draft.name) || t("slug")}
-          className="h-8 w-40 font-mono text-xs"
+          className="h-8 w-full font-mono text-xs sm:w-40"
           aria-label={t("slug")}
         />
         <SimpleSelect
@@ -258,7 +258,7 @@ export function FieldsTab() {
           onChange={(v) => setDraft((d) => ({ ...d, field_type: v }))}
           options={TYPES.map((x) => ({ value: x, label: x }))}
           size="sm"
-          className="w-28"
+          className="w-full sm:w-28"
           aria-label={t("type")}
         />
         {draft.field_type === "select" ? (
@@ -266,7 +266,7 @@ export function FieldsTab() {
             value={draft.choices}
             onChange={(e) => setDraft((d) => ({ ...d, choices: e.target.value }))}
             placeholder={t("choicesPlaceholder")}
-            className="h-8 w-56 text-sm"
+            className="h-8 w-full text-sm sm:w-56"
             aria-label={t("choices")}
           />
         ) : null}

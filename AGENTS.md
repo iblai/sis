@@ -42,9 +42,12 @@ Three backends carry the data, all through existing endpoints:
    `<apiBase>/lms` and `<apiBase>/studio` — never the direct `learn.` hosts,
    never the SDK's Studio service). Every call names the platform or the
    course. Lists are server-paged; the Courses list (a bounded run list) is
-   the one client-side exception. **No new DM or LMS endpoint is written for
-   this app**: a gap goes into the README's two lists, never into a workaround
-   that fakes the feature.
+   the one client-side exception. The directory is `GET /api/core/platform/users/`
+   (the DM users search is a résumé search and returns no users); the section
+   list is Studio's `home/courses` (the LMS `courses/v1` routes are blocked at
+   the edge for every browser). **No new DM or LMS endpoint is written for
+   this app**: a gap goes into `TODOS.md`, never into a workaround that fakes
+   the feature.
 4. **Where data lives.** School and section data in the platform metadata
    under `sis` as arrays written whole (`hooks/use-sis-metadata.ts` — the DM
    merge replaces arrays and never deletes a key; compare-on-save refuses a
@@ -57,8 +60,8 @@ Three backends carry the data, all through existing endpoints:
    flag, `ALLOW_AUTOMATED_SIGNUPS`, the bulk-email flag and the JWT
    query-param middleware are operator settings; ibl's LMS patches the
    standard enrollment POST to 404.
-6. **Attendance is activity-derived** (time spent in the course that day,
-   from the analytics) and the UI says so, until the DM has an attendance model.
+6. **No attendance** until the DM has an attendance model: nothing derives
+   presence from analytics time; the feature and its endpoints are in `TODOS.md`.
 7. **Every string is translated.** `useTranslations("<namespace>")` from
    next-intl; a key goes into all four of `messages/{en,es,fr,zh}.json` or
    none (`pnpm i18n:check`). Keys are typed from `messages/en.json`
@@ -83,7 +86,9 @@ Three backends carry the data, all through existing endpoints:
 13. **Verify before you say it works:** `pnpm typecheck && pnpm lint && pnpm
     format:check && pnpm i18n:check && pnpm test:coverage && pnpm build`; open
     the page on a **throwaway platform** (never `main`); screenshot it. E2E
-    journeys live in `e2e/journeys/` and sign in through the real Auth SPA.
+    journeys live in `e2e/journeys/` and sign in through the real Auth SPA. The
+    `mobile` Playwright project (S6) opens every admin page at a phone width and
+    fails on sideways overflow: phones are a gate.
 14. **Commits:** conventional messages; never `--no-verify`.
 
 ## Where things are
@@ -98,7 +103,7 @@ Three backends carry the data, all through existing endpoints:
 | DM · LMS · Studio slices         | `lib/sis/api.ts`, `lib/sis/lms-api.ts`, `lib/sis/studio-api.ts`, `lib/sis/base-query.ts` |
 | Types                            | `lib/sis/types.ts`, `lib/sis/metadata.ts`                                                |
 | School data                      | `hooks/use-sis-metadata.ts`, `hooks/use-sections.ts`, `lib/sis/sections.ts`              |
-| Grades, attendance, CSV          | `lib/sis/grades.ts`, `lib/sis/attendance.ts`, `lib/sis/csv.ts`                           |
+| Grades, CSV, over-time series    | `lib/sis/grades.ts`, `lib/sis/csv.ts`, `lib/sis/over-time.ts`                            |
 | Translations                     | `i18n/`, `messages/{en,es,fr,zh}.json`, `scripts/validate-i18n.mjs`                      |
 | Shell                            | `app/platform/[tenantKey]/layout.tsx`, `components/sis/app-sidebar.tsx`, `top-bar.tsx`   |
 | Areas                            | `components/sis/{students,courses,groups,setup,dashboard}/`                              |

@@ -41,7 +41,6 @@ const SECTION_KEYS = {
   staff: "nav.staff",
   courses: "nav.courses",
   groups: "nav.groups",
-  attendance: "nav.attendance",
   grades: "nav.grades",
   credentials: "nav.credentials",
   reports: "nav.reports",
@@ -90,8 +89,19 @@ export function Breadcrumbs() {
       {items.map((item, i) => {
         const last = i === items.length - 1;
         return (
-          <span key={i} className="flex min-w-0 items-center">
-            {i > 0 ? <ChevronRight className="mx-1 size-3.5 shrink-0 text-gray-300" /> : null}
+          <span
+            key={i}
+            className={last ? "flex min-w-0 items-center" : "hidden min-w-0 items-center sm:flex"}
+          >
+            {i > 0 ? (
+              <ChevronRight
+                className={
+                  last
+                    ? "mx-1 hidden size-3.5 shrink-0 text-gray-300 sm:block"
+                    : "mx-1 size-3.5 shrink-0 text-gray-300"
+                }
+              />
+            ) : null}
             {item.href && !last ? (
               <Link
                 href={item.href}

@@ -41,7 +41,6 @@
     "toggleSidebarHint": "Plegar o desplegar la barra lateral (⌘B)"
   },
   "nav": {
-    "attendance": "Asistencia",
     "courses": "Cursos",
     "credentials": "Credenciales",
     "grades": "Calificaciones",
@@ -120,7 +119,7 @@
   "picker": {
     "clear": "Limpiar",
     "noMatches": "Nadie coincide.",
-    "searchPlaceholder": "Buscar por nombre, usuario o correo…",
+    "searchPlaceholder": "Buscar por usuario o correo…",
     "searching": "Buscando…",
     "typeToSearch": "Escribe para buscar en el directorio",
     "user": "Elige un usuario"
@@ -216,6 +215,10 @@
         "hint": "{count, plural, one {# miembro del personal} other {# miembros del personal}}",
         "info": "Miembros de la plataforma que el directorio lista como estudiantes",
         "label": "Estudiantes"
+      },
+      "members": {
+        "label": "Miembros",
+        "info": "Todas las personas de la plataforma que figuran en el directorio: estudiantes y personal"
       }
     },
     "welcome": "Así va tu escuela.",
@@ -283,7 +286,6 @@
       "statusLabel": "Estado",
       "summary": "Resumen",
       "tabs": {
-        "attendance": "Asistencia",
         "credentials": "Credenciales",
         "enrollment": "Matrícula",
         "grades": "Calificaciones",
@@ -291,7 +293,9 @@
         "overview": "Resumen",
         "record": "Expediente"
       },
-      "visibleToStudent": "El estudiante también puede leer este expediente: nada de lo que hay aquí se le oculta."
+      "visibleToStudent": "El estudiante también puede leer este expediente: nada de lo que hay aquí se le oculta.",
+      "deactivateTitle": "¿Desactivar esta membresía?",
+      "deactivateBody": "Un miembro desactivado no puede iniciar sesión en esta plataforma y su expediente queda ilegible aquí hasta que se reactive la membresía. Un estudiante que deja el centro conserva la membresía: cambia el estado de matrícula a Baja en su lugar."
     },
     "searchPlaceholder": "Buscar estudiantes…",
     "status": {
@@ -379,44 +383,6 @@
     "passing": "Aprobando",
     "term": "Periodo lectivo",
     "unavailable": "No disponible"
-  },
-  "attendance": {
-    "absent": "Ausente",
-    "activityBased": "Basada en actividad",
-    "activityHint": "Presente significa tiempo dedicado al curso ese día; nadie registra ni justifica las ausencias.",
-    "allSections": "Todas las secciones",
-    "allTerms": "Todos los periodos lectivos",
-    "date": "Fecha",
-    "dayDescription": "Quién tuvo actividad en cada sección en un día dado",
-    "nextMonth": "Mes siguiente",
-    "nextWeek": "Semana siguiente",
-    "noSections": "No hay secciones en este periodo lectivo.",
-    "noStudents": "No hay aprendices en la lista.",
-    "present": "Presente",
-    "presentCount": "Presentes",
-    "presentCountN": "{count, plural, one {# presente} other {# presentes}}",
-    "previousMonth": "Mes anterior",
-    "previousWeek": "Semana anterior",
-    "rate": "Tasa",
-    "rateInfo": "Días presentes sobre días lectivos en la ventana",
-    "section": "Sección",
-    "status": {
-      "absent": "Ausente",
-      "no-school": "Sin clases",
-      "present": "Presente"
-    },
-    "student": "Estudiante",
-    "term": "Periodo lectivo",
-    "unavailable": "No disponible",
-    "weekday": {
-      "fri": "Vie",
-      "mon": "Lun",
-      "sat": "Sáb",
-      "sun": "Dom",
-      "thu": "Jue",
-      "tue": "Mar",
-      "wed": "Mié"
-    }
   },
   "credentials": {
     "bulkIssue": {
@@ -576,7 +542,6 @@
       "weightTotal": "Los pesos suman {total}%"
     },
     "tabs": {
-      "attendance": "Asistencia",
       "gradebook": "Libro de calificaciones",
       "roster": "Lista",
       "settings": "Ajustes"
@@ -642,7 +607,8 @@
   "staff": {
     "columns": {
       "lastLogin": "Último acceso",
-      "role": "Rol"
+      "role": "Rol",
+      "joined": "Alta"
     },
     "countLabel": "miembros del personal",
     "description": "Docentes y administradores de la plataforma",

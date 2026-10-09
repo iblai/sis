@@ -41,7 +41,6 @@
     "toggleSidebarHint": "折叠或展开侧边栏（⌘B）"
   },
   "nav": {
-    "attendance": "考勤",
     "courses": "课程",
     "credentials": "证书",
     "grades": "成绩",
@@ -120,7 +119,7 @@
   "picker": {
     "clear": "清除",
     "noMatches": "没有匹配的人。",
-    "searchPlaceholder": "按姓名、用户名或邮箱搜索…",
+    "searchPlaceholder": "按用户名或邮箱搜索…",
     "searching": "搜索中…",
     "typeToSearch": "输入以搜索名录",
     "user": "选择一位用户"
@@ -216,6 +215,10 @@
         "hint": "{count, plural, one {# 位教职工} other {# 位教职工}}",
         "info": "名录中列为学生的平台成员",
         "label": "学生"
+      },
+      "members": {
+        "label": "成员",
+        "info": "名录列出的平台所有人员：学生与教职员"
       }
     },
     "welcome": "这是你学校的近况。",
@@ -283,7 +286,6 @@
       "statusLabel": "状态",
       "summary": "摘要",
       "tabs": {
-        "attendance": "考勤",
         "credentials": "证书",
         "enrollment": "选课",
         "grades": "成绩",
@@ -291,7 +293,9 @@
         "overview": "概览",
         "record": "档案"
       },
-      "visibleToStudent": "学生也能读取这份档案——这里的任何内容都不会对其隐藏。"
+      "visibleToStudent": "学生也能读取这份档案——这里的任何内容都不会对其隐藏。",
+      "deactivateTitle": "停用此成员资格？",
+      "deactivateBody": "被停用的成员无法登录此平台，在成员资格重新启用之前其档案在此无法读取。离校的学生应保留成员资格，改为将学籍状态设为“已退学”。"
     },
     "searchPlaceholder": "搜索学生…",
     "status": {
@@ -379,44 +383,6 @@
     "passing": "及格",
     "term": "学期",
     "unavailable": "不可用"
-  },
-  "attendance": {
-    "absent": "缺勤",
-    "activityBased": "基于活动",
-    "activityHint": "“出勤”表示当天在课程中有学习时长；缺勤不会被任何人记录或请假。",
-    "allSections": "所有班级",
-    "allTerms": "所有学期",
-    "date": "日期",
-    "dayDescription": "某一天各班级中有活动的人",
-    "nextMonth": "下个月",
-    "nextWeek": "下一周",
-    "noSections": "本学期没有班级。",
-    "noStudents": "名册上没有学习者。",
-    "present": "出勤",
-    "presentCount": "出勤人数",
-    "presentCountN": "{count, plural, one {# 人出勤} other {# 人出勤}}",
-    "previousMonth": "上个月",
-    "previousWeek": "上一周",
-    "rate": "出勤率",
-    "rateInfo": "时段内出勤天数占上课日的比例",
-    "section": "班级",
-    "status": {
-      "absent": "缺勤",
-      "no-school": "不上课",
-      "present": "出勤"
-    },
-    "student": "学生",
-    "term": "学期",
-    "unavailable": "不可用",
-    "weekday": {
-      "fri": "周五",
-      "mon": "周一",
-      "sat": "周六",
-      "sun": "周日",
-      "thu": "周四",
-      "tue": "周二",
-      "wed": "周三"
-    }
   },
   "credentials": {
     "bulkIssue": {
@@ -576,7 +542,6 @@
       "weightTotal": "权重合计 {total}%"
     },
     "tabs": {
-      "attendance": "考勤",
       "gradebook": "成绩册",
       "roster": "名册",
       "settings": "设置"
@@ -642,7 +607,8 @@
   "staff": {
     "columns": {
       "lastLogin": "最近登录",
-      "role": "角色"
+      "role": "角色",
+      "joined": "加入时间"
     },
     "countLabel": "位教职工",
     "description": "平台的教师和管理员",

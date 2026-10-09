@@ -21,7 +21,7 @@ import {
   useWatchedGroupsQuery,
 } from "@/lib/sis/api";
 import { displayName } from "@/lib/sis/format";
-import type { DirectoryUser } from "@/lib/sis/types";
+import type { PlatformUser } from "@/lib/sis/types";
 
 /**
  * Guardians are watchers of a DM watched group that holds the student: they
@@ -34,7 +34,7 @@ export function GuardiansTab({ username, userId }: { username: string; userId?: 
   const isLiveAdmin = useIsLiveAdmin();
   const toastError = useToastError();
   const groups = useWatchedGroupsQuery({ platformKey: tenantKey, limit: 100 });
-  const [picked, setPicked] = useState<DirectoryUser | null>(null);
+  const [picked, setPicked] = useState<PlatformUser | null>(null);
   const [createGroup, createState] = useCreateWatchedGroupMutation();
   const [addWatcher, addState] = useAddWatcherMutation();
   const [removeWatcher, removeState] = useRemoveWatcherMutation();
@@ -51,7 +51,7 @@ export function GuardiansTab({ username, userId }: { username: string; userId?: 
         await addWatcher({
           platformKey: tenantKey,
           groupId: mine[0].id,
-          watcher_id: picked.id,
+          watcher_id: picked.user_id,
         }).unwrap();
       } else {
         if (!userId) return;
@@ -59,7 +59,7 @@ export function GuardiansTab({ username, userId }: { username: string; userId?: 
           platformKey: tenantKey,
           name: t("groupName", { username }),
           watched_users: [userId],
-          watchers: [{ watcher_id: picked.id }],
+          watchers: [{ watcher_id: picked.user_id }],
         }).unwrap();
       }
       toast.success(t("added"));

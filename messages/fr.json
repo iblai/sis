@@ -41,7 +41,6 @@
     "toggleSidebarHint": "Replier ou déplier la barre latérale (⌘B)"
   },
   "nav": {
-    "attendance": "Présences",
     "courses": "Cours",
     "credentials": "Attestations",
     "grades": "Notes",
@@ -120,7 +119,7 @@
   "picker": {
     "clear": "Effacer",
     "noMatches": "Personne ne correspond.",
-    "searchPlaceholder": "Rechercher par nom, identifiant ou e-mail…",
+    "searchPlaceholder": "Rechercher par identifiant ou e-mail…",
     "searching": "Recherche…",
     "typeToSearch": "Saisissez pour chercher dans l’annuaire",
     "user": "Choisir un utilisateur"
@@ -216,6 +215,10 @@
         "hint": "{count, plural, one {# membre du personnel} other {# membres du personnel}}",
         "info": "Membres de la plateforme que l’annuaire liste comme étudiants",
         "label": "Étudiants"
+      },
+      "members": {
+        "label": "Membres",
+        "info": "Toutes les personnes de la plateforme que l’annuaire liste : élèves et personnel"
       }
     },
     "welcome": "Voici où en est votre école.",
@@ -283,7 +286,6 @@
       "statusLabel": "Statut",
       "summary": "Résumé",
       "tabs": {
-        "attendance": "Présences",
         "credentials": "Attestations",
         "enrollment": "Inscriptions",
         "grades": "Notes",
@@ -291,7 +293,9 @@
         "overview": "Vue d’ensemble",
         "record": "Dossier"
       },
-      "visibleToStudent": "L’étudiant peut lire ce dossier lui aussi — rien ici ne lui est caché."
+      "visibleToStudent": "L’étudiant peut lire ce dossier lui aussi — rien ici ne lui est caché.",
+      "deactivateTitle": "Désactiver cette adhésion ?",
+      "deactivateBody": "Un membre désactivé ne peut plus se connecter à cette plateforme et son dossier reste illisible ici tant que l’adhésion n’est pas réactivée. Un élève qui quitte l’école garde son adhésion : passez plutôt le statut d’inscription à Retiré."
     },
     "searchPlaceholder": "Rechercher des étudiants…",
     "status": {
@@ -379,44 +383,6 @@
     "passing": "Admis",
     "term": "Trimestre",
     "unavailable": "Indisponible"
-  },
-  "attendance": {
-    "absent": "Absent",
-    "activityBased": "Basée sur l’activité",
-    "activityHint": "Présent signifie du temps passé dans le cours ce jour-là ; personne ne consigne ni n’excuse les absences.",
-    "allSections": "Toutes les sections",
-    "allTerms": "Tous les trimestres",
-    "date": "Date",
-    "dayDescription": "Qui a eu de l’activité dans chaque section un jour donné",
-    "nextMonth": "Mois suivant",
-    "nextWeek": "Semaine suivante",
-    "noSections": "Aucune section sur ce trimestre.",
-    "noStudents": "Aucun apprenant sur la liste.",
-    "present": "Présent",
-    "presentCount": "Présents",
-    "presentCountN": "{count, plural, one {# présent} other {# présents}}",
-    "previousMonth": "Mois précédent",
-    "previousWeek": "Semaine précédente",
-    "rate": "Taux",
-    "rateInfo": "Jours présents sur jours d’école dans la fenêtre",
-    "section": "Section",
-    "status": {
-      "absent": "Absent",
-      "no-school": "Pas d’école",
-      "present": "Présent"
-    },
-    "student": "Étudiant",
-    "term": "Trimestre",
-    "unavailable": "Indisponible",
-    "weekday": {
-      "fri": "Ven",
-      "mon": "Lun",
-      "sat": "Sam",
-      "sun": "Dim",
-      "thu": "Jeu",
-      "tue": "Mar",
-      "wed": "Mer"
-    }
   },
   "credentials": {
     "bulkIssue": {
@@ -576,7 +542,6 @@
       "weightTotal": "Les poids totalisent {total} %"
     },
     "tabs": {
-      "attendance": "Présences",
       "gradebook": "Carnet de notes",
       "roster": "Liste",
       "settings": "Réglages"
@@ -642,7 +607,8 @@
   "staff": {
     "columns": {
       "lastLogin": "Dernière connexion",
-      "role": "Rôle"
+      "role": "Rôle",
+      "joined": "Arrivée"
     },
     "countLabel": "membres du personnel",
     "description": "Enseignants et administrateurs de la plateforme",

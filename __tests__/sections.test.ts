@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   courseRunParts,
   filterSections,
+  fromStudioCourse,
   joinSections,
   sortSections,
   upsertSection,
@@ -48,6 +49,49 @@ const courses = [
   course("course-v1:Org+Bio+Spring", "Biology"),
   course("course-v1:Org+Art+Open", "Art", "2026-01-01"),
 ];
+
+describe("fromStudioCourse", () => {
+  it("maps a Studio course-home row onto the app's course run", () => {
+    expect(
+      fromStudioCourse({
+        course_key: "course-v1:Org+Alg+Fall",
+        display_name: "Algebra",
+        org: "Org",
+        number: "Alg",
+        run: "Fall",
+      }),
+    ).toEqual({
+      id: "course-v1:Org+Alg+Fall",
+      course_id: "course-v1:Org+Alg+Fall",
+      name: "Algebra",
+      org: "Org",
+      number: "Alg",
+      run: "Fall",
+      hidden: false,
+    });
+  });
+
+  it("fills org, number and run from the key and hides archived or inactive runs", () => {
+    const row = fromStudioCourse(
+      { course_key: "course-v1:Org+Bio+Spring", display_name: "" },
+      true,
+    );
+    expect(row).toMatchObject({
+      name: "course-v1:Org+Bio+Spring",
+      org: "Org",
+      number: "Bio",
+      run: "Spring",
+      hidden: true,
+    });
+    expect(
+      fromStudioCourse({ course_key: "x", display_name: "X", is_active: false }),
+    ).toMatchObject({
+      org: "",
+      number: "",
+      hidden: true,
+    });
+  });
+});
 
 describe("courseRunParts", () => {
   it("splits a course key", () => {

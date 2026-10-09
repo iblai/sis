@@ -113,10 +113,11 @@ function Providers({ children }: { children: ReactNode }) {
   // sign-in or sign-out. On localhost cookies are shared by every dev server on
   // the machine regardless of port, so another app's session would be read as
   // "logged out elsewhere" and force a logout loop — keep the sync for real
-  // hosts only.
+  // hosts only, and off on the shared vibe zone (*.iblai.me), where the parent
+  // domain's cookies belong to unrelated apps.
   const enableStorageSync =
     typeof window !== "undefined" &&
-    !/^(localhost|127\.0\.0\.1|\[::1\])$/.test(window.location.hostname);
+    !/^(localhost|127\.0\.0\.1|\[::1\])$|\.iblai\.me$/.test(window.location.hostname);
 
   const LOADING = <LoadingScreen />;
   if (!isInitialized || !mounted) return LOADING;

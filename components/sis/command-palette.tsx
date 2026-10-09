@@ -6,7 +6,6 @@ import { useTranslations } from "next-intl";
 import {
   Award,
   BookOpen,
-  CalendarCheck2,
   FileChartColumn,
   GraduationCap,
   Home,
@@ -31,9 +30,9 @@ import { EntityAvatar } from "@/components/sis/entity-avatar";
 import { useIsLiveAdmin } from "@/components/sis/admin-mode";
 import { useDebounced } from "@/hooks/use-debounced";
 import { useSession } from "@/hooks/use-session";
-import { errorMessage, useSearchUsersQuery } from "@/lib/sis/api";
-import { useCoursesQuery } from "@/lib/sis/lms-api";
-import { displayName } from "@/lib/sis/format";
+import { useSections } from "@/hooks/use-sections";
+import { errorMessage, usePlatformUsersQuery } from "@/lib/sis/api";
+import { displayName, roleOf } from "@/lib/sis/format";
 
 const PaletteContext = createContext<{ open: () => void; close: () => void }>({
   open: () => {},
@@ -80,22 +79,23 @@ function CommandPalette({
   const tn = useTranslations("nav");
   const tc = useTranslations("common");
   const router = useRouter();
-  const { tenantKey, org, username, isAdmin, href } = useSession();
+  const { tenantKey, isAdmin, href } = useSession();
   const isLiveAdmin = useIsLiveAdmin();
   const [query, setQuery] = useState("");
 
   const q = useDebounced(query.trim(), 250);
-  const { data, error } = useSearchUsersQuery(
-    { platformKey: tenantKey, username, query: q, limit: 8 },
+  const { data, error } = usePlatformUsersQuery(
+    { platformKey: tenantKey, query: q, page_size: 8 },
     { skip: !open || !q || !isAdmin },
   );
-  const courses = useCoursesQuery({ org, username }, { skip: !open });
+  const sections = useSections({ skip: !open });
   const people = q ? (data?.results ?? []) : [];
-  const students = people.filter((p) => p.role !== "Instructor" && p.role !== "Admin");
-  const staff = people.filter((p) => p.role === "Instructor" || p.role === "Admin");
+  const students = people.filter((p) => roleOf(p) === "student");
+  const staff = people.filter((p) => roleOf(p) !== "student");
   const needle = q.toLowerCase();
   const matchedCourses = q
-    ? (courses.data?.results ?? [])
+    ? sections.rows
+        .map((r) => r.course)
         .filter((c) => c.name.toLowerCase().includes(needle) || c.id.toLowerCase().includes(needle))
         .slice(0, 6)
     : [];
@@ -113,7 +113,6 @@ function CommandPalette({
         ["staff", "/staff", UserCog],
         ["courses", "/courses", BookOpen],
         ["groups", "/groups", UsersRound],
-        ["attendance", "/attendance", CalendarCheck2],
         ["grades", "/grades", GraduationCap],
         ["credentials", "/credentials", Award],
         ["reports", "/reports", FileChartColumn],
@@ -130,6 +129,7 @@ function CommandPalette({
       onOpenChange={onOpenChange}
       title={tc("search")}
       description={t("description")}
+      className="top-4 sm:top-1/3"
     >
       <Command shouldFilter={false} className="rounded-xl">
         <CommandInput
@@ -138,7 +138,7 @@ function CommandPalette({
           value={query}
           onValueChange={setQuery}
         />
-        <CommandList className="max-h-[60vh]">
+        <CommandList className="max-h-[50dvh] sm:max-h-[60vh]">
           <CommandEmpty>{t("noResults")}</CommandEmpty>
           {q && error ? (
             <p role="alert" className="text-destructive px-3 py-2 text-xs">
@@ -149,8 +149,8 @@ function CommandPalette({
             <CommandGroup heading={tn("students")}>
               {students.map((p) => (
                 <CommandItem
-                  key={p.id}
-                  value={`student-${p.id}`}
+                  key={p.user_id}
+                  value={`student-${p.user_id}`}
                   onSelect={() => go(`/students/${encodeURIComponent(p.username)}`)}
                 >
                   <EntityAvatar name={displayName(p)} seed={p.username} size="sm" />
@@ -164,8 +164,8 @@ function CommandPalette({
             <CommandGroup heading={tn("staff")}>
               {staff.map((p) => (
                 <CommandItem
-                  key={p.id}
-                  value={`staff-${p.id}`}
+                  key={p.user_id}
+                  value={`staff-${p.user_id}`}
                   onSelect={() => go(`/staff/${encodeURIComponent(p.username)}`)}
                 >
                   <EntityAvatar name={displayName(p)} seed={p.username} size="sm" />
@@ -226,7 +226,7 @@ function CommandPalette({
             ) : null}
           </CommandGroup>
         </CommandList>
-        <div className="text-muted-foreground flex flex-wrap items-center gap-x-3 gap-y-1 border-t border-gray-100 px-3 py-2 text-[11px]">
+        <div className="text-muted-foreground hidden flex-wrap items-center gap-x-3 gap-y-1 border-t border-gray-100 px-3 py-2 text-[11px] sm:flex">
           <span>
             <kbd className="rounded border border-gray-200 bg-white px-1 font-sans">↑</kbd>
             <kbd className="ml-0.5 rounded border border-gray-200 bg-white px-1 font-sans">

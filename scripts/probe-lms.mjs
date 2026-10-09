@@ -80,26 +80,30 @@ const form = (fields) => new URLSearchParams(fields);
 
 console.log(`Probing ${api} as ${me || "(unknown user)"} for org ${org}\n`);
 await probe("GET lms/api/user/v1/me", `${api}/lms/api/user/v1/me`);
-const courses = await probe(
-  "GET lms/api/courses/v1/courses/?org=",
+await probe(
+  "GET lms/api/courses/v1/courses/?org= (403 expected: blocked at the edge for every caller, the app lists from Studio)",
   `${api}/lms/api/courses/v1/courses/?org=${encodeURIComponent(org)}&username=${encodeURIComponent(me)}&page_size=5`,
+);
+const courses = await probe(
+  "GET studio/api/contentstore/v1/home/courses?org= (the section list)",
+  `${api}/studio/api/contentstore/v1/home/courses?org=${encodeURIComponent(org)}`,
 );
 if (!course) {
   try {
     const body = JSON.parse(courses.head.length < 160 ? courses.head : "{}");
-    course = body.results?.[0]?.id ?? "";
+    course = body.courses?.[0]?.course_key ?? "";
   } catch {
     /* the head was truncated; pass --course */
   }
 }
 if (!course) {
   const res = await fetch(
-    `${api}/lms/api/courses/v1/courses/?org=${encodeURIComponent(org)}&username=${encodeURIComponent(me)}&page_size=1`,
+    `${api}/studio/api/contentstore/v1/home/courses?org=${encodeURIComponent(org)}`,
     { headers: { Authorization: `JWT ${jwt}` }, credentials: "omit" },
   )
     .then((r) => r.json())
     .catch(() => null);
-  course = res?.results?.[0]?.id ?? "";
+  course = res?.courses?.[0]?.course_key ?? "";
 }
 if (!course) {
   console.error("\nNo course run found for the org; pass --course to continue.");
@@ -178,8 +182,8 @@ await probe(
   `${api}/studio/api/ibl/manage/course/?course_key=${encodeURIComponent(course)}`,
 );
 await probe(
-  "GET lms/api/courses/v1/courses/{C} (AXD date window control follows in the app)",
-  `${api}/lms/api/courses/v1/courses/${course}`,
+  "GET lms/api/course_home/v1/course_metadata/{C} (the section header)",
+  `${api}/lms/api/course_home/v1/course_metadata/${course}`,
 );
 
 console.log("\nSummary");

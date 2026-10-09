@@ -33,7 +33,7 @@ import {
   useEnrollmentsOverTimeQuery,
   useLearnersOverviewQuery,
   useMostActiveCoursesQuery,
-  useSearchUsersQuery,
+  usePlatformUsersQuery,
   useUsersCountQuery,
 } from "@/lib/sis/api";
 import { lastDays } from "@/lib/sis/dates";
@@ -67,12 +67,12 @@ function AdminDashboard() {
   const t = useTranslations("dashboard");
   const ts = useTranslations("students");
   const locale = useLocale();
-  const { tenantKey, username, href } = useSession();
+  const { tenantKey, href } = useSession();
   const [period, setPeriod] = useState<Period>(30);
   const range = lastDays(period);
   const metadata = useSisMetadata();
   const sections = useSections();
-  const directory = useSearchUsersQuery({ platformKey: tenantKey, username, limit: 1 });
+  const directory = usePlatformUsersQuery({ platformKey: tenantKey, page_size: 1 });
   const registered = useUsersCountQuery({ platformKey: tenantKey, ...range });
   const active = useActiveUsersQuery({ platformKey: tenantKey, ...range });
   const enrollments = useEnrollmentsOverTimeQuery({ platformKey: tenantKey, ...range });
@@ -80,10 +80,7 @@ function AdminDashboard() {
   const mostActive = useMostActiveCoursesQuery({ platformKey: tenantKey, ...range, length: 6 });
   const learners = useLearnersOverviewQuery({ platformKey: tenantKey, length: 8 });
 
-  const facet = (key: string) =>
-    directory.data?.facets?.role?.find((r) => r.key === key)?.doc_count ?? null;
-  const studentCount = facet("Student") ?? directory.data?.count ?? null;
-  const staffCount = (facet("Instructor") ?? 0) + (facet("Admin") ?? 0);
+  const memberCount = directory.data?.count ?? null;
   const loading = metadata.isLoading || sections.isLoading;
   const mostActiveRows = (mostActive.data?.data ?? []) as Record<string, unknown>[];
   const learnerRows = (learners.data?.data ?? []) as Record<string, unknown>[];
@@ -128,10 +125,9 @@ function AdminDashboard() {
             </div>
             <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
               <StatCard
-                label={t("stats.students.label")}
-                value={studentCount ?? "—"}
-                hint={t("stats.students.hint", { count: staffCount })}
-                info={t("stats.students.info")}
+                label={t("stats.members.label")}
+                value={memberCount ?? "—"}
+                info={t("stats.members.info")}
                 icon={<Users />}
                 tone="brand"
               />
@@ -249,7 +245,7 @@ function AdminDashboard() {
                           >
                             {name}
                           </Link>
-                          <span className="text-muted-foreground truncate text-xs">
+                          <span className="text-muted-foreground hidden truncate text-xs sm:inline">
                             {String(row.email ?? "")}
                           </span>
                         </li>

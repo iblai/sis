@@ -1,22 +1,14 @@
 "use client";
 
-import { Suspense, useCallback, useMemo } from "react";
+import { Suspense, useCallback, useMemo, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import {
-  Award,
-  BookOpen,
-  CalendarCheck2,
-  GraduationCap,
-  IdCard,
-  LayoutGrid,
-  User,
-  UsersRound,
-} from "lucide-react";
+import { Award, BookOpen, GraduationCap, IdCard, LayoutGrid, User, UsersRound } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PageHeader } from "@/components/sis/page-header";
+import { ConfirmDialog } from "@/components/sis/confirm-dialog";
 import { LoadingScreen } from "@/components/loading-screen";
 import { LoadError } from "@/components/sis/load-error";
 import { useBreadcrumbs } from "@/components/sis/breadcrumbs";
@@ -25,7 +17,6 @@ import { OverviewTab } from "@/components/sis/students/overview-tab";
 import { RecordForm } from "@/components/sis/students/record-form";
 import { EnrollmentTab } from "@/components/sis/students/enrollment-tab";
 import { GradesTab } from "@/components/sis/students/grades-tab";
-import { AttendanceTab } from "@/components/sis/students/attendance-tab";
 import { CredentialsTab } from "@/components/sis/students/credentials-tab";
 import { GuardiansTab } from "@/components/sis/students/guardians-tab";
 import { useSession } from "@/hooks/use-session";
@@ -38,11 +29,10 @@ const ADMIN_TABS = [
   "record",
   "enrollment",
   "grades",
-  "attendance",
   "credentials",
   "guardians",
 ] as const;
-const SELF_TABS = ["overview", "enrollment", "grades", "attendance", "credentials"] as const;
+const SELF_TABS = ["overview", "enrollment", "grades", "credentials"] as const;
 type Tab = (typeof ADMIN_TABS)[number];
 
 export default function StudentPage() {
@@ -53,7 +43,7 @@ export default function StudentPage() {
   );
 }
 
-/** One student: the record (DM demographics), sections and grades (LMS), attendance (AXD), credentials, guardians. */
+/** One student: the record (DM demographics), sections and grades (LMS), credentials, guardians. */
 function StudentView() {
   const t = useTranslations("students.record");
   const tn = useTranslations("nav");
@@ -85,8 +75,10 @@ function StudentView() {
     [router, base],
   );
 
+  const [confirmOpen, setConfirmOpen] = useState(false);
   const toggleActive = async () => {
     if (!link) return;
+    setConfirmOpen(false);
     try {
       await setLink({
         user_id: link.user_id,
@@ -104,7 +96,6 @@ function StudentView() {
     record: IdCard,
     enrollment: BookOpen,
     grades: GraduationCap,
-    attendance: CalendarCheck2,
     credentials: Award,
     guardians: UsersRound,
   } as const;
@@ -130,16 +121,29 @@ function StudentView() {
               variant="outline"
               size="sm"
               disabled={linkState.isLoading}
-              onClick={() => void toggleActive()}
+              onClick={() => (link.active === false ? void toggleActive() : setConfirmOpen(true))}
             >
               {link.active === false ? t("reactivate") : t("deactivate")}
             </Button>
           ) : null
         }
       />
+      <ConfirmDialog
+        open={confirmOpen}
+        onOpenChange={setConfirmOpen}
+        title={t("deactivateTitle")}
+        description={t("deactivateBody")}
+        confirmLabel={t("deactivate")}
+        destructive
+        loading={linkState.isLoading}
+        onConfirm={() => void toggleActive()}
+      />
       <div className="flex-1 overflow-auto p-4 md:p-6">
         <Tabs value={tab} onValueChange={(v) => setTab(v as Tab)} className="gap-4">
-          <TabsList variant="line" className="h-9 flex-wrap border-b border-gray-200 pb-1">
+          <TabsList
+            variant="line"
+            className="flex-wrap border-b border-gray-200 pb-1 group-data-horizontal/tabs:h-auto"
+          >
             {tabs.map((key) => {
               const Icon = icons[key];
               return (
@@ -162,9 +166,6 @@ function StudentView() {
           </TabsContent>
           <TabsContent value="grades">
             <GradesTab username={username} studentId={link?.user_id} />
-          </TabsContent>
-          <TabsContent value="attendance">
-            <AttendanceTab username={username} />
           </TabsContent>
           <TabsContent value="credentials">
             <CredentialsTab username={username} />

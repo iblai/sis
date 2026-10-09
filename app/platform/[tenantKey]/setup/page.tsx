@@ -93,7 +93,10 @@ function SetupView() {
           <LoadError error={{ status: 0, detail: t("invalidVersion") }} />
         ) : (
           <Tabs value={tab} onValueChange={(v) => setTab(v as Tab)} className="gap-4">
-            <TabsList variant="line" className="h-9 flex-wrap border-b border-gray-200 pb-1">
+            <TabsList
+              variant="line"
+              className="flex-wrap border-b border-gray-200 pb-1 group-data-horizontal/tabs:h-auto"
+            >
               {TABS.map((key) => {
                 const Icon = icons[key];
                 return (

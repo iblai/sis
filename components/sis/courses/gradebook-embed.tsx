@@ -50,18 +50,13 @@ export function GradebookEmbed({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="h-[90dvh] w-[min(96vw,1400px)] max-w-none p-0 sm:max-w-none">
+      <DialogContent className="h-dvh max-h-dvh w-screen max-w-none grid-rows-[auto_minmax(0,1fr)] rounded-none p-0 sm:h-[90dvh] sm:w-[min(96vw,1400px)] sm:max-w-none sm:rounded-xl">
         <DialogHeader className="px-4 pt-4">
           <DialogTitle>{t("title")}</DialogTitle>
           <DialogDescription>{t("description")}</DialogDescription>
         </DialogHeader>
         {open ? (
-          <iframe
-            ref={ref}
-            src={src}
-            title={t("title")}
-            className="h-full w-full flex-1 border-0"
-          />
+          <iframe ref={ref} src={src} title={t("title")} className="h-full w-full border-0" />
         ) : null}
       </DialogContent>
     </Dialog>

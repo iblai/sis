@@ -3,17 +3,24 @@
 import { useMemo } from "react";
 import { useSession } from "@/hooks/use-session";
 import { useSisMetadata } from "@/hooks/use-sis-metadata";
-import { useCoursesQuery } from "@/lib/sis/lms-api";
-import { joinSections, sortSections, type SectionRow } from "@/lib/sis/sections";
+import { useHomeCoursesQuery } from "@/lib/sis/studio-api";
+import { fromStudioCourse, joinSections, sortSections, type SectionRow } from "@/lib/sis/sections";
 
-/** The platform's course runs joined with the school's section data. */
+/** Studio's course list for the org (what the caller can author) joined with the school's section data. */
 export function useSections(options?: { skip?: boolean }) {
-  const { org, username } = useSession();
-  const courses = useCoursesQuery({ org, username }, { skip: options?.skip || !username });
+  const { org } = useSession();
+  const courses = useHomeCoursesQuery({ org }, { skip: options?.skip || !org });
   const metadata = useSisMetadata();
+  const runs = useMemo(
+    () => [
+      ...(courses.data?.courses ?? []).map((c) => fromStudioCourse(c)),
+      ...(courses.data?.archived_courses ?? []).map((c) => fromStudioCourse(c, true)),
+    ],
+    [courses.data],
+  );
   const rows = useMemo<SectionRow[]>(
-    () => sortSections(joinSections(courses.data?.results ?? [], metadata.meta)),
-    [courses.data, metadata.meta],
+    () => sortSections(joinSections(runs, metadata.meta)),
+    [runs, metadata.meta],
   );
   const byCourseId = useMemo(() => new Map(rows.map((r) => [r.course.id, r])), [rows]);
   return {

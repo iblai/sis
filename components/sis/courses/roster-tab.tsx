@@ -30,7 +30,7 @@ import { useRosterQuery } from "@/lib/sis/lms-api";
 import { toCsv } from "@/lib/sis/csv";
 import { downloadFile } from "@/lib/sis/download";
 import { formatRelative } from "@/lib/sis/format";
-import type { DirectoryUser } from "@/lib/sis/types";
+import type { PlatformUser } from "@/lib/sis/types";
 
 /** The section's roster from the instructor API; enroll by invitation, import a CSV, export, email. */
 export function RosterTab({ courseId }: { courseId: string }) {
@@ -42,7 +42,7 @@ export function RosterTab({ courseId }: { courseId: string }) {
   const toastError = useToastError();
   const roster = useRosterQuery(courseId);
   const [query, setQuery] = useState("");
-  const [picked, setPicked] = useState<DirectoryUser | null>(null);
+  const [picked, setPicked] = useState<PlatformUser | null>(null);
   const [importOpen, setImportOpen] = useState(false);
   const [invite, inviteState] = useCreateCourseInvitationMutation();
   const needle = query.trim().toLowerCase();
@@ -154,7 +154,7 @@ export function RosterTab({ courseId }: { courseId: string }) {
             <TableHeader>
               <TableRow>
                 <TableHead>{tc("name")}</TableHead>
-                <TableHead>{tc("email")}</TableHead>
+                <TableHead className="hidden md:table-cell">{tc("email")}</TableHead>
                 <TableHead>{t("columns.mode")}</TableHead>
                 <TableHead>{t("columns.lastLogin")}</TableHead>
               </TableRow>
@@ -171,7 +171,9 @@ export function RosterTab({ courseId }: { courseId: string }) {
                       <span className="truncate">{s.name || s.username}</span>
                     </Link>
                   </TableCell>
-                  <TableCell className="text-muted-foreground">{s.email}</TableCell>
+                  <TableCell className="text-muted-foreground hidden md:table-cell">
+                    {s.email}
+                  </TableCell>
                   <TableCell className="text-muted-foreground">
                     {s.enrollment_mode ?? "—"}
                   </TableCell>

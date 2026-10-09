@@ -38,8 +38,6 @@ import type {
   ReportStatus,
   UserGroup,
   UserPlatformLink,
-  UserSearchParams,
-  UserSearchResponse,
   WatchedGroup,
   WatchedUser,
 } from "./types";
@@ -88,11 +86,7 @@ export const sisApi = createApi({
   keepUnusedDataFor: 60,
   endpoints: (b) => ({
     // ------------------------------------------------------------ directory
-    searchUsers: b.query<UserSearchResponse, UserSearchParams>({
-      query: ({ platformKey, username, ...params }) =>
-        `/api/search/users/orgs/${enc(platformKey)}/users/${enc(username)}/${qs(params)}`,
-      providesTags: [{ type: "Directory", id: LIST }],
-    }),
+    /** The directory: active members of the platform; `query` matches username and email. */
     platformUsers: b.query<
       PlatformUsersResponse,
       { platformKey: string; page?: number; page_size?: number; query?: string }
@@ -534,17 +528,6 @@ export const sisApi = createApi({
     coursesGrades: b.query<unknown, AxdParams>({
       query: (p) => axd("platform", p, "courses/grades"),
     }),
-    courseTimeUsers: b.query<AxdPage<Record<string, unknown>>, AxdParams & { courseId: string }>({
-      query: ({ courseId, ...p }) => axd("engagement", p, `courses/${enc(courseId)}/time/users`),
-    }),
-    learnerTimeOverTime: b.query<OverTime, AxdParams & { courseId: string; username: string }>({
-      query: ({ courseId, username, ...p }) =>
-        axd("engagement", p, `courses/${enc(courseId)}/time/users/${enc(username)}/over-time`),
-    }),
-    learnerTimeOverall: b.query<OverTime, AxdParams & { username: string }>({
-      query: ({ username, ...p }) =>
-        axd("perlearner", p, `users/${enc(username)}/overview/time/over-time`),
-    }),
     learnerGradesPerCourse: b.query<AxdValue<unknown>, AxdParams & { username: string }>({
       query: ({ username, ...p }) =>
         axd("perlearner", p, `users/${enc(username)}/grades/per-course`),
@@ -564,9 +547,8 @@ export const sisApi = createApi({
 });
 
 export const {
-  useSearchUsersQuery,
-  useLazySearchUsersQuery,
   usePlatformUsersQuery,
+  useLazyPlatformUsersQuery,
   useUserLinksQuery,
   useSetUserLinkMutation,
   useDemographicsQuery,
@@ -618,9 +600,6 @@ export const {
   useUsersCountQuery,
   useCoursesCountQuery,
   useCoursesGradesQuery,
-  useCourseTimeUsersQuery,
-  useLearnerTimeOverTimeQuery,
-  useLearnerTimeOverallQuery,
   useLearnerGradesPerCourseQuery,
   useLearnerLastAccessQuery,
   useCourseGradingSummaryQuery,

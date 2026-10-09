@@ -1,4 +1,5 @@
 import { parseISO } from "date-fns";
+import type { MemberRole } from "./types";
 
 export function toDate(value?: string | null): Date | null {
   if (!value) return null;
@@ -118,4 +119,9 @@ export function displayName(u: {
 }) {
   const joined = [u.first_name, u.last_name].filter(Boolean).join(" ").trim();
   return u.full_name || u.name || joined || u.username || u.email || "";
+}
+
+/** What a member is to the school, from the platform link's flags: neither flag is a student. */
+export function roleOf(u: { is_admin?: boolean; is_staff?: boolean }): MemberRole {
+  return u.is_admin ? "admin" : u.is_staff ? "teacher" : "student";
 }

@@ -79,7 +79,7 @@ export function EnrollmentTab({ username, studentId }: { username: string; stude
               <TableRow>
                 <TableHead>{t("columns.section")}</TableHead>
                 <TableHead>{t("columns.term")}</TableHead>
-                <TableHead>{t("columns.since")}</TableHead>
+                <TableHead className="hidden md:table-cell">{t("columns.since")}</TableHead>
                 <TableHead>{t("columns.status")}</TableHead>
                 <TableHead>{t("columns.grade")}</TableHead>
                 <TableHead>{t("columns.progress")}</TableHead>
@@ -104,7 +104,7 @@ export function EnrollmentTab({ username, studentId }: { username: string; stude
                     <TableCell className="text-muted-foreground">
                       {row?.term?.name ?? "—"}
                     </TableCell>
-                    <TableCell className="text-muted-foreground">
+                    <TableCell className="text-muted-foreground hidden md:table-cell">
                       {formatDate(e.created, locale)}
                     </TableCell>
                     <TableCell>

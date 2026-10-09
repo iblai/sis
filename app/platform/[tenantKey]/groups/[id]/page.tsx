@@ -23,12 +23,12 @@ import { useSession } from "@/hooks/use-session";
 import { useToastError } from "@/hooks/use-toast-error";
 import {
   useDeleteUserGroupMutation,
-  useLazySearchUsersQuery,
+  useLazyPlatformUsersQuery,
   useUpdateUserGroupMutation,
   useUserGroupQuery,
 } from "@/lib/sis/api";
 import { displayName } from "@/lib/sis/format";
-import type { DirectoryUser } from "@/lib/sis/types";
+import type { PlatformUser } from "@/lib/sis/types";
 
 /** One group: its members (`users_to_set` replaces the whole list), bulk add by username, announce, delete. */
 export default function GroupPage() {
@@ -38,14 +38,14 @@ export default function GroupPage() {
   const params = useParams<{ id: string }>();
   const id = Number(params.id);
   const router = useRouter();
-  const { tenantKey, username: me, href } = useSession();
+  const { tenantKey, href } = useSession();
   const isLiveAdmin = useIsLiveAdmin();
   const toastError = useToastError();
   const group = useUserGroupQuery(id, { skip: !Number.isFinite(id) });
   const [update, updateState] = useUpdateUserGroupMutation();
   const [remove, removeState] = useDeleteUserGroupMutation();
-  const [search] = useLazySearchUsersQuery();
-  const [picked, setPicked] = useState<DirectoryUser | null>(null);
+  const [search] = useLazyPlatformUsersQuery();
+  const [picked, setPicked] = useState<PlatformUser | null>(null);
   const [bulk, setBulk] = useState("");
   const [bulkBusy, setBulkBusy] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
@@ -67,7 +67,7 @@ export default function GroupPage() {
   const add = async () => {
     if (!picked) return;
     await setMembers(
-      [...new Set([...users.map((u) => u.id), picked.id])],
+      [...new Set([...users.map((u) => u.id), picked.user_id])],
       t("added", { name: displayName(picked) }),
     );
     setPicked(null);
@@ -83,14 +83,9 @@ export default function GroupPage() {
     const missing: string[] = [];
     try {
       for (const name of names) {
-        const res = await search({
-          platformKey: tenantKey,
-          username: me,
-          query: name,
-          limit: 5,
-        }).unwrap();
+        const res = await search({ platformKey: tenantKey, query: name, page_size: 5 }).unwrap();
         const hit = res.results.find((u) => u.username === name || u.email === name);
-        if (hit) ids.add(hit.id);
+        if (hit) ids.add(hit.user_id);
         else missing.push(name);
       }
       await setMembers([...ids], t("bulkAdded", { count: names.length - missing.length }));
@@ -163,7 +158,9 @@ export default function GroupPage() {
                     >
                       {displayName(u)}
                     </Link>
-                    <span className="text-muted-foreground truncate text-xs">{u.email}</span>
+                    <span className="text-muted-foreground hidden truncate text-xs sm:inline">
+                      {u.email}
+                    </span>
                     {isLiveAdmin ? (
                       <Button
                         variant="ghost"

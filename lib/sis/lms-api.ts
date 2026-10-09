@@ -1,8 +1,10 @@
 /**
  * RTK Query slice for the LMS (Open edX) through the gateway (`<apiBase>/lms`)
- * with `Authorization: JWT <edx_jwt_token>` and no credentials: the course
- * list, rosters, teachers (course roles), the import, progress, the
- * gradebook, course email, tasks and org roles. A platform admin passes the
+ * with `Authorization: JWT <edx_jwt_token>` and no credentials: rosters,
+ * teachers (course roles), the import, enrollments, progress, the course home
+ * header, the gradebook, course email, tasks and org roles. The course list
+ * itself comes from Studio (`studio-api.ts`): the LMS course routes are blocked
+ * at the edge for every browser. A platform admin passes the
  * course-staff checks through ibl's implied org-instructor rights. Course
  * keys go into paths as they are (`course-v1:Org+Num+Run`), as the MFEs do.
  *
@@ -15,14 +17,13 @@ import { LOCAL_STORAGE_KEYS } from "@/lib/iblai/auth-utils";
 import { makeBaseQuery } from "./base-query";
 import { qs } from "./qs";
 import type {
+  CourseHomeMetadata,
   CourseRole,
   GradebookBulkUpdateItem,
   GradebookParams,
   GradebookResponse,
   GradingInfo,
   LmsAccount,
-  LmsCourse,
-  LmsCoursesResponse,
   LmsEnrollment,
   ModifyAccessResponse,
   OrgRole,
@@ -33,7 +34,6 @@ import type {
   SubsectionHistory,
 } from "./types";
 
-const LIST = "LIST";
 const form = (fields: Record<string, string | undefined>) => {
   const body = new URLSearchParams();
   for (const [k, v] of Object.entries(fields)) if (v !== undefined) body.set(k, v);
@@ -86,16 +86,9 @@ export const lmsApi = createApi({
   ],
   keepUnusedDataFor: 60,
   endpoints: (b) => ({
-    /** The platform's course runs — the sections. `username` must be the caller. */
-    courses: b.query<
-      LmsCoursesResponse,
-      { org: string; username: string; page?: number; page_size?: number }
-    >({
-      query: (params) => `/api/courses/v1/courses/${qs({ page_size: 100, ...params })}`,
-      providesTags: [{ type: "Course", id: LIST }],
-    }),
-    course: b.query<LmsCourse, string>({
-      query: (courseId) => `/api/courses/v1/courses/${courseId}`,
+    /** The course home header: title and dates, for course staff and the enrolled. */
+    courseMetadata: b.query<CourseHomeMetadata, string>({
+      query: (courseId) => `/api/course_home/v1/course_metadata/${courseId}`,
       providesTags: (_r, _e, id) => [{ type: "Course", id }],
     }),
     /** The roster (`get_students_features`) — a POST that reads nothing. */
@@ -264,8 +257,7 @@ export const lmsApi = createApi({
 });
 
 export const {
-  useCoursesQuery,
-  useCourseQuery,
+  useCourseMetadataQuery,
   useRosterQuery,
   useRosterCsvMutation,
   useRoleMembersQuery,

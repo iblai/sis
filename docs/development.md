@@ -55,11 +55,11 @@ gitignored.
 
 ## The three backends
 
-| Slice                   | Base               | Auth                                             | Carries                                                                                                                                                           |
-| ----------------------- | ------------------ | ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `lib/sis/api.ts`        | `<apiBase>/dm`     | `Authorization: Token <dm_token>`                | directory (users search), demographics, field definitions, platform metadata, groups, invitations, watched groups, reports, credentials, announcements, analytics |
-| `lib/sis/lms-api.ts`    | `<apiBase>/lms`    | `Authorization: JWT <edx_jwt_token>`, no cookies | course runs, roster, course roles, import, enrollments, progress, gradebook, course email, tasks, org roles                                                       |
-| `lib/sis/studio-api.ts` | `<apiBase>/studio` | same                                             | reruns (`/api/ibl/manage/course/`), course details, grading policy                                                                                                |
+| Slice                   | Base               | Auth                                             | Carries                                                                                                                                                             |
+| ----------------------- | ------------------ | ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `lib/sis/api.ts`        | `<apiBase>/dm`     | `Authorization: Token <dm_token>`                | directory (platform users), demographics, field definitions, platform metadata, groups, invitations, watched groups, reports, credentials, announcements, analytics |
+| `lib/sis/lms-api.ts`    | `<apiBase>/lms`    | `Authorization: JWT <edx_jwt_token>`, no cookies | roster, course roles, import, enrollments, progress, course home header, gradebook, course email, tasks, org roles                                                  |
+| `lib/sis/studio-api.ts` | `<apiBase>/studio` | same                                             | the section list (`home/courses`), reruns (`/api/ibl/manage/course/`), course details, grading policy                                                               |
 
 All three share `lib/sis/base-query.ts`: `credentials: "omit"` (the gateway answers
 `Access-Control-Allow-Origin: *`), a stale-tab guard, a 401 → sign in again.
@@ -98,13 +98,14 @@ pnpm probe:lms --org <the platform's edX org> [--course <course-v1:…>]
 ```
 
 The probe reports status + first bytes (never a token) for: the identity, the
-course list, the roster (proves the implied org-instructor rights), role members,
+LMS course list (403 expected: the edge blocks that path for every caller,
+preflights included, which is why the app lists sections from Studio's
+`home/courses`), the Studio course list, the roster (proves the implied org-instructor rights), role members,
 the gradebook API (**403 = `grades.writable_gradebook` is off** → the grid is
 unavailable, the embedded gradebook MFE still works), grading info, a student's
 progress, `students_update_enrollment` (401/403 = session-only → Drop stays a
-link-out; 405 = the JWT query-param middleware is on), enrollments, the caller's
-roles, tasks, email schedules, Studio course details and grading, the ibl manage
-view. Writes are proven by hand in the UI: one course invitation, one
+link-out), enrollments, the caller's roles, tasks, email schedules, Studio course
+details and grading, the ibl manage view, the course home header. Writes are proven by hand in the UI: one course invitation, one
 `modify_access` allow/revoke, one import CSV (`ALLOW_AUTOMATED_SIGNUPS`), one
 gradebook override, one `send_email` to "myself" (`BulkEmailFlag`), one Studio
 rerun, one `course_details` PUT.
@@ -115,19 +116,20 @@ the summary here, then write the facts to the knowledge base.
 Settings the app depends on, per platform: `ALLOW_AUTOMATED_SIGNUPS` (import of
 new emails), `grades.writable_gradebook` (the grid and overrides), the course's
 `BulkEmailFlag` (section email), `JWT_AUTH['JWT_EXPIRATION']` (how long a session
-can call the LMS), `IBL_ENABLE_JWT_QUERY_PARAM_AUTH` (would make Drop work).
+can call the LMS). The JWT query-param middleware is not a shortcut for Drop: it
+authenticates but never exempts CSRF.
 
-Two more things the probe cannot settle but the UI will show: the users search
-honours `role=` only if the DM's search app filters on it (the pages also filter
-the rows they received), and the analytics time endpoints honour
-`start_date`/`end_date` — check an empty window returns zeros before trusting the
-attendance grids.
+One DM fact the app is built around: the users search under `/api/search/users/`
+is a résumé search and returns no user rows outside department mode, so the
+directory is `GET /api/core/platform/users/` (no role filter yet: the pages keep
+the rows with the right flags). Everything that waits for a backend change is in
+`TODOS.md`.
 
 ## Project layout
 
 See the [Architecture](../README.md#architecture) section of the README. Shared
 widgets live in `components/sis/` (page header, pagination, empty/error states,
-status pill, user picker, attendance grid); area components under
+status pill, user picker); area components under
 `components/sis/<area>/`.
 
 ## Languages

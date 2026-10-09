@@ -48,6 +48,7 @@ export default defineConfig({
       },
       dependencies: ["setup-chromium"],
       testMatch: ["journeys/**/*.spec.ts"],
+      testIgnore: ["journeys/mobile.journey.spec.ts"],
     },
     {
       name: "firefox",
@@ -57,6 +58,7 @@ export default defineConfig({
       },
       dependencies: ["setup-firefox"],
       testMatch: ["journeys/**/*.spec.ts"],
+      testIgnore: ["journeys/mobile.journey.spec.ts"],
     },
     {
       name: "webkit",
@@ -66,6 +68,18 @@ export default defineConfig({
       },
       dependencies: ["setup-webkit"],
       testMatch: ["journeys/**/*.spec.ts"],
+      testIgnore: ["journeys/mobile.journey.spec.ts"],
+    },
+
+    // Phones — one Chromium device on the chromium session; the mobile journey only.
+    {
+      name: "mobile",
+      use: {
+        ...devices["Pixel 7"],
+        storageState: "playwright/.auth/user-setup-chromium.json",
+      },
+      dependencies: ["setup-chromium"],
+      testMatch: ["journeys/mobile.journey.spec.ts"],
     },
   ],
 });

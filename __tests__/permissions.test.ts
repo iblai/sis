@@ -18,7 +18,6 @@ describe("canOpen", () => {
       "students",
       "staff",
       "groups/3",
-      "attendance",
       "grades",
       "credentials",
       "reports",

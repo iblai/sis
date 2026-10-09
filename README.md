@@ -6,7 +6,7 @@
 
 **The open-source student information system for schools on the ibl.ai platform.**
 
-Students, staff, sections, attendance, grades, credentials, reports and messages — for every school platform you belong to, with ibl.ai single sign-on built in. One codebase. Your platform, your data, your rules.
+Students, staff, sections, grades, credentials, reports and messages — for every school platform you belong to, with ibl.ai single sign-on built in. One codebase. Your platform, your data, your rules.
 
 [![About](https://img.shields.io/badge/About-ibl.ai-blue)](https://ibl.ai)
 [![Docs](https://img.shields.io/badge/Docs-ibl.ai%2Fdocs-green)](https://ibl.ai/docs)
@@ -21,14 +21,14 @@ Students, staff, sections, attendance, grades, credentials, reports and messages
 
 ## Why ibl.ai/sis
 
-|                                 |                                                                                                                                                                                                             |
-| ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 🔓 **Your code, your data**     | MIT-licensed and self-hostable. Everything lives in your ibl.ai platform — the Data Manager, the learning platform and Studio — through their existing APIs. No second database, no vendor lock-in.         |
-| 🏫 **One platform per school**  | Sign in once with ibl.ai SSO and switch between every school platform you belong to, exactly like [os.ibl.ai](https://os.ibl.ai). Each platform gets its own students, sections, terms and roles.           |
-| 📚 **Sections are course runs** | A section is an Open edX course run for a term: the roster, the gradebook, the teachers and the course email are the learning platform's own; the school adds the term, subject, room, period and credits.  |
-| 🧭 **The openSIS shape**        | Students and staff, school setup (years, terms, grade levels, periods, rooms, subjects), scheduling, attendance, grades and GPA, credentials and certificates, reports, messaging, bulk import — on ibl.ai. |
-| 🌍 **Four languages**           | English, Spanish, French and Chinese, following the language you chose in any other ibl.ai app.                                                                                                             |
-| 🔐 **Enterprise-ready**         | SSO (OAuth / OIDC / SAML via the platform), platform roles, notifications, invitations that make a learner a platform user.                                                                                 |
+|                                 |                                                                                                                                                                                                            |
+| ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 🔓 **Your code, your data**     | MIT-licensed and self-hostable. Everything lives in your ibl.ai platform — the Data Manager, the learning platform and Studio — through their existing APIs. No second database, no vendor lock-in.        |
+| 🏫 **One platform per school**  | Sign in once with ibl.ai SSO and switch between every school platform you belong to, exactly like [os.ibl.ai](https://os.ibl.ai). Each platform gets its own students, sections, terms and roles.          |
+| 📚 **Sections are course runs** | A section is an Open edX course run for a term: the roster, the gradebook, the teachers and the course email are the learning platform's own; the school adds the term, subject, room, period and credits. |
+| 🧭 **The openSIS shape**        | Students and staff, school setup (years, terms, grade levels, periods, rooms, subjects), scheduling, grades and GPA, credentials and certificates, reports, messaging, bulk import — on ibl.ai.            |
+| 🌍 **Four languages**           | English, Spanish, French and Chinese, following the language you chose in any other ibl.ai app.                                                                                                            |
+| 🔐 **Enterprise-ready**         | SSO (OAuth / OIDC / SAML via the platform), platform roles, notifications, invitations that make a learner a platform user.                                                                                |
 
 ---
 
@@ -40,11 +40,10 @@ Students, staff, sections, attendance, grades, credentials, reports and messages
 
 **👥 Students & staff**
 
-- **Directory** — every student of the platform with status, join date and last login; search server-side; invite one, or **import a CSV** straight into a section (new emails get an account when the platform allows it)
+- **Directory** — every student of the platform with email and join date; search by username or email, server-side; invite one, or **import a CSV** straight into a section (new emails get an account when the platform allows it)
 - **Student record** — the platform's demographics plus the school's own fields (student id, grade level, enrollment status, homeroom, guardians, emergency contacts…); changing the grade level moves the student between cohort groups
 - **Enrollment** — a student's sections from the learning platform with grade and completion; enroll by course invitation
 - **Grades** — per section: percent, letter, passing, graded work; a term GPA on the school's scale and credits
-- **Attendance** — activity-derived: present when the learner spent time in the course that day; monthly grid per student, weekly grid per section, a day view across sections
 - **Credentials** — issue and revoke the platform's credentials; generate the learning platform's certificates
 - **Guardians** — platform users who receive copies of the student's notifications
 - **Staff** — teachers and admins; make someone a teacher (the LMS `org-staff` role) or a platform admin
@@ -64,7 +63,7 @@ Students, staff, sections, attendance, grades, credentials, reports and messages
 
 **📊 Operate**
 
-- **Dashboard** — students and staff counts, sections, active learners, average grade, enrollments over time, most active courses
+- **Dashboard** — the members count, sections, active learners, average grade, enrollments over time, most active courses
 - **Reports** — the platform's reports (run, poll, download) and a section's instructor downloads
 - **Messages** — section email through the learning platform (with scheduling) and platform announcements (everyone, a group, named users)
 - **⌘K** — students, staff and courses from anywhere; create anything
@@ -168,11 +167,11 @@ sis/
 │   ├── platform/[tenantKey]/                # everything inside one school platform
 │   │   ├── layout.tsx                       # sidebar + top bar shell, access gate, the `main` notice
 │   │   ├── page.tsx                         # dashboard (admin) · my sections (student)
-│   │   ├── students/ · students/[username]/ # directory · record, enrollment, grades, attendance, credentials, guardians
+│   │   ├── students/ · students/[username]/ # directory · record, enrollment, grades, credentials, guardians
 │   │   ├── staff/ · staff/[username]/       # staff · roles
-│   │   ├── courses/ · courses/[courseId]/   # sections · roster, gradebook, attendance, settings
+│   │   ├── courses/ · courses/[courseId]/   # sections · roster, gradebook, settings
 │   │   ├── groups/ · groups/[id]/           # homerooms and cohorts
-│   │   ├── attendance/ · grades/            # day view · averages and the term report
+│   │   ├── grades/                          # averages and the term report
 │   │   ├── credentials/ · reports/ · messages/
 │   │   ├── setup/                           # school, years & terms, levels, periods, rooms, subjects, student fields
 │   │   ├── notifications/[[...id]]/         # SDK NotificationDisplay
@@ -182,7 +181,7 @@ sis/
 ├── components/sis/                          # shell, ⌘K, widgets, one folder per area
 ├── components/ui/                           # shadcn/ui (Base UI) primitives
 ├── hooks/                                   # useSession, useSisMetadata, useSections
-├── lib/sis/                                 # the three RTK Query slices · types · metadata · grades · attendance · csv
+├── lib/sis/                                 # the three RTK Query slices · types · metadata · grades · csv
 ├── lib/iblai/                               # config · platform resolution · auth helpers
 ├── i18n/ · messages/                        # next-intl config · en/es/fr/zh catalogs
 ├── providers/iblai-providers.tsx            # Redux > AuthProvider > TenantProvider
@@ -210,9 +209,9 @@ Sign-in is the platform's hosted round trip (`login.<domain>/login?app=mentor&re
 
 Existing endpoints only, as they are:
 
-- **Data Manager** (ibl-dm-pro 4.416.0+): the users search, platform users and links, demographics and field definitions, platform metadata (`/api/core/orgs/{key}/metadata/`, where the school's own data lives under `sis`), user groups, platform and course invitations, watched groups, credentials, reports, the notification builder, and the analytics families (`overview`, `platform`, `audience`, `engagement`, `perlearner`, `performance`).
-- **Open edX Sumac with the ibl plugins** (iblai-edx-pro 2.62+), through the gateway with the edX JWT: `courses/v1`, the DRF instructor API (`get_students_features`, `list_course_role_members`, `modify_access`, `register_and_enroll_students`, `send_email`, `start_certificate_generation`, `change_due_date`), `enrollment/v1` (read), `course_home/v1/progress`, `grades/v1/gradebook` (+ `bulk-update`, `grading-info`, `subsection`), `instructor/v1/{tasks,reports}`, `instructor_task/v1/schedules`, `/api/ibl/users/manage/roles/`, `user/v1/accounts`.
-- **Studio**: `/api/ibl/manage/course/` (rerun), `contentstore/v1/course_details`, `contentstore/v1/course_grading`.
+- **Data Manager** (ibl-dm-pro 4.416.0+): the platform users list (the directory) and user links, demographics and field definitions, platform metadata (`/api/core/orgs/{key}/metadata/`, where the school's own data lives under `sis`), user groups, platform and course invitations, watched groups, credentials, reports, the notification builder, and the analytics families (`overview`, `platform`, `audience`, `engagement`, `perlearner`, `performance`).
+- **Open edX Sumac with the ibl plugins** (iblai-edx-pro 2.62+), through the gateway with the edX JWT: the DRF instructor API (`get_students_features`, `list_course_role_members`, `modify_access`, `register_and_enroll_students`, `send_email`, `start_certificate_generation`, `change_due_date`), `enrollment/v1` (read), `course_home/v1/progress`, `grades/v1/gradebook` (+ `bulk-update`, `grading-info`, `subsection`), `instructor/v1/{tasks,reports}`, `instructor_task/v1/schedules`, `/api/ibl/users/manage/roles/`, `user/v1/accounts`, `course_home/v1/course_metadata`. Not `courses/v1/courses`: the edge in front of the LMS answers 403 to every caller on that path, preflights included.
+- **Studio**: `contentstore/v1/home/courses` (the section list: the runs the caller can author, active and archived, in one call), `/api/ibl/manage/course/` (rerun), `contentstore/v1/course_details`, `contentstore/v1/course_grading`.
 
 A platform admin passes the course-staff checks through ibl's implied org-instructor rights. Some capabilities are operator settings per platform — the gradebook API flag, automated sign-ups on import, course email, the JWT lifetime — and `pnpm probe:lms` tells you which ones yours has before the app relies on them.
 
@@ -220,48 +219,25 @@ A platform admin passes the course-staff checks through ibl's implied org-instru
 
 ## What the platform would need
 
-ibl.ai/sis writes no endpoint of its own. These are the gaps it works around, for the DM and LMS teams.
+ibl.ai/sis writes no endpoint of its own. The features that wait for a change in the Data Manager or the learning platform, and the change each needs, are in [`TODOS.md`](TODOS.md): what the app does today, what it needs, and the pull request when one carries it, pinned to `iblai-dm-pro@4a53a0663` and `iblai-edx-pro@ae705e8`.
 
-**Modifications to existing endpoints that would simplify the app**
+**Settings per platform, not code**
 
-- DM `dl_catalog_app` `CourseView` and course metadata: admit `IsPlatformAdmin` (read + metadata write) — sections could then live on course metadata instead of the platform metadata.
-- DM catalog enrollments (`enrollment/courses/search/`): let a platform admin list by `course_id` without naming a user — catalog rosters.
-- DM `dl_catalog_milestones` course completions: `IsPlatformAdmin` on POST — course-level grade and completion overrides.
-- DM AXD `GradingPerUserAPI` (`performance/…/grading/per-learner`): honour `page`/`length`/`search` (today capped at 10 rows).
-- DM `platform/users/`: `is_staff` and `active=false` filters, name search; the users search: a server-side `role=` filter (today the role is a facet in the response, the pages filter the rows they received).
-- DM platform metadata and demographics: read-only keys or a visibility map — fields a student must not see.
-- DM platform and course invitation DELETE: implement (the stubs return 200).
-- DM reports download: add `xlsx`.
-- DM `ibl_dm_attendance_app`: migrations plus `date`, `status`, `recorded_by` and `IsPlatformAdmin` — then it is the attendance endpoint.
-- LMS `ibl_enrollment_api`: a DRF enroll/unenroll for course staff (today `students_update_enrollment` is session-only, the ibl routes are global-staff only, and the standard enrollment POST is patched to 404) — or turn on `IBL_ENABLE_JWT_QUERY_PARAM_AUTH` and `ENABLE_BULK_ENROLLMENT_VIEW`.
-- LMS cohorts (`course_groups` `IsStaffOrAdmin`): admit course staff / org roles, as ibl's other permission patches do.
-- LMS `/api/grades/v1/courses/{C}/`: admit course staff for other users (today `is_staff` or self).
-- LMS `/api/user/v1/accounts/{username}` PATCH and `/api/ibl/users/manage/` POST: admit the org admin of the user's platform (today self / global staff).
-- LMS `register_and_enroll_students`: accept a JSON body beside the CSV file.
-- SDK: `useGetReportsQuery` hard-codes `/dm`; `useUpdateUserPlatformMetadataMutation` takes no `username`; `useCreateCourseEnrollmentMutation` calls a route ibl's LMS patches to 404; `initializeDataLayer` defaults Studio to a host that does not respond; the Studio service sends credentials a `*` origin refuses.
-
-**Endpoints that would have to exist**
-
-- Attendance records per user × section × date with a status (present / absent / tardy / excused), a reason and a recorder; a daily summary per section. Neither the DM nor the LMS has any — the LMS `UserActivity` is write-only.
-- Terms and academic years as platform-scoped models (today platform metadata; the LMS `run` is free text).
-- Sections as a model: course run + meeting pattern (period, days, room) + seats (teachers already exist as LMS course roles).
-- Direct unenroll for platform admins from a browser.
-- Course-level grade override, GPA and credits on the completion record (today subsection overrides only; the GPA is computed in the app).
-- Report-card comments per student × section × term.
-- User-to-user messaging / inbox threads (today a one-way builder and course email).
-- Field-level ACL on demographics and platform metadata.
-- A guardian link with a guardian view (today watchers only receive notification copies).
-- XLSX on reports.
+- `grades.writable_gradebook` is never seeded, so the gradebook API is 403 until the waffle flag is set in Django admin.
+- `JWT_AUTH['JWT_EXPIRATION']` is unset and ibl readers fall back to one hour; a school day needs more.
+- `ALLOW_AUTOMATED_SIGNUPS` is whatever the platform was created with; the probe proves it.
+- A `CsrfExemptDomain` row for the SIS origin only matters for embedding the instructor dashboard. The JWT query-param middleware is not a shortcut for Drop: it never exempts CSRF and puts tokens in URLs.
 
 ---
 
 ## Testing
 
 ```bash
-pnpm test            # Vitest — metadata parsing, grades and GPA, attendance, CSV, sections, permissions, platform resolution, SSO landing, config
+pnpm test            # Vitest — metadata parsing, grades and GPA, CSV, sections, permissions, platform resolution, SSO landing, config
 pnpm i18n:check      # en / es / fr / zh catalogs carry the same keys and the house vocabulary
 pnpm test:coverage   # the unit tests with the coverage gate CI runs
 pnpm test:e2e        # Playwright journeys on a throwaway platform (copy e2e/.env.development.example first)
+pnpm test:e2e --project=mobile   # the phone journey (S6) on a Pixel 7 viewport
 pnpm test:e2e:ui     # interactive UI mode
 ```
 

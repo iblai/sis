@@ -7,7 +7,6 @@ import { useTranslations } from "next-intl";
 import {
   Award,
   BookOpen,
-  CalendarCheck2,
   FileChartColumn,
   GraduationCap,
   Home,
@@ -64,7 +63,6 @@ export function AppSidebar() {
         { id: "staff", label: t("staff"), path: "/staff", icon: UserCog },
         { id: "courses", label: t("courses"), path: "/courses", icon: BookOpen },
         { id: "groups", label: t("groups"), path: "/groups", icon: UsersRound },
-        { id: "attendance", label: t("attendance"), path: "/attendance", icon: CalendarCheck2 },
         { id: "grades", label: t("grades"), path: "/grades", icon: GraduationCap },
         { id: "credentials", label: t("credentials"), path: "/credentials", icon: Award },
         { id: "reports", label: t("reports"), path: "/reports", icon: FileChartColumn },

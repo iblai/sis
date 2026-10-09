@@ -41,7 +41,6 @@
     "toggleSidebarHint": "Collapse or expand the sidebar (⌘B)"
   },
   "nav": {
-    "attendance": "Attendance",
     "courses": "Courses",
     "credentials": "Credentials",
     "grades": "Grades",
@@ -120,7 +119,7 @@
   "picker": {
     "clear": "Clear",
     "noMatches": "No one matches.",
-    "searchPlaceholder": "Search by name, username or email…",
+    "searchPlaceholder": "Search by username or email…",
     "searching": "Searching…",
     "typeToSearch": "Type to search the directory",
     "user": "Pick a user"
@@ -216,6 +215,10 @@
         "hint": "{count, plural, one {# staff member} other {# staff members}}",
         "info": "Members of the platform the directory lists as students",
         "label": "Students"
+      },
+      "members": {
+        "label": "Members",
+        "info": "Everyone on the platform the directory lists — students and staff"
       }
     },
     "welcome": "Here is how your school is doing.",
@@ -283,7 +286,6 @@
       "statusLabel": "Status",
       "summary": "Summary",
       "tabs": {
-        "attendance": "Attendance",
         "credentials": "Credentials",
         "enrollment": "Enrollment",
         "grades": "Grades",
@@ -291,7 +293,9 @@
         "overview": "Overview",
         "record": "Record"
       },
-      "visibleToStudent": "The student can read this record too — nothing here is hidden from them."
+      "visibleToStudent": "The student can read this record too — nothing here is hidden from them.",
+      "deactivateTitle": "Deactivate this membership?",
+      "deactivateBody": "A deactivated member cannot sign in to this platform, and their record stays unreadable here until the membership is reactivated. A student who leaves the school keeps the membership: set the enrollment status to Withdrawn instead."
     },
     "searchPlaceholder": "Search students…",
     "status": {
@@ -379,44 +383,6 @@
     "passing": "Passing",
     "term": "Term",
     "unavailable": "Not available"
-  },
-  "attendance": {
-    "absent": "Absent",
-    "activityBased": "Activity-based",
-    "activityHint": "Present means time spent in the course that day; absences are not excused or recorded by anyone.",
-    "allSections": "All sections",
-    "allTerms": "All terms",
-    "date": "Date",
-    "dayDescription": "Who had activity in each section on a given day",
-    "nextMonth": "Next month",
-    "nextWeek": "Next week",
-    "noSections": "No sections in this term.",
-    "noStudents": "No learners on the roster.",
-    "present": "Present",
-    "presentCount": "Present",
-    "presentCountN": "{count, plural, one {# present} other {# present}}",
-    "previousMonth": "Previous month",
-    "previousWeek": "Previous week",
-    "rate": "Rate",
-    "rateInfo": "Present days over school days in the window",
-    "section": "Section",
-    "status": {
-      "absent": "Absent",
-      "no-school": "No school",
-      "present": "Present"
-    },
-    "student": "Student",
-    "term": "Term",
-    "unavailable": "Not available",
-    "weekday": {
-      "fri": "Fri",
-      "mon": "Mon",
-      "sat": "Sat",
-      "sun": "Sun",
-      "thu": "Thu",
-      "tue": "Tue",
-      "wed": "Wed"
-    }
   },
   "credentials": {
     "bulkIssue": {
@@ -576,7 +542,6 @@
       "weightTotal": "Weights total {total}%"
     },
     "tabs": {
-      "attendance": "Attendance",
       "gradebook": "Gradebook",
       "roster": "Roster",
       "settings": "Settings"
@@ -642,7 +607,8 @@
   "staff": {
     "columns": {
       "lastLogin": "Last login",
-      "role": "Role"
+      "role": "Role",
+      "joined": "Joined"
     },
     "countLabel": "staff members",
     "description": "Teachers and administrators of the platform",

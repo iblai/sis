@@ -35,7 +35,7 @@ import {
 } from "@/lib/sis/api";
 import { useStartCertificateGenerationMutation } from "@/lib/sis/lms-api";
 import { errorMessage } from "@/lib/sis/errors";
-import type { Credential, DirectoryUser } from "@/lib/sis/types";
+import type { Credential, PlatformUser } from "@/lib/sis/types";
 
 const PAGE_SIZE = 24;
 
@@ -112,7 +112,7 @@ export default function CredentialsPage() {
         {credentials.error ? (
           <LoadError error={credentials.error} />
         ) : credentials.isLoading ? (
-          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
             {Array.from({ length: 6 }, (_, i) => (
               <Skeleton key={i} className="h-28 rounded-xl" />
             ))}
@@ -124,7 +124,7 @@ export default function CredentialsPage() {
             description={t("empty.body")}
           />
         ) : (
-          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
             {rows.map((c) => (
               <section
                 key={c.entityId}
@@ -189,7 +189,7 @@ function BulkIssueDialog({ credential, onClose }: { credential: Credential; onCl
   const groups = useUserGroupsQuery({ platformKey: tenantKey, page_size: 100 });
   const [courseId, setCourseId] = useState("");
   const [target, setTarget] = useState<"student" | "group">("student");
-  const [student, setStudent] = useState<DirectoryUser | null>(null);
+  const [student, setStudent] = useState<PlatformUser | null>(null);
   const [groupId, setGroupId] = useState("");
   const group = useUserGroupQuery(Number(groupId), { skip: !groupId });
   const [issue] = useIssueAssertionMutation();

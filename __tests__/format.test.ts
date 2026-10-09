@@ -12,6 +12,7 @@ import {
   initials,
   toDate,
   truncate,
+  roleOf,
 } from "../lib/sis/format";
 
 describe("dates", () => {
@@ -76,5 +77,13 @@ describe("names", () => {
     expect(truncate("short")).toBe("short");
     expect(truncate("abcdefgh", 4)).toBe("abc…");
     expect(truncate(null)).toBe("");
+  });
+});
+
+describe("roleOf", () => {
+  it("reads the school role off the link flags", () => {
+    expect(roleOf({ is_admin: true, is_staff: true })).toBe("admin");
+    expect(roleOf({ is_staff: true })).toBe("teacher");
+    expect(roleOf({})).toBe("student");
   });
 });

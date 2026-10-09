@@ -56,6 +56,12 @@
       "spec": "journeys/shell.journey.spec.ts"
     },
     {
+      "id": "S6",
+      "journey": "mobile",
+      "name": "a phone shows every admin page without sideways overflow",
+      "spec": "journeys/mobile.journey.spec.ts"
+    },
+    {
       "id": "C1",
       "journey": "sis",
       "name": "Setup adds a term and keeps it",

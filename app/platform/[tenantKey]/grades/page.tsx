@@ -97,7 +97,7 @@ export default function GradesPage() {
                 allowEmpty
                 emptyLabel={t("allTerms")}
                 size="sm"
-                className="w-44"
+                className="w-[calc(50%-0.25rem)] sm:w-44"
                 aria-label={t("term")}
               />
             ) : null}
@@ -109,7 +109,7 @@ export default function GradesPage() {
                 allowEmpty
                 emptyLabel={t("pickLevel")}
                 size="sm"
-                className="w-44"
+                className="w-[calc(50%-0.25rem)] sm:w-44"
                 aria-label={t("level")}
               />
             ) : null}
@@ -132,7 +132,7 @@ export default function GradesPage() {
               <TableHeader>
                 <TableRow>
                   <TableHead>{t("columns.section")}</TableHead>
-                  <TableHead>{t("columns.term")}</TableHead>
+                  <TableHead className="hidden md:table-cell">{t("columns.term")}</TableHead>
                   <TableHead>{t("columns.average")}</TableHead>
                   <TableHead />
                 </TableRow>
@@ -171,7 +171,9 @@ function SectionAverageRow({ row }: { row: SectionRow }) {
           {row.course.name}
         </Link>
       </TableCell>
-      <TableCell className="text-muted-foreground">{row.term?.name ?? "—"}</TableCell>
+      <TableCell className="text-muted-foreground hidden md:table-cell">
+        {row.term?.name ?? "—"}
+      </TableCell>
       <TableCell className="tabular-nums">
         {avg.isLoading ? (
           <Skeleton className="h-4 w-12" />
@@ -216,14 +218,12 @@ function TermReport({
         <table className="min-w-full text-sm">
           <thead className="text-muted-foreground text-left text-xs">
             <tr className="border-b border-gray-100">
-              <th className="px-3 py-2 font-medium">{t("columns.student")}</th>
+              <th className="sticky left-0 z-10 bg-white px-3 py-2 font-medium">
+                {t("columns.student")}
+              </th>
               {inTerm.map((r) => (
-                <th
-                  key={r.course.id}
-                  className="max-w-32 truncate px-3 py-2 font-medium"
-                  title={r.course.name}
-                >
-                  {r.course.number}
+                <th key={r.course.id} className="px-3 py-2 font-medium" title={r.course.name}>
+                  <div className="max-w-32 truncate">{r.course.number}</div>
                 </th>
               ))}
               <th className="px-3 py-2 font-medium">{t("columns.gpa")}</th>
@@ -275,7 +275,7 @@ function StudentTermRow({
   );
   return (
     <tr>
-      <td className="px-3 py-1.5">
+      <td className="sticky left-0 z-10 bg-white px-3 py-1.5">
         <Link href={href} className="font-medium text-gray-900 hover:underline">
           {name}
         </Link>

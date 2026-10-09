@@ -36,7 +36,7 @@ export function FieldRow({
           </InfoTip>
         ) : null}
       </dt>
-      <dd className="min-w-0 text-sm text-gray-900">{children}</dd>
+      <dd className="min-w-0 text-sm break-words text-gray-900">{children}</dd>
     </div>
   );
 }
