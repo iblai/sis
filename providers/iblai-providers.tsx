@@ -43,6 +43,11 @@ import config from "@/lib/iblai/config";
 import { readStoredTenantKey, readUsername } from "@/lib/iblai/tenant";
 import { redirectToAuthSpa, handleTenantSwitch, LOCAL_STORAGE_KEYS } from "@/lib/iblai/auth-utils";
 
+// The SDK logs the session tokens with console.log; production keeps warnings and errors only.
+if (process.env.NODE_ENV === "production" && typeof window !== "undefined") {
+  console.log = console.info = console.debug = () => {};
+}
+
 const storageService = LocalStorageService.getInstance();
 
 /** Routes that do NOT require authentication (`false` = public). */

@@ -74,7 +74,8 @@ function StudentsView() {
   const inviteOpen = searchParams.get("invite") === "1";
   const importOpen = searchParams.get("import") === "1";
   const closeDialogs = () => router.replace(href("/students"));
-  const count = data?.count ?? 0;
+  // On a single page the rows kept are the whole list; across pages the server counts every member.
+  const count = data && !data.next_page && !data.previous_page ? rows.length : (data?.count ?? 0);
   const paginated = {
     count,
     next_page: data?.next_page ?? null,

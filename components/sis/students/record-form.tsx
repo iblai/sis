@@ -111,14 +111,15 @@ function RecordFormFields({
   };
 
   const submit = async () => {
+    // The DM's text fields refuse null; only the date takes it.
     const body: Partial<Demographics> = {
-      gender: base.gender || null,
-      ethnicity: previous.ethnicity ?? null,
+      gender: base.gender,
+      ethnicity: previous.ethnicity ?? "",
       date_of_birth: base.date_of_birth || null,
-      primary_language: base.primary_language || null,
-      country_of_birth: previous.country_of_birth ?? null,
-      nationality: base.nationality || null,
-      disability_status: previous.disability_status ?? null,
+      primary_language: base.primary_language,
+      country_of_birth: previous.country_of_birth ?? "",
+      nationality: base.nationality,
+      disability_status: previous.disability_status ?? "",
       custom_fields: custom,
     };
     try {

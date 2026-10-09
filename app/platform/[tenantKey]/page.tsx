@@ -141,7 +141,7 @@ function AdminDashboard() {
               <StatCard
                 label={t("stats.active.label")}
                 value={num(active.data?.total) ?? "—"}
-                hint={t("stats.active.hint", { count: num(registered.data?.total) ?? 0 })}
+                hint={t("stats.active.hint", { count: num(registered.data?.data?.count) ?? 0 })}
                 info={t("stats.active.info")}
                 icon={<Activity />}
                 tone="success"

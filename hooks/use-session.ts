@@ -50,10 +50,11 @@ export function useSession(): Session {
       username: user?.user_nicename ?? "",
       email: user?.user_email ?? "",
       userId: typeof user?.user_id === "number" ? user.user_id : null,
-      displayName: (user?.user_fullname ||
-        user?.user_display_name ||
-        user?.user_nicename ||
-        "") as string,
+      // Stored names can carry trailing spaces ("Search Craft Admin ").
+      displayName:
+        [user?.user_fullname, user?.user_display_name, user?.user_nicename]
+          .map((v) => String(v ?? "").trim())
+          .find(Boolean) ?? "",
       user,
       isAdmin: isTenantAdmin(tenantKey),
       tenants,

@@ -21,6 +21,7 @@ import { useSections } from "@/hooks/use-sections";
 import { useSession } from "@/hooks/use-session";
 import { useToastError } from "@/hooks/use-toast-error";
 import {
+  useNotificationContextQuery,
   usePreviewNotificationMutation,
   useSendNotificationMutation,
   useUserGroupsQuery,
@@ -214,7 +215,11 @@ function Announcement({ initialGroupId }: { initialGroupId: string }) {
   const [preview, setPreview] = useState<NotificationPreview | null>(null);
   const [runPreview, previewState] = usePreviewNotificationMutation();
   const [runSend, sendState] = useSendNotificationMutation();
-  const channels = [email && "email", inApp && "in_app"].filter(Boolean) as string[];
+  const context = useNotificationContextQuery(tenantKey);
+  const channelId = (name: string) => context.data?.channels.find((c) => c.name === name)?.id;
+  const channels = [email && channelId("email"), inApp && channelId("push_notification")].filter(
+    (id): id is number => typeof id === "number",
+  );
 
   const source = (): { type: NotificationSourceType; data: unknown } | null => {
     if (audience === "platform") return { type: "platform", data: tenantKey };

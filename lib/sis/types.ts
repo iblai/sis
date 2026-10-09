@@ -287,7 +287,8 @@ export type NotificationSourceType =
   | "usergroup";
 
 export interface NotificationPreviewRequest {
-  channels: string[];
+  /** Channel ids from the builder context (`email`, `push_notification` = in-app). */
+  channels: number[];
   sources: { type: NotificationSourceType; data: unknown }[];
   template_id?: string;
   template_data?: Record<string, unknown>;

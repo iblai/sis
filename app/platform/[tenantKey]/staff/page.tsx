@@ -64,7 +64,8 @@ function StaffView() {
   // The directory has no role filter yet: the page keeps the members with a flag.
   const rows = (data?.results ?? []).filter((u) => roleOf(u) !== "student");
   const inviteOpen = searchParams.get("invite") === "1";
-  const count = data?.count ?? 0;
+  // On a single page the rows kept are the whole list; across pages the server counts every member.
+  const count = data && !data.next_page && !data.previous_page ? rows.length : (data?.count ?? 0);
 
   return (
     <>

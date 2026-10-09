@@ -21,7 +21,12 @@ import { CredentialsTab } from "@/components/sis/students/credentials-tab";
 import { GuardiansTab } from "@/components/sis/students/guardians-tab";
 import { useSession } from "@/hooks/use-session";
 import { useToastError } from "@/hooks/use-toast-error";
-import { useDemographicsQuery, useSetUserLinkMutation, useUserLinksQuery } from "@/lib/sis/api";
+import {
+  useDemographicsQuery,
+  usePlatformUsersQuery,
+  useSetUserLinkMutation,
+  useUserLinksQuery,
+} from "@/lib/sis/api";
 import { displayName } from "@/lib/sis/format";
 
 const ADMIN_TABS = [
@@ -54,13 +59,19 @@ function StudentView() {
   const { tenantKey, isAdmin, href } = useSession();
   const isLiveAdmin = useIsLiveAdmin();
   const toastError = useToastError();
-  const links = useUserLinksQuery({ username });
-  const link = links.data?.find((l) => l.key === tenantKey) ?? links.data?.[0];
+  const links = useUserLinksQuery({ platformKey: tenantKey, username });
+  const link = links.data?.find((l) => l.key === tenantKey);
+  // The link carries no name; the directory row does.
+  const member = usePlatformUsersQuery({
+    platformKey: tenantKey,
+    query: username,
+    page_size: 5,
+  }).data?.results.find((u) => u.username === username);
   const demographics = useDemographicsQuery({ platformKey: tenantKey, username });
   const [setLink, linkState] = useSetUserLinkMutation();
   const tabs = isAdmin ? ADMIN_TABS : SELF_TABS;
   const base = href(`/students/${encodeURIComponent(username)}`);
-  const name = link ? displayName(link) : username;
+  const name = displayName(member ?? link ?? { username });
   useBreadcrumbs([
     { label: tn("students"), href: href("/students") },
     { label: name, href: base },

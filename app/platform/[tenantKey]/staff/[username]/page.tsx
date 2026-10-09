@@ -18,7 +18,7 @@ import { useIsLiveAdmin } from "@/components/sis/admin-mode";
 import { useSections } from "@/hooks/use-sections";
 import { useSession } from "@/hooks/use-session";
 import { useToastError } from "@/hooks/use-toast-error";
-import { useSetUserLinkMutation, useUserLinksQuery } from "@/lib/sis/api";
+import { usePlatformUsersQuery, useSetUserLinkMutation, useUserLinksQuery } from "@/lib/sis/api";
 import { useRoleMembersQuery, useSetOrgRoleMutation } from "@/lib/sis/lms-api";
 import { displayName, formatDate } from "@/lib/sis/format";
 
@@ -32,13 +32,19 @@ export default function StaffMemberPage() {
   const { tenantKey, org, username: me, href } = useSession();
   const isLiveAdmin = useIsLiveAdmin();
   const toastError = useToastError();
-  const links = useUserLinksQuery({ username });
-  const link = links.data?.find((l) => l.key === tenantKey) ?? links.data?.[0];
+  const links = useUserLinksQuery({ platformKey: tenantKey, username });
+  const link = links.data?.find((l) => l.key === tenantKey);
+  // The link carries no name; the directory row does.
+  const member = usePlatformUsersQuery({
+    platformKey: tenantKey,
+    query: username,
+    page_size: 5,
+  }).data?.results.find((u) => u.username === username);
   const [setLink, linkState] = useSetUserLinkMutation();
   const [setRole, roleState] = useSetOrgRoleMutation();
   const [showSections, setShowSections] = useState(false);
   const sections = useSections({ skip: !showSections });
-  const name = link ? displayName(link) : username;
+  const name = displayName(member ?? link ?? { username });
   const base = href(`/staff/${encodeURIComponent(username)}`);
   useBreadcrumbs([
     { label: tn("staff"), href: href("/staff") },

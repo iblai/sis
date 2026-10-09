@@ -95,14 +95,17 @@ export const sisApi = createApi({
         `/api/core/platform/users/${qs({ platform_key: platformKey, ...params })}`,
       providesTags: [{ type: "Directory", id: LIST }],
     }),
-    userLinks: b.query<UserPlatformLink[], { username?: string; email?: string; user_id?: number }>(
-      {
-        query: (params) => `/api/core/users/platforms/${qs(params)}`,
-        providesTags: (_r, _e, a) => [
-          { type: "Link", id: a.username ?? a.email ?? String(a.user_id) },
-        ],
-      },
-    ),
+    /**
+     * A member's link to the platform. A platform admin gets 403 without `platform_key`; with it
+     * the DM may list every member, so the rows are narrowed to the username here.
+     */
+    userLinks: b.query<UserPlatformLink[], { platformKey: string; username: string }>({
+      query: ({ platformKey, username }) =>
+        `/api/core/users/platforms/${qs({ username, platform_key: platformKey })}`,
+      transformResponse: (r: UserPlatformLink[], _m, a) =>
+        (r ?? []).filter((l) => l.username === a.username),
+      providesTags: (_r, _e, a) => [{ type: "Link", id: a.username }],
+    }),
     /** Upsert the user ↔ platform link; `active: false` deactivates the member. */
     setUserLink: b.mutation<
       void,
@@ -116,6 +119,14 @@ export const sisApi = createApi({
     demographics: b.query<Demographics, { platformKey: string; username: string }>({
       query: ({ platformKey, username }) =>
         `/api/core/platforms/${enc(platformKey)}/${enc(username)}/demographics/`,
+      // An empty record comes back with `custom_fields: []`; the PUT only takes an object.
+      transformResponse: (r: Demographics) => ({
+        ...r,
+        custom_fields:
+          r.custom_fields && typeof r.custom_fields === "object" && !Array.isArray(r.custom_fields)
+            ? r.custom_fields
+            : {},
+      }),
       providesTags: (_r, _e, a) => [{ type: "Demographics", id: a.username }],
     }),
     /** PUT resets omitted base fields — callers send the whole record (read, merge, write). */
@@ -472,9 +483,12 @@ export const sisApi = createApi({
     }),
 
     // --------------------------------------------------------- announcements
-    notificationContext: b.query<unknown, string>({
+    notificationContext: b.query<{ channels: { id: number; name: string }[] }, string>({
       query: (platformKey) =>
         `/api/notification/v1/orgs/${enc(platformKey)}/notification-builder/context/`,
+      transformResponse: (r: { data?: { channels?: { id: number; name: string }[] } }) => ({
+        channels: r.data?.channels ?? [],
+      }),
     }),
     previewNotification: b.mutation<
       NotificationPreview,
@@ -519,7 +533,7 @@ export const sisApi = createApi({
     enrollmentsOverTime: b.query<OverTime, AxdParams>({
       query: (p) => axd("audience", p, "enrollments/over-time"),
     }),
-    usersCount: b.query<OverTime, AxdParams>({
+    usersCount: b.query<AxdValue<{ count?: number }>, AxdParams>({
       query: (p) => axd("platform", p, "users/count"),
     }),
     coursesCount: b.query<AxdValue<number>, AxdParams>({
