@@ -35,7 +35,7 @@
   },
   "shell": {
     "adminMode": "Modo administración",
-    "adminModeHint": "El modo administración muestra Configuración, Usuarios y roles y cada escritura; el modo usuario es lo que ve un miembro",
+    "adminModeHint": "El modo administración muestra Configuración, Gestión y cada escritura; el modo usuario es lo que ve un miembro",
     "platform": "Plataforma",
     "toggleSidebar": "Mostrar u ocultar la barra lateral",
     "toggleSidebarHint": "Plegar o desplegar la barra lateral (⌘B)"
@@ -54,18 +54,8 @@
     "students": "Estudiantes"
   },
   "breadcrumbs": {
-    "admin": "Administración",
     "label": "Ruta de navegación",
-    "notifications": "Notificaciones",
-    "users": "Usuarios y roles"
-  },
-  "admin": {
-    "users": {
-      "description": "Miembros, grupos, roles y políticas de esta plataforma: la superficie de gestión del SDK",
-      "invite": "Invitar usuario",
-      "pendingInvites": "Invitaciones pendientes",
-      "title": "Usuarios y roles"
-    }
+    "notifications": "Notificaciones"
   },
   "auth": {
     "completingSignIn": "Completando el inicio de sesión…"

@@ -7,11 +7,10 @@ const userMode = { isAdmin: true, adminMode: false, username: "head" };
 const student = { isAdmin: false, adminMode: false, username: "ada" };
 
 describe("canOpen", () => {
-  it("opens Setup and Management to admins in Admin mode only", () => {
+  it("opens Setup to admins in Admin mode only", () => {
     expect(canOpen("/platform/acme/setup", admin)).toBe(true);
-    expect(canOpen("/platform/acme/admin/users", admin)).toBe(true);
     expect(canOpen("/platform/acme/setup?tab=terms", userMode)).toBe(false);
-    expect(canOpen("/platform/acme/admin/users", student)).toBe(false);
+    expect(canOpen("/platform/acme/setup", student)).toBe(false);
   });
   it("opens the admin lists to admins in either mode, never to students", () => {
     for (const path of [

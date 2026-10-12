@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { SidebarInset, SidebarProvider } from "@iblai/iblai-js/web-containers/next";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { AccountSheetProvider } from "@/components/sis/account-sheet";
 import { AppSidebar } from "@/components/sis/app-sidebar";
 import { TopBar } from "@/components/sis/top-bar";
 import { BreadcrumbProvider } from "@/components/sis/breadcrumbs";
@@ -43,31 +44,33 @@ export default function TenantLayout({ children }: { children: ReactNode }) {
     <AdminModeProvider isAdmin={isAdmin}>
       <LanguagePreferenceSync />
       <TooltipProvider>
-        <CommandPaletteProvider>
-          <BreadcrumbProvider>
-            <div className="flex min-h-dvh flex-col bg-white md:h-dvh md:overflow-hidden">
-              <SidebarProvider defaultOpen={sidebarOpen} className="min-h-0 flex-1">
-                <AppSidebar />
-                <SidebarInset
-                  asChild
-                  className="flex min-h-0 w-full flex-1 flex-col bg-[var(--sidebar-bg,#fafbfc)] md:overflow-hidden"
-                >
-                  <div>
-                    <TopBar />
-                    <AccessGate>
-                      <main
-                        id="main-content"
-                        className="flex min-h-0 flex-1 flex-col md:overflow-hidden"
-                      >
-                        {children}
-                      </main>
-                    </AccessGate>
-                  </div>
-                </SidebarInset>
-              </SidebarProvider>
-            </div>
-          </BreadcrumbProvider>
-        </CommandPaletteProvider>
+        <AccountSheetProvider>
+          <CommandPaletteProvider>
+            <BreadcrumbProvider>
+              <div className="flex min-h-dvh flex-col bg-white md:h-dvh md:overflow-hidden">
+                <SidebarProvider defaultOpen={sidebarOpen} className="min-h-0 flex-1">
+                  <AppSidebar />
+                  <SidebarInset
+                    asChild
+                    className="flex min-h-0 w-full flex-1 flex-col bg-[var(--sidebar-bg,#fafbfc)] md:overflow-hidden"
+                  >
+                    <div>
+                      <TopBar />
+                      <AccessGate>
+                        <main
+                          id="main-content"
+                          className="flex min-h-0 flex-1 flex-col md:overflow-hidden"
+                        >
+                          {children}
+                        </main>
+                      </AccessGate>
+                    </div>
+                  </SidebarInset>
+                </SidebarProvider>
+              </div>
+            </BreadcrumbProvider>
+          </CommandPaletteProvider>
+        </AccountSheetProvider>
       </TooltipProvider>
     </AdminModeProvider>
   );

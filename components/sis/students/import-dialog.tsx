@@ -122,7 +122,7 @@ export function ImportDialog({
             <p className="text-muted-foreground text-xs">
               {t("preview", { count: parsed.rows.length, errors: parsed.errors.length })}
               {parsed.errors.length ? (
-                <span className="mt-1 block truncate text-rose-700">
+                <span className="mt-1 block truncate text-xs text-red-500">
                   {parsed.errors.slice(0, 5).join(" · ")}
                 </span>
               ) : null}

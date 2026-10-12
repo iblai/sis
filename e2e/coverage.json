@@ -56,6 +56,12 @@
       "spec": "journeys/shell.journey.spec.ts"
     },
     {
+      "id": "S7",
+      "journey": "shell",
+      "name": "footer Management opens the Management dialog, not a page",
+      "spec": "journeys/shell.journey.spec.ts"
+    },
+    {
       "id": "S6",
       "journey": "mobile",
       "name": "a phone shows every admin page without sideways overflow",

@@ -459,12 +459,12 @@ function GradingForm({ courseId, grading }: { courseId: string; grading: CourseG
     <Card title={t("grading")}>
       <div className="overflow-x-auto">
         <table className="w-full text-xs">
-          <thead className="text-muted-foreground text-left">
+          <thead className="text-muted-foreground text-left text-[11px] font-semibold tracking-wide uppercase">
             <tr>
-              <th className="py-1 font-medium">{t("assignmentType")}</th>
-              <th className="py-1 font-medium">{t("count")}</th>
-              <th className="py-1 font-medium">{t("drop")}</th>
-              <th className="py-1 font-medium">{t("weight")}</th>
+              <th className="py-1">{t("assignmentType")}</th>
+              <th className="py-1">{t("count")}</th>
+              <th className="py-1">{t("drop")}</th>
+              <th className="py-1">{t("weight")}</th>
               <th aria-label={tc("actions")} />
             </tr>
           </thead>
@@ -533,7 +533,7 @@ function GradingForm({ courseId, grading }: { courseId: string; grading: CourseG
         </table>
       </div>
       <div className="flex items-center justify-between">
-        <p className={total === 100 ? "text-muted-foreground text-xs" : "text-xs text-rose-600"}>
+        <p className={total === 100 ? "text-muted-foreground text-xs" : "text-xs text-red-500"}>
           {t("weightTotal", { total })}
         </p>
         {isLiveAdmin ? (

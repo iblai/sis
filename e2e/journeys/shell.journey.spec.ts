@@ -86,4 +86,16 @@ test.describe("shell journey", () => {
     await page.getByRole("option", { name: /last 7 days/i }).click();
     await request;
   });
+
+  test("S7 · the footer's Management opens the Management dialog, not a page", async ({ page }) => {
+    const platform = await gotoHome(page);
+    await page.getByRole("button", { name: "Management", exact: true }).click();
+    await expect(
+      page.getByRole("dialog").getByRole("heading", { name: "Management", exact: true }),
+    ).toBeVisible({ timeout: 15_000 });
+    expect(new URL(page.url()).pathname.replace(/\/$/, "")).toBe(
+      `/platform/${encodeURIComponent(platform)}`,
+    );
+    await page.keyboard.press("Escape");
+  });
 });

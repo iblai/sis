@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 /**
- * The page header every CRM surface shares: an icon + title on the left, the
+ * The page header every page shares: an icon + title on the left, the
  * actions (New, view toggles, filters) on the right; an optional second row
  * for the toolbar. Sits under the top bar, above the content.
  */

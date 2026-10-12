@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { Open_Sans } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import "./globals.css";
@@ -8,13 +9,15 @@ import { IblaiProviders } from "@/providers/iblai-providers";
 // The proxy's nonce-based CSP requires per-request rendering.
 export const dynamic = "force-dynamic";
 
+const openSans = Open_Sans({ subsets: ["latin"], variable: "--font-open-sans" });
+
 export const metadata: Metadata = {
   title: {
     default: "ibl.ai/sis",
     template: "%s · ibl.ai/sis",
   },
   description:
-    "The open-source CRM for organizations on the ibl.ai platform — people, organizations, deals, activities.",
+    "The open-source student information system for schools on the ibl.ai platform — students, staff, courses, grades, credentials.",
   applicationName: "ibl.ai/sis",
   icons: { icon: "/favicon.ico" },
 };
@@ -30,7 +33,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   const locale = await getLocale();
   const messages = await getMessages();
   return (
-    <html lang={locale} className="h-full antialiased">
+    <html lang={locale} className={`${openSans.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col">
         <NextIntlClientProvider locale={locale} messages={messages}>
           <WebContainersLocaleProvider>

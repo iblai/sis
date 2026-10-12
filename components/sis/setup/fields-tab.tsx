@@ -156,7 +156,12 @@ export function FieldsTab() {
             <Download data-icon="inline-start" /> {t("export")}
           </Button>
           <label className="inline-flex cursor-pointer items-center gap-1.5 rounded-md border border-gray-200 bg-white px-2.5 py-1.5 text-xs font-medium hover:bg-gray-50">
-            <Upload className="size-3.5" /> {importState.isLoading ? "…" : t("import")}
+            <Upload className="size-3.5" />{" "}
+            {importState.isLoading ? (
+              <Spinner size="sm" className="size-4 text-current" />
+            ) : (
+              t("import")
+            )}
             <input
               type="file"
               accept=".csv,.json"
@@ -173,14 +178,14 @@ export function FieldsTab() {
           <Skeleton className="m-4 h-32" />
         ) : (
           <table className="min-w-full text-sm">
-            <thead className="text-muted-foreground text-left text-xs">
+            <thead className="text-muted-foreground text-left text-[11px] font-semibold tracking-wide uppercase">
               <tr className="border-b border-gray-100">
-                <th className="px-3 py-2 font-medium">{tc("name")}</th>
-                <th className="px-3 py-2 font-medium">{t("slug")}</th>
-                <th className="px-3 py-2 font-medium">{t("type")}</th>
-                <th className="px-3 py-2 font-medium">{t("choices")}</th>
-                <th className="px-3 py-2 font-medium">{t("required")}</th>
-                <th className="px-3 py-2 font-medium">{t("active")}</th>
+                <th className="px-3 py-2">{tc("name")}</th>
+                <th className="px-3 py-2">{t("slug")}</th>
+                <th className="px-3 py-2">{t("type")}</th>
+                <th className="px-3 py-2">{t("choices")}</th>
+                <th className="px-3 py-2">{t("required")}</th>
+                <th className="px-3 py-2">{t("active")}</th>
                 <th className="w-10" aria-label={tc("actions")} />
               </tr>
             </thead>

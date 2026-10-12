@@ -35,7 +35,7 @@
   },
   "shell": {
     "adminMode": "Admin mode",
-    "adminModeHint": "Admin mode shows Setup, Users & roles and every write; User mode is what a member sees",
+    "adminModeHint": "Admin mode shows Setup, Management and every write; User mode is what a member sees",
     "platform": "Platform",
     "toggleSidebar": "Toggle sidebar",
     "toggleSidebarHint": "Collapse or expand the sidebar (⌘B)"
@@ -54,18 +54,8 @@
     "students": "Students"
   },
   "breadcrumbs": {
-    "admin": "Admin",
     "label": "Breadcrumb",
-    "notifications": "Notifications",
-    "users": "Users & roles"
-  },
-  "admin": {
-    "users": {
-      "description": "Members, groups, roles and policies of this platform — the SDK’s Management surface",
-      "invite": "Invite user",
-      "pendingInvites": "Pending invites",
-      "title": "Users & roles"
-    }
+    "notifications": "Notifications"
   },
   "auth": {
     "completingSignIn": "Completing sign-in…"

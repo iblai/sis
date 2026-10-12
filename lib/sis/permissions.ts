@@ -9,7 +9,7 @@ export function canOpen(
   session: { isAdmin: boolean; adminMode: boolean; username: string },
 ): boolean {
   const rest = pathname.split(/[?#]/)[0].replace(/^\/platform\/[^/]+/, "") || "/";
-  if (/^\/(admin|setup)(\/|$)/.test(rest)) return session.isAdmin && session.adminMode;
+  if (/^\/setup(\/|$)/.test(rest)) return session.isAdmin && session.adminMode;
   const own = rest.match(/^\/students\/([^/]+)/);
   if (own) return session.isAdmin || decodeURIComponent(own[1]) === session.username;
   if (/^\/(students|staff|groups|grades|credentials|reports|messages)(\/|$)/.test(rest)) {

@@ -216,17 +216,15 @@ function TermReport({
         <EmptyState title={t("noMembers")} className="border-0" />
       ) : (
         <table className="min-w-full text-sm">
-          <thead className="text-muted-foreground text-left text-xs">
+          <thead className="text-muted-foreground text-left text-[11px] font-semibold tracking-wide uppercase">
             <tr className="border-b border-gray-100">
-              <th className="sticky left-0 z-10 bg-white px-3 py-2 font-medium">
-                {t("columns.student")}
-              </th>
+              <th className="sticky left-0 z-10 bg-white px-3 py-2">{t("columns.student")}</th>
               {inTerm.map((r) => (
-                <th key={r.course.id} className="px-3 py-2 font-medium" title={r.course.name}>
+                <th key={r.course.id} className="px-3 py-2" title={r.course.name}>
                   <div className="max-w-32 truncate">{r.course.number}</div>
                 </th>
               ))}
-              <th className="px-3 py-2 font-medium">{t("columns.gpa")}</th>
+              <th className="px-3 py-2">{t("columns.gpa")}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">

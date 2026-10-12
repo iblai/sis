@@ -203,7 +203,7 @@ function AdminDashboard() {
                       const seconds = num(row.time_spent) ?? num(row.total_time) ?? num(row.value);
                       return (
                         <li key={id} className="flex items-center gap-3 px-4 py-2.5 text-sm">
-                          <Trophy className="size-4 shrink-0 text-amber-500" />
+                          <Trophy className="size-4 shrink-0 text-gray-400" />
                           <Link
                             href={href(`/courses/${encodeURIComponent(id)}`)}
                             className="min-w-0 flex-1 truncate hover:underline"

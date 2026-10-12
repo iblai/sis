@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import type { Paginated } from "@/lib/sis/types";
 
-/** Page-number pagination for the CRM's `{count, next_page, previous_page}` envelope. */
+/** Page-number pagination for the DM's `{count, next_page, previous_page}` envelope. */
 export function PaginationBar({
   data,
   page,

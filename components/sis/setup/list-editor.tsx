@@ -73,10 +73,10 @@ export function ListEditor<T extends { id: string }>({
       {description ? <p className="text-muted-foreground text-xs">{description}</p> : null}
       <div className="overflow-auto rounded-xl border border-[var(--border-color,#e5e7eb)] bg-white">
         <table className="min-w-full text-sm">
-          <thead className="text-muted-foreground text-left text-xs">
+          <thead className="text-muted-foreground text-left text-[11px] font-semibold tracking-wide uppercase">
             <tr className="border-b border-gray-100">
               {columns.map((c) => (
-                <th key={c.key} className="px-3 py-2 font-medium" style={{ width: c.width }}>
+                <th key={c.key} className="px-3 py-2" style={{ width: c.width }}>
                   {c.label}
                   {c.required ? <span className="text-rose-600"> *</span> : null}
                 </th>

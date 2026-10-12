@@ -103,14 +103,12 @@ export function GradebookTab({ courseId }: { courseId: string }) {
         <div className="rounded-xl border border-[var(--border-color,#e5e7eb)] bg-white">
           <div className="overflow-auto">
             <table className="min-w-full text-sm">
-              <thead className="text-muted-foreground text-left text-xs">
+              <thead className="text-muted-foreground text-left text-[11px] font-semibold tracking-wide uppercase">
                 <tr className="border-b border-gray-100">
-                  <th className="sticky left-0 z-10 bg-white px-3 py-2 font-medium">
-                    {t("columns.learner")}
-                  </th>
-                  <th className="px-3 py-2 font-medium">{t("columns.total")}</th>
+                  <th className="sticky left-0 z-10 bg-white px-3 py-2">{t("columns.learner")}</th>
+                  <th className="px-3 py-2">{t("columns.total")}</th>
                   {columns.map((c) => (
-                    <th key={c.module_id} className="px-3 py-2 font-medium" title={c.display_name}>
+                    <th key={c.module_id} className="px-3 py-2" title={c.display_name}>
                       <div className="max-w-32 truncate">{c.short_label || c.display_name}</div>
                     </th>
                   ))}
@@ -210,7 +208,7 @@ function GradeCell({
   const body = (
     <>
       <span className="tabular-nums">{label}</span>
-      {sub ? <span className="text-muted-foreground block text-[10px]">{sub}</span> : null}
+      {sub ? <span className="text-muted-foreground block text-[11px]">{sub}</span> : null}
     </>
   );
   if (!editable) return <div className="px-2 py-1 text-xs">{body}</div>;

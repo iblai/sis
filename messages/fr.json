@@ -35,7 +35,7 @@
   },
   "shell": {
     "adminMode": "Mode administration",
-    "adminModeHint": "Le mode administration affiche la Configuration, Utilisateurs et rôles et chaque écriture ; le mode utilisateur est ce que voit un membre",
+    "adminModeHint": "Le mode administration affiche la Configuration, la Gestion et chaque écriture ; le mode utilisateur est ce que voit un membre",
     "platform": "Plateforme",
     "toggleSidebar": "Afficher ou masquer la barre latérale",
     "toggleSidebarHint": "Replier ou déplier la barre latérale (⌘B)"
@@ -54,18 +54,8 @@
     "students": "Étudiants"
   },
   "breadcrumbs": {
-    "admin": "Administration",
     "label": "Fil d’Ariane",
-    "notifications": "Notifications",
-    "users": "Utilisateurs et rôles"
-  },
-  "admin": {
-    "users": {
-      "description": "Membres, groupes, rôles et politiques de cette plateforme — la surface de gestion du SDK",
-      "invite": "Inviter un utilisateur",
-      "pendingInvites": "Invitations en attente",
-      "title": "Utilisateurs et rôles"
-    }
+    "notifications": "Notifications"
   },
   "auth": {
     "completingSignIn": "Connexion en cours…"

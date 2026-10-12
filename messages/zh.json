@@ -35,7 +35,7 @@
   },
   "shell": {
     "adminMode": "管理模式",
-    "adminModeHint": "管理模式显示设置、用户与角色及所有写入操作；用户模式是成员看到的样子",
+    "adminModeHint": "管理模式显示设置、管理及所有写入操作；用户模式是成员看到的样子",
     "platform": "平台",
     "toggleSidebar": "切换侧边栏",
     "toggleSidebarHint": "折叠或展开侧边栏（⌘B）"
@@ -54,18 +54,8 @@
     "students": "学生"
   },
   "breadcrumbs": {
-    "admin": "管理",
     "label": "面包屑导航",
-    "notifications": "通知",
-    "users": "用户与角色"
-  },
-  "admin": {
-    "users": {
-      "description": "本平台的成员、分组、角色与策略——SDK 的管理界面",
-      "invite": "邀请用户",
-      "pendingInvites": "待处理的邀请",
-      "title": "用户与角色"
-    }
+    "notifications": "通知"
   },
   "auth": {
     "completingSignIn": "正在完成登录…"

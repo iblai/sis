@@ -4,7 +4,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "ibl.ai/sis",
     short_name: "ibl.ai SIS",
-    description: "The open-source CRM for organizations on the ibl.ai platform.",
+    description: "The open-source student information system for schools on the ibl.ai platform.",
     start_url: "/",
     display: "standalone",
     background_color: "#ffffff",

@@ -174,8 +174,7 @@ sis/
 │   │   ├── grades/                          # averages and the term report
 │   │   ├── credentials/ · reports/ · messages/
 │   │   ├── setup/                           # school, years & terms, levels, periods, rooms, subjects, student fields
-│   │   ├── notifications/[[...id]]/         # SDK NotificationDisplay
-│   │   └── admin/users/                     # SDK Account → Management
+│   │   └── notifications/[[...id]]/         # SDK NotificationDisplay
 │   ├── sso-login-complete/                  # SSO landing (outside the providers)
 │   └── api/auth-redirect/                   # same-origin hop to the Auth SPA
 ├── components/sis/                          # shell, ⌘K, widgets, one folder per area
