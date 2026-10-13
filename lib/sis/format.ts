@@ -122,6 +122,13 @@ export function displayName(u: {
 }
 
 /** What a member is to the school, from the platform link's flags: neither flag is a student. */
+/** A label the DM sends either as a string or as `{ name }` (a credential's course or program). */
+export function nameOf(value: unknown): string | null {
+  if (typeof value === "string") return value || null;
+  const name = value && typeof value === "object" ? (value as { name?: unknown }).name : null;
+  return typeof name === "string" && name ? name : null;
+}
+
 export function roleOf(u: { is_admin?: boolean; is_staff?: boolean }): MemberRole {
   return u.is_admin ? "admin" : u.is_staff ? "teacher" : "student";
 }

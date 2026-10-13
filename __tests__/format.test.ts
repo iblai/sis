@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  nameOf,
   avatarColor,
   displayName,
   formatDate,
@@ -85,5 +86,15 @@ describe("roleOf", () => {
     expect(roleOf({ is_admin: true, is_staff: true })).toBe("admin");
     expect(roleOf({ is_staff: true })).toBe("teacher");
     expect(roleOf({})).toBe("student");
+  });
+});
+
+describe("nameOf", () => {
+  it("takes a string or an object's name, else null", () => {
+    expect(nameOf("Algebra")).toBe("Algebra");
+    expect(nameOf({ name: "Algebra", course_id: "course-v1:Org+Alg+Fall" })).toBe("Algebra");
+    expect(nameOf({ course_id: "x" })).toBeNull();
+    expect(nameOf("")).toBeNull();
+    expect(nameOf(null)).toBeNull();
   });
 });

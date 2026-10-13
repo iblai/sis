@@ -42,7 +42,7 @@ import {
   useRevokeAssertionMutation,
   useUserAssertionsQuery,
 } from "@/lib/sis/api";
-import { formatDate } from "@/lib/sis/format";
+import { formatDate, nameOf } from "@/lib/sis/format";
 import type { Assertion } from "@/lib/sis/types";
 
 /** The credentials issued to a student (DM assertions); admins issue and revoke. */
@@ -124,7 +124,7 @@ export function CredentialsTab({ username }: { username: string }) {
                     </span>
                   </TableCell>
                   <TableCell className="text-muted-foreground">
-                    {a.course ?? a.program ?? "—"}
+                    {nameOf(a.course) ?? nameOf(a.program) ?? "—"}
                   </TableCell>
                   <TableCell className="text-muted-foreground">
                     {formatDate(a.issuedOn, locale)}

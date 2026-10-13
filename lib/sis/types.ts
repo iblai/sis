@@ -264,8 +264,8 @@ export interface Assertion {
   revocationReason?: string | null;
   recipient: { identity?: string; type?: string; [k: string]: unknown };
   credentialDetails?: { entityId?: string; name?: string; image?: string; [k: string]: unknown };
-  course?: string | null;
-  program?: string | null;
+  course?: string | { name?: string; course_id?: string } | null;
+  program?: string | { name?: string; [k: string]: unknown } | null;
   narrative?: string | null;
   metadata?: Record<string, unknown> | null;
   [k: string]: unknown;
