@@ -219,7 +219,11 @@ export const lmsApi = createApi({
     }),
     instructorReports: b.query<InstructorDownload[], string>({
       query: (courseId) => `/api/instructor/v1/reports/${courseId}`,
-      transformResponse: (r: { downloads?: InstructorDownload[] }) => r.downloads ?? [],
+      // The report store hands back host-relative `/media/grades/…` URLs.
+      transformResponse: (r: { downloads?: InstructorDownload[] }) =>
+        (r.downloads ?? []).map((d) =>
+          d.url.startsWith("/") ? { ...d, url: `${config.legacyLmsUrl()}${d.url}` } : d,
+        ),
       providesTags: (_r, _e, id) => [{ type: "Tasks", id }],
     }),
     startCertificateGeneration: b.mutation<unknown, string>({
