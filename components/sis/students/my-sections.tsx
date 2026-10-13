@@ -23,13 +23,13 @@ export function MySections({ username, studentId }: { username: string; studentI
     return <p className="text-muted-foreground p-6 text-center text-sm">{t("none")}</p>;
   return (
     <div className="overflow-x-auto">
-      <table className="w-full text-sm">
+      <table className="w-full table-fixed text-sm">
         <thead className="text-muted-foreground text-left text-[11px] font-semibold tracking-wide uppercase">
           <tr className="border-b border-gray-100">
-            <th className="px-4 py-2">{t("columns.section")}</th>
-            <th className="hidden px-4 py-2 sm:table-cell">{t("columns.term")}</th>
-            <th className="px-4 py-2">{t("columns.grade")}</th>
-            <th className="px-4 py-2">{t("columns.progress")}</th>
+            <th className="w-2/5 px-4 py-2">{t("columns.section")}</th>
+            <th className="hidden w-1/5 px-4 py-2 sm:table-cell">{t("columns.term")}</th>
+            <th className="w-1/5 px-4 py-2">{t("columns.grade")}</th>
+            <th className="w-1/5 px-4 py-2">{t("columns.progress")}</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-100">

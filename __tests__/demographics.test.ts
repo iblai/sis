@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { customFieldsBySlug } from "@/lib/sis/demographics";
+import { customFieldsBySlug, withEveryField } from "@/lib/sis/demographics";
 
 describe("customFieldsBySlug", () => {
   it("turns the DM's list into values by slug, every type kept", () => {
@@ -23,5 +23,29 @@ describe("customFieldsBySlug", () => {
     expect(customFieldsBySlug(null)).toEqual({});
     expect(customFieldsBySlug(undefined)).toEqual({});
     expect(customFieldsBySlug("abc")).toEqual({});
+  });
+});
+
+describe("withEveryField", () => {
+  const definitions = [
+    { slug: "student_id", required: true },
+    { slug: "guardian_name" },
+    { slug: "medical_notes", required: false },
+  ];
+
+  it("adds a null for every optional field the form holds nothing for", () => {
+    expect(withEveryField({ student_id: "abc", homeroom: "" }, definitions)).toEqual({
+      student_id: "abc",
+      homeroom: "",
+      guardian_name: null,
+      medical_notes: null,
+    });
+  });
+
+  it("leaves an empty required field out and never overrides a value", () => {
+    expect(withEveryField({ guardian_name: "Jane" }, definitions)).toEqual({
+      guardian_name: "Jane",
+      medical_notes: null,
+    });
   });
 });

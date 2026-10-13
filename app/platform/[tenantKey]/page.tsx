@@ -3,16 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
-import {
-  Activity,
-  Award,
-  BookOpen,
-  GraduationCap,
-  Home,
-  Trophy,
-  UserPlus,
-  Users,
-} from "lucide-react";
+import { Activity, BookOpen, GraduationCap, Home, Trophy, UserPlus, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/sis/page-header";
 import { SimpleSelect } from "@/components/sis/simple-select";
@@ -22,6 +13,7 @@ import { LoadError } from "@/components/sis/load-error";
 import { OnboardingCard } from "@/components/sis/dashboard/onboarding-card";
 import { OverTimeChart } from "@/components/sis/dashboard/over-time-chart";
 import { EntityAvatar } from "@/components/sis/entity-avatar";
+import { MyCredentials } from "@/components/sis/students/my-credentials";
 import { MySections } from "@/components/sis/students/my-sections";
 import { PageGate, useGateLoading } from "@/components/sis/page-gate";
 import { useSession } from "@/hooks/use-session";
@@ -281,10 +273,9 @@ function StudentHome() {
           title={t("myCredentials.title")}
           href={href(`/students/${encodeURIComponent(username)}?tab=credentials`)}
           linkLabel={t("myCredentials.link")}
+          bodyClassName="p-0"
         >
-          <p className="text-muted-foreground flex items-center gap-2 text-sm">
-            <Award className="size-4" /> {t("myCredentials.body")}
-          </p>
+          <MyCredentials username={username} />
         </Panel>
       </div>
     </div>

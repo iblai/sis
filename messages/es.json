@@ -128,7 +128,6 @@
   },
   "dashboard": {
     "myCredentials": {
-      "body": "Tus credenciales y certificados emitidos están en tu expediente.",
       "link": "Abrir mis credenciales",
       "title": "Mis credenciales"
     },

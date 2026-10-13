@@ -128,7 +128,6 @@
   },
   "dashboard": {
     "myCredentials": {
-      "body": "Your issued credentials and certificates are on your record.",
       "link": "Open My Credentials",
       "title": "My Credentials"
     },

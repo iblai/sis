@@ -128,7 +128,6 @@
   },
   "dashboard": {
     "myCredentials": {
-      "body": "已颁发给你的证书都在你的档案中。",
       "link": "打开我的证书",
       "title": "我的证书"
     },

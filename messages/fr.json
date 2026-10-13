@@ -128,7 +128,6 @@
   },
   "dashboard": {
     "myCredentials": {
-      "body": "Vos attestations et certificats délivrés figurent dans votre dossier.",
       "link": "Ouvrir mes attestations",
       "title": "Mes attestations"
     },

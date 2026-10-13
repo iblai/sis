@@ -24,6 +24,7 @@ import {
   sisApi,
 } from "@/lib/sis/api";
 import { countryOptions, languageOptions } from "@/lib/sis/iso";
+import { withEveryField } from "@/lib/sis/demographics";
 import { RESIDENCE, RESIDENCE_FIELD, isEnrollmentStatus, isSeedSlug } from "@/lib/sis/seed";
 import { useDispatch } from "react-redux";
 import type { IblaiAppDispatch } from "@/store/iblai-store";
@@ -177,7 +178,7 @@ function RecordFormFields({
       country_of_birth: previous.country_of_birth ?? "",
       nationality: base.nationality,
       disability_status: previous.disability_status ?? "",
-      custom_fields: customFields,
+      custom_fields: withEveryField(customFields, definitions),
     };
     try {
       if (noResidenceField && residence) {
