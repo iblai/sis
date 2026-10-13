@@ -99,7 +99,7 @@
     "inviteStudent": "Invite Student",
     "newEmail": "New Email",
     "newGroup": "New Group",
-    "newSection": "New Section",
+    "newSection": "New Course",
     "noResults": "No results.",
     "placeholder": "Search students, staff and courses…",
     "toClose": "to close",
@@ -133,24 +133,24 @@
     },
     "mySections": {
       "info": "Your enrollments from the learning platform, with the grade and completion it reports",
-      "title": "My Sections"
+      "title": "My Courses"
     },
     "onboarding": {
-      "body": "Add the school year, terms and grade levels, invite students, and turn course runs into sections.",
+      "body": "Add the school year, terms and grade levels, invite students, and place your courses in terms.",
       "inviteStudent": "Invite a Student",
-      "newSection": "Create a Section",
+      "newSection": "Create a Course",
       "setUp": "Set Up the School",
       "steps": {
         "sections": {
-          "body": "A section is a course run for a term — rerun an existing course from Courses.",
-          "title": "Create Sections"
+          "body": "A course here is one run for a term — rerun an existing course from Courses.",
+          "title": "Create Courses"
         },
         "setup": {
           "body": "Year, terms, grade levels, periods, rooms, subjects and the student record fields.",
           "title": "Set Up the School"
         },
         "students": {
-          "body": "Invite students one by one, or import a CSV straight into a section.",
+          "body": "Invite students one by one, or import a CSV straight into a course.",
           "title": "Bring In Students"
         }
       },
@@ -193,8 +193,8 @@
       },
       "courses": {
         "hint": "{count, plural, one {# term} other {# terms}}",
-        "info": "Course runs of this platform on the learning platform. Created in Studio, turned into sections here.",
-        "label": "Sections"
+        "info": "Course runs of this platform on the learning platform. Created in Studio, placed in terms here.",
+        "label": "Courses"
       },
       "grade": {
         "hint": "Across every course run",
@@ -208,7 +208,7 @@
       },
       "members": {
         "label": "Members",
-        "info": "Everyone on the platform the directory lists — students and staff. Invite them here or in Skills AI, or import a CSV into a section."
+        "info": "Everyone on the platform the directory lists — students and staff. Invite them here or in Skills AI, or import a CSV into a course."
       }
     },
     "welcome": "Here is how your school is doing.",
@@ -222,7 +222,7 @@
     "countLabel": "students",
     "description": "Every member of the platform the directory lists as a student",
     "empty": {
-      "body": "Invite a student or import a CSV into a section to get started.",
+      "body": "Invite a student or import a CSV into a course to get started.",
       "noMatch": "No student matches",
       "title": "No students yet"
     },
@@ -257,10 +257,10 @@
       "description": "One line per student: email, username, name, country. Existing accounts are enrolled; new emails get an account when the platform allows automated sign-ups.",
       "done": "{count, plural, one {# student imported} other {# students imported}}, {refused} refused",
       "file": "Or Pick a CSV File",
-      "pickSection": "Pick a section",
+      "pickSection": "Pick a course",
       "preview": "{count, plural, one {# row ready} other {# rows ready}}, {errors} with errors",
       "result": "What the Learning Platform Said",
-      "section": "Into Section",
+      "section": "Into Course",
       "submit": "Import {count, plural, one {# Student} other {# Students}}",
       "title": "Import Students"
     },
@@ -283,8 +283,8 @@
       "reactivate": "Reactivate",
       "reactivated": "Membership reactivated",
       "saved": "Record saved",
-      "sections": "Sections",
-      "sectionsAndGuardians": "Sections and Contacts",
+      "sections": "Courses",
+      "sectionsAndGuardians": "Courses and Contacts",
       "statusLabel": "Status",
       "summary": "Summary",
       "tabs": {
@@ -312,7 +312,7 @@
     "columns": {
       "grade": "Grade",
       "progress": "Progress",
-      "section": "Section",
+      "section": "Course",
       "since": "Since",
       "status": "Status",
       "term": "Term"
@@ -324,13 +324,13 @@
     "enrollDialog": {
       "description": "A course invitation enrolls the student on the learning platform right away.",
       "done": "Enrolled",
-      "pickSection": "Pick a section",
-      "section": "Section",
+      "pickSection": "Pick a course",
+      "section": "Course",
       "submit": "Enroll",
-      "title": "Enroll in a Section"
+      "title": "Enroll in a Course"
     },
     "hint": "Enrollments come from the learning platform; the grade and progress are what it reports.",
-    "none": "No sections yet.",
+    "none": "No courses yet.",
     "passing": "Passing",
     "pendingInvitations": "{count, plural, one {# invitation pending:} other {# invitations pending:}}"
   },
@@ -341,15 +341,15 @@
       "credits": "Credits",
       "letter": "Letter",
       "percent": "Grade",
-      "section": "Section",
+      "section": "Course",
       "status": "Status"
     },
     "completion": "Completion",
     "details": "Details",
     "ends": "Ends",
     "gpa": {
-      "hint": "{credits} credits counted, {excluded} sections left out",
-      "info": "Points × credits over the term’s sections with a letter and credits, on the school’s GPA scale",
+      "hint": "{credits} credits counted, {excluded} courses left out",
+      "info": "Points × credits over the term’s courses with a letter and credits, on the school’s GPA scale",
       "label": "Term GPA"
     },
     "gradedWork": "Graded Work",
@@ -357,7 +357,7 @@
     "instructorDashboard": "Instructor Dashboard",
     "myStanding": "My Standing",
     "noGradedWork": "No graded work yet.",
-    "none": "No sections in this term.",
+    "none": "No courses in this term.",
     "notPassing": "Not Passing",
     "openInLms": "Open in the Learning Platform",
     "page": {
@@ -366,18 +366,18 @@
       "columns": {
         "average": "Average Grade",
         "gpa": "GPA",
-        "section": "Section",
+        "section": "Course",
         "student": "Student",
         "term": "Term"
       },
-      "description": "Class averages per section, and a term report per grade level",
+      "description": "Class averages per course, and a term report per grade level",
       "level": "Grade Level",
       "noMembers": "The cohort group has no members.",
-      "noSections": "No sections in this term.",
+      "noSections": "No courses in this term.",
       "pickLevel": "Term report for…",
       "reportStarted": "The course grade report is running — find it under Reports",
       "runReport": "Course Grade Report",
-      "sections": "Sections",
+      "sections": "Courses",
       "term": "Term",
       "termReport": "Term Report · {group} ({count, plural, one {# Student} other {# Students}})",
       "termReportHint": "Pick a term and a grade level with a cohort group to see every student’s letters and GPA."
@@ -388,12 +388,12 @@
   },
   "credentials": {
     "bulkIssue": {
-      "course": "For Section",
-      "description": "The credential is issued to each recipient for the section; already-issued ones are skipped.",
+      "course": "For Course",
+      "description": "The credential is issued to each recipient for the course; already-issued ones are skipped.",
       "done": "{count, plural, one {# credential issued} other {# credentials issued}}",
       "groupSize": "{count, plural, one {# member} other {# members}}",
       "oneStudent": "One Student",
-      "pickCourse": "Pick a section",
+      "pickCourse": "Pick a course",
       "pickGroup": "Pick a group",
       "pickStudent": "Pick a student",
       "submit": "Issue",
@@ -402,7 +402,7 @@
       "wholeGroup": "Every Member of a Group"
     },
     "columns": {
-      "course": "Section",
+      "course": "Course",
       "credential": "Credential",
       "expires": "Expires",
       "issued": "Issued",
@@ -410,12 +410,12 @@
     },
     "issue": "Issue Credential",
     "issueDialog": {
-      "course": "Section",
+      "course": "Course",
       "credential": "Credential",
-      "description": "Issue one of the platform’s credentials to this student for a section.",
+      "description": "Issue one of the platform’s credentials to this student for a course.",
       "done": "Credential issued",
       "narrative": "Note",
-      "pickCourse": "Pick a section",
+      "pickCourse": "Pick a course",
       "pickCredential": "Pick a credential",
       "submit": "Issue",
       "title": "Issue a Credential"
@@ -432,7 +432,7 @@
       },
       "generateCertificates": "Generate Certificates",
       "issue": "Issue",
-      "pickSection": "Pick a section"
+      "pickSection": "Pick a course"
     },
     "revoke": "Revoke",
     "revokeBody": "The credential stays on record as revoked, with the reason you give.",
@@ -444,7 +444,7 @@
       "revoked": "Revoked",
       "valid": "Valid"
     },
-    "studentHint": "Credentials issued on the platform; certificates from the learning platform appear on each section."
+    "studentHint": "Credentials issued on the platform; certificates from the learning platform appear on each course."
   },
   "guardians": {
     "add": "Add Guardian",
@@ -462,15 +462,15 @@
       "dates": "Dates",
       "gradeLevel": "Grade Level",
       "schedule": "Schedule",
-      "section": "Section",
+      "section": "Course",
       "subject": "Subject",
       "term": "Term"
     },
-    "description": "Sections are the platform’s course runs, with the term, subject, room and period set here",
+    "description": "Each course is one run on the learning platform, with its term, subject, room and period set here",
     "empty": {
-      "body": "Create a section by rerunning a course for a term, or create courses in Studio.",
-      "noMatch": "No section matches",
-      "title": "No sections yet"
+      "body": "Create a course by rerunning one for a term, or create courses in Studio.",
+      "noMatch": "No course matches",
+      "title": "No courses yet"
     },
     "filters": {
       "allLevels": "All Grade Levels",
@@ -478,26 +478,26 @@
       "allTerms": "All Terms"
     },
     "instructorDashboard": "Instructor Dashboard",
-    "mine": "The sections you are enrolled in",
-    "newSection": "New Section",
+    "mine": "The courses you are enrolled in",
+    "newSection": "New Course",
     "openInLms": "Open in the Learning Platform",
-    "searchPlaceholder": "Search sections…",
+    "searchPlaceholder": "Search courses…",
     "seats": "{count} seats",
     "sectionDialog": {
-      "datesNotSet": "The section was created; set its dates under Settings.",
-      "description": "A section is a rerun of an existing course run into a term: same content, its own roster and gradebook.",
-      "done": "Section “{name}” created",
+      "datesNotSet": "The course was created; set its dates under Settings.",
+      "description": "A new course is a rerun of an existing one into a term: same content, its own roster and gradebook.",
+      "done": "Course “{name}” created",
       "gradeLevel": "Grade Level",
-      "name": "Section Name",
+      "name": "Course Name",
       "noTerms": "Add terms under Setup first",
       "pickSource": "Pick the course to rerun",
       "pickTerm": "Pick a term",
       "run": "Run ID",
       "source": "Course to Rerun",
       "subject": "Subject",
-      "submit": "Create Section",
+      "submit": "Create Course",
       "term": "Term",
-      "title": "New Section"
+      "title": "New Course"
     },
     "selfPaced": "self-paced",
     "settings": {
@@ -506,7 +506,7 @@
       "addTeacher": "Add Teacher",
       "applyTerm": "Use a term’s dates…",
       "assignmentType": "Assignment Type",
-      "conflict": "Someone else changed the sections meanwhile — reload and try again.",
+      "conflict": "Someone else changed the courses meanwhile — reload and try again.",
       "count": "Count",
       "courseInstructors": "Course Instructors",
       "courseStaff": "Course Staff",
@@ -523,7 +523,7 @@
       "grading": "Grading Policy",
       "hint": "Dates and the grading policy live on the course run in Studio; teachers are course roles on the learning platform; the rest is the school’s own data.",
       "letter": "Letter",
-      "noSetup": "Set up the school first to place this section in a term.",
+      "noSetup": "Set up the school first to place this course in a term.",
       "period": "Period",
       "pickTeacher": "Pick a staff member",
       "removeTeacher": "Remove Teacher",
@@ -531,7 +531,7 @@
       "room": "Room",
       "saved": "Saved",
       "seats": "Seats",
-      "section": "Section",
+      "section": "Course",
       "selfPaced": "Self-Paced",
       "start": "Start",
       "subject": "Subject",
@@ -624,11 +624,11 @@
       "active": "Active",
       "admin": "Platform Admin",
       "adminGranted": "Made a platform admin",
-      "adminHint": "Admins manage the whole school and teach every section",
+      "adminHint": "Admins manage the whole school and teach every course",
       "adminRemoved": "No longer a platform admin",
-      "checkSections": "Check Sections",
-      "courseInstructor": "instructor",
-      "courseStaff": "staff",
+      "checkSections": "Check Courses",
+      "courseInstructor": "Instructor",
+      "courseStaff": "Staff",
       "joined": "Joined",
       "makeAdmin": "Make Admin",
       "makeTeacher": "Make Teacher",
@@ -636,11 +636,11 @@
       "removeAdmin": "Remove Admin",
       "removeTeacher": "Remove Teacher",
       "roles": "Roles",
-      "sectionsHint": "Sections where this person holds a course role on the learning platform.",
-      "sectionsTaught": "Sections Taught",
+      "sectionsHint": "Courses where this person holds a course role on the learning platform.",
+      "sectionsTaught": "Courses Taught",
       "teacher": "Teacher",
       "teacherGranted": "Made a teacher",
-      "teacherHint": "Teachers hold the org-staff role on the learning platform: course staff on every section",
+      "teacherHint": "Teachers hold the org-staff role on the learning platform: staff in every course",
       "teacherRemoved": "No longer a teacher",
       "v1Note": "In this version teachers are platform admins; the Teacher role prepares the next one.",
       "yes": "Yes"
@@ -688,18 +688,18 @@
     "searchPlaceholder": "Search groups…"
   },
   "reports": {
-    "description": "The platform’s reports, and the learning platform’s per-section downloads",
+    "description": "The platform’s reports, and the learning platform’s per-course downloads",
     "download": "Download CSV",
     "expires": "expires {when}",
     "from": "From",
     "lms": {
-      "description": "Reports the instructor dashboard generated for a section, and its recent tasks",
+      "description": "Reports the instructor dashboard generated for a course, and its recent tasks",
       "downloads": "Downloads",
-      "pickSection": "Pick a section",
+      "pickSection": "Pick a course",
       "rosterCsv": "Request Roster CSV",
       "rosterRequested": "The roster CSV is being generated",
       "tasks": "Recent Tasks",
-      "title": "Section Reports"
+      "title": "Course Reports"
     },
     "none": "No reports available.",
     "run": "Run",
@@ -732,24 +732,24 @@
       "title": "Announcement",
       "usernames": "Named Users"
     },
-    "description": "Email a section through the learning platform, or announce to the platform",
+    "description": "Email a course through the learning platform, or announce to the platform",
     "email": {
-      "hint": "Sent by the learning platform to the section’s learners or staff.",
+      "hint": "Sent by the learning platform to the course’s learners or staff.",
       "learners": "Learners",
       "message": "Message",
       "myself": "Myself",
-      "pickSection": "Pick a section",
+      "pickSection": "Pick a course",
       "schedule": "Schedule For",
       "scheduleSend": "Schedule",
       "scheduled": "Email scheduled",
       "scheduledItem": "Scheduled Email",
       "scheduledTitle": "Scheduled",
-      "section": "Section",
+      "section": "Course",
       "send": "Send",
       "sent": "Email sent",
       "staff": "Staff",
       "subject": "Subject",
-      "title": "Section Email"
+      "title": "Course Email"
     }
   },
   "setup": {
@@ -792,13 +792,13 @@
     },
     "periods": {
       "endTime": "Ends",
-      "hint": "The bell schedule: a section meets in one period.",
+      "hint": "The bell schedule: a course meets in one period.",
       "name": "Period",
       "startTime": "Starts"
     },
     "rooms": {
       "capacity": "Capacity",
-      "hint": "Where sections meet.",
+      "hint": "Where courses meet.",
       "name": "Room"
     },
     "school": {
@@ -815,7 +815,7 @@
       "title": "School"
     },
     "subjects": {
-      "hint": "Subjects a section is filed under.",
+      "hint": "Subjects a course is filed under.",
       "name": "Subject"
     },
     "tabs": {
@@ -829,7 +829,7 @@
     },
     "terms": {
       "end": "End",
-      "hint": "Terms belong to a year; a section is a course run for one term.",
+      "hint": "Terms belong to a year; a course is one run for one term.",
       "start": "Start",
       "termName": "Term",
       "title": "Terms",
@@ -841,37 +841,37 @@
   },
   "where": {
     "announcement": "Written here; delivered by the platform’s notifications.",
-    "course": "Content and graded assignments are authored in Studio; the roster and the scores come from the learning platform; the section’s term, subject and room are set here.",
+    "course": "Content and graded assignments are authored in Studio; the roster and the scores come from the learning platform; the course’s term, subject and room are set here.",
     "courseDates": "Dates live on the course run in Studio; edit them here.",
     "courseGrading": "The grading policy lives on the course run in Studio; edit it here.",
-    "courses": "Course runs are created in Studio for this platform’s org, then rerun here as sections for a term. Term, subject, room and period are set here.",
+    "courses": "Course runs are created in Studio for this platform’s org, then rerun here as courses for a term. Term, subject, room and period are set here.",
     "credentials": "Credentials are defined in Skills AI and issued here; certificates are generated by the learning platform.",
     "enrollment": "Enroll here by course invitation or with the CSV import; drop on the learning platform.",
     "gradeAverages": "Averages from the platform analytics, from graded work on the learning platform.",
     "gradebook": "Scores come from learners’ work on the learning platform; override them here. Assignments are authored in Studio.",
-    "grades": "Grades come from graded work on the learning platform, or from overrides in a section’s Gradebook. Credits and terms are set per section; the GPA scale in Setup.",
+    "grades": "Grades come from graded work on the learning platform, or from overrides in a course’s Gradebook. Credits and terms are set per course; the GPA scale in Setup.",
     "group": "Members are added here, from the platform directory.",
     "groups": "Groups are created and filled here, from the platform’s members.",
     "guardians": "Added here. A guardian must be a member of the platform first: Invite them.",
     "home": "Members are invited here or in Skills AI, courses are created in Studio, and the activity numbers fill as learners use their courses on the learning platform.",
     "label": "Where does this come from?",
-    "messages": "Announcements are written here; section email is sent by the learning platform.",
-    "overviewSections": "Sections come from the learning platform’s enrollments; guardians are added here.",
+    "messages": "Announcements are written here; course email is sent by the learning platform.",
+    "overviewSections": "Courses come from the learning platform’s enrollments; guardians are added here.",
     "overviewStatus": "Status is the platform membership: Deactivate here, or in Skills AI.",
     "record": "Typed here. Custom fields are defined in Setup › Student Fields.",
-    "reports": "Platform reports run here; section reports are generated by the instructor dashboard on the learning platform.",
+    "reports": "Platform reports run here; course reports are generated by the instructor dashboard on the learning platform.",
     "roster": "Enroll here by invitation or CSV import; the roster is the course’s enrollment on the learning platform.",
     "section": "Set here, in the school’s data.",
-    "sectionEmail": "Sent by the learning platform to the section’s learners; needs a section.",
+    "sectionEmail": "Sent by the learning platform to the course’s learners; needs a course.",
     "sectionReports": "Generated by the instructor dashboard on the learning platform.",
     "setup": "Everything here is typed in: years and terms, grade levels, periods, rooms, subjects and the record fields. Nothing comes from another app.",
     "staff": "Staff are members of the platform with the admin flag. Invite them here, or set the flag in Skills AI.",
-    "staffMember": "The admin and teacher flags are set here or in Skills AI; sections taught are course roles on the learning platform.",
+    "staffMember": "The admin and teacher flags are set here or in Skills AI; courses taught are course roles on the learning platform.",
     "student": "The record and guardians are typed here; enrollments and grades come from the learning platform; credentials are defined in Skills AI and issued here.",
     "studentCredentials": "Credentials are defined in Skills AI and issued here.",
-    "studentGrades": "Grades come from graded work on the learning platform, or from overrides in the section’s Gradebook.",
-    "students": "Students are members of the platform. Add them with Invite (by email), with the CSV import into a section, or in Skills AI.",
-    "taught": "Course roles on the learning platform, set per section in Course › Settings › Teachers.",
+    "studentGrades": "Grades come from graded work on the learning platform, or from overrides in the course’s Gradebook.",
+    "students": "Students are members of the platform. Add them with Invite (by email), with the CSV import into a course, or in Skills AI.",
+    "taught": "Course roles on the learning platform, set per course in Course › Settings › Teachers.",
     "teachers": "Teachers are course roles on the learning platform; set them here.",
     "termReport": "Needs a grade level with a cohort group (Setup › Grade Levels) and progress from the learning platform."
   }

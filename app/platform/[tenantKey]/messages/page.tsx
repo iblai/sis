@@ -16,6 +16,7 @@ import { PageHeader } from "@/components/sis/page-header";
 import { LoadError } from "@/components/sis/load-error";
 import { LoadingScreen } from "@/components/loading-screen";
 import { SimpleSelect } from "@/components/sis/simple-select";
+import { SectionPicker } from "@/components/sis/section-picker";
 import { useBreadcrumbs } from "@/components/sis/breadcrumbs";
 import { WhereTip } from "@/components/sis/where-tip";
 import { PageGate, useGateLoading } from "@/components/sis/page-gate";
@@ -112,11 +113,12 @@ function SectionEmail({ initialCourseId }: { initialCourseId: string }) {
         <p className="text-muted-foreground text-xs">{t("hint")}</p>
       </div>
       <div className="space-y-1.5">
-        <Label>{t("section")}</Label>
-        <SimpleSelect
+        <Label htmlFor="email-section">{t("section")}</Label>
+        <SectionPicker
+          id="email-section"
           value={courseId}
           onChange={setCourseId}
-          options={sections.rows.map((r) => ({ value: r.course.id, label: r.course.name }))}
+          rows={sections.rows}
           placeholder={t("pickSection")}
         />
       </div>

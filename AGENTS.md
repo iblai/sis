@@ -7,7 +7,7 @@ repository. `CLAUDE.md` is a symlink to this file.
 
 ibl.ai/sis is a **multi-platform** student information system on the ibl.ai
 platform (the os.ibl.ai model). A platform is a school; its users are students
-and staff; the platform's Open edX course runs are its sections. The platform
+and staff; the platform's Open edX course runs are its courses. The platform
 is in the URL: `/platform/[tenantKey]/…`. Users sign in with ibl.ai SSO and
 switch between every platform they belong to — never the community platform.
 
@@ -19,7 +19,7 @@ Three backends carry the data, all through existing endpoints:
   metadata (`sis` block);
 - the **LMS** (Open edX with the ibl plugins): course runs, rosters, course
   roles (teachers), the import, progress, the gradebook, course email, tasks;
-- **Studio**: reruns (new sections), course dates and grading policy.
+- **Studio**: reruns (new courses), course dates and grading policy.
 
 ## Rules
 
@@ -43,12 +43,13 @@ Three backends carry the data, all through existing endpoints:
    never the SDK's Studio service). Every call names the platform or the
    course. Lists are server-paged; the Courses list (a bounded run list) is
    the one client-side exception. The directory is `GET /api/core/platform/users/`
-   (the DM users search is a résumé search and returns no users); the section
+   (the DM users search is a résumé search and returns no users); the course
    list is Studio's `home/courses` (the LMS `courses/v1` routes are blocked at
    the edge for every browser). **No new DM or LMS endpoint is written for
    this app**: a gap goes into `TODOS.md`, never into a workaround that fakes
    the feature.
-4. **Where data lives.** School and section data in the platform metadata
+4. **Where data lives.** School data and each course's term, subject, room,
+   period and credits in the platform metadata
    under `sis` as arrays written whole (`hooks/use-sis-metadata.ts` — the DM
    merge replaces arrays and never deletes a key; compare-on-save refuses a
    stale list); student records in demographics (PUT resets what it does not
@@ -67,9 +68,10 @@ Three backends carry the data, all through existing endpoints:
    none (`pnpm i18n:check`). Keys are typed from `messages/en.json`
    (`global.d.ts`). Dates and ratios go through `lib/sis/format.ts` with
    `useLocale()`. Typographic `’` and `…`.
-8. **Vocabulary and case.** Students, staff, courses (a section is a course
-   run), groups, terms, platform. Never "tenant", "pupil" or "class period" in
-   anything a user sees. English labels are Title Case — field labels, columns,
+8. **Vocabulary and case.** Students, staff, courses (a course is one course
+   run on the learning platform), groups, terms, platform. Never "tenant",
+   "pupil", "section" or "class period" in anything a user sees. English labels
+   are Title Case — field labels, columns,
    tabs, nav, buttons, titles, legends, options, status words ("Date of Birth",
    "Add Guardian"); minor words stay lowercase unless first, last or in a
    phrasal verb ("Set Up", "Sign In"). Sentences stay sentence case:

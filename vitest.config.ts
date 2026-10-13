@@ -22,6 +22,7 @@ export default defineConfig({
         "lib/sis/over-time.ts",
         "lib/sis/permissions.ts",
         "lib/sis/qs.ts",
+        "lib/sis/roles.ts",
         "lib/sis/sections.ts",
         "lib/sis/seed.ts",
         "lib/iblai/tenant.ts",

@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Spinner } from "@iblai/iblai-js/web-containers";
-import { SimpleSelect } from "@/components/sis/simple-select";
+import { SectionPicker } from "@/components/sis/section-picker";
 import { useSections } from "@/hooks/use-sections";
 import { useSession } from "@/hooks/use-session";
 import { useToastError } from "@/hooks/use-toast-error";
@@ -40,12 +40,7 @@ export function EnrollDialog({
   const sections = useSections({ skip: !open });
   const [courseId, setCourseId] = useState("");
   const [create, { isLoading }] = useCreateCourseInvitationMutation();
-  const options = sections.rows
-    .filter((r) => !exclude.includes(r.course.id))
-    .map((r) => ({
-      value: r.course.id,
-      label: r.term ? `${r.course.name} · ${r.term.name}` : r.course.name,
-    }));
+  const rows = sections.rows.filter((r) => !exclude.includes(r.course.id));
 
   const submit = async () => {
     if (!courseId) return;
@@ -67,11 +62,12 @@ export function EnrollDialog({
           <DialogDescription>{t("description")}</DialogDescription>
         </DialogHeader>
         <div className="space-y-1.5">
-          <Label>{t("section")}</Label>
-          <SimpleSelect
+          <Label htmlFor="enroll-section">{t("section")}</Label>
+          <SectionPicker
+            id="enroll-section"
             value={courseId}
             onChange={setCourseId}
-            options={options}
+            rows={rows}
             placeholder={t("pickSection")}
             disabled={sections.isLoading}
           />

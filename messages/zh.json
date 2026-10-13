@@ -99,7 +99,7 @@
     "inviteStudent": "邀请学生",
     "newEmail": "新邮件",
     "newGroup": "新建分组",
-    "newSection": "新建班级",
+    "newSection": "新建课程",
     "noResults": "没有结果。",
     "placeholder": "搜索学生、教职工和课程…",
     "toClose": "关闭",
@@ -133,24 +133,24 @@
     },
     "mySections": {
       "info": "你在学习平台上的选课，以及它报告的成绩和进度",
-      "title": "我的班级"
+      "title": "我的课程"
     },
     "onboarding": {
-      "body": "添加学年、学期和年级，邀请学生，并把课程运行变成班级。",
+      "body": "添加学年、学期和年级，邀请学生，并把课程放入学期。",
       "inviteStudent": "邀请一位学生",
-      "newSection": "创建一个班级",
+      "newSection": "创建一门课程",
       "setUp": "设置学校",
       "steps": {
         "sections": {
-          "body": "班级是某个学期的一次课程运行——在“课程”中重新运行一门现有课程即可。",
-          "title": "创建班级"
+          "body": "这里的课程是某个学期的一次课程运行——在“课程”中重新运行一门现有课程即可。",
+          "title": "创建课程"
         },
         "setup": {
           "body": "学年、学期、年级、节次、教室、科目以及学生档案字段。",
           "title": "设置学校"
         },
         "students": {
-          "body": "逐个邀请学生，或把 CSV 直接导入某个班级。",
+          "body": "逐个邀请学生，或把 CSV 直接导入某门课程。",
           "title": "引入学生"
         }
       },
@@ -193,8 +193,8 @@
       },
       "courses": {
         "hint": "{count, plural, one {# 个学期} other {# 个学期}}",
-        "info": "本平台在学习平台上的课程运行。在 Studio 中创建，在此处变为班级。",
-        "label": "班级"
+        "info": "本平台在学习平台上的课程运行。在 Studio 中创建，在此处放入学期。",
+        "label": "课程"
       },
       "grade": {
         "hint": "覆盖所有课程运行",
@@ -208,7 +208,7 @@
       },
       "members": {
         "label": "成员",
-        "info": "名录列出的平台所有人员：学生与教职员。在此处或在 Skills AI 中邀请，或将 CSV 导入某个班级。"
+        "info": "名录列出的平台所有人员：学生与教职员。在此处或在 Skills AI 中邀请，或将 CSV 导入某门课程。"
       }
     },
     "welcome": "这是你学校的近况。",
@@ -222,7 +222,7 @@
     "countLabel": "名学生",
     "description": "名录中列为学生的每一位平台成员",
     "empty": {
-      "body": "邀请一位学生，或把 CSV 导入某个班级即可开始。",
+      "body": "邀请一位学生，或把 CSV 导入某门课程即可开始。",
       "noMatch": "没有匹配的学生",
       "title": "还没有学生"
     },
@@ -257,10 +257,10 @@
       "description": "每位学生一行：邮箱、用户名、姓名、国家。已有账号会被选课；平台允许自动注册时，新邮箱会获得账号。",
       "done": "{count, plural, one {已导入 # 位学生} other {已导入 # 位学生}}，{refused} 位被拒绝",
       "file": "或选择一个 CSV 文件",
-      "pickSection": "选择一个班级",
+      "pickSection": "选择一门课程",
       "preview": "{count, plural, one {# 行就绪} other {# 行就绪}}，{errors} 行有错误",
       "result": "学习平台的回应",
-      "section": "导入到班级",
+      "section": "导入到课程",
       "submit": "导入 {count, plural, one {# 位学生} other {# 位学生}}",
       "title": "导入学生"
     },
@@ -283,8 +283,8 @@
       "reactivate": "重新启用",
       "reactivated": "成员资格已重新启用",
       "saved": "档案已保存",
-      "sections": "班级",
-      "sectionsAndGuardians": "班级与联系人",
+      "sections": "课程",
+      "sectionsAndGuardians": "课程与联系人",
       "statusLabel": "状态",
       "summary": "摘要",
       "tabs": {
@@ -312,7 +312,7 @@
     "columns": {
       "grade": "成绩",
       "progress": "进度",
-      "section": "班级",
+      "section": "课程",
       "since": "起始",
       "status": "状态",
       "term": "学期"
@@ -324,13 +324,13 @@
     "enrollDialog": {
       "description": "课程邀请会立即在学习平台上为学生选课。",
       "done": "已选课",
-      "pickSection": "选择一个班级",
-      "section": "班级",
+      "pickSection": "选择一门课程",
+      "section": "课程",
       "submit": "选课",
-      "title": "加入班级"
+      "title": "加入课程"
     },
     "hint": "选课来自学习平台；成绩和进度是它所报告的数据。",
-    "none": "还没有班级。",
+    "none": "还没有课程。",
     "passing": "及格",
     "pendingInvitations": "{count, plural, one {# 个邀请待处理：} other {# 个邀请待处理：}}"
   },
@@ -341,15 +341,15 @@
       "credits": "学分",
       "letter": "等级",
       "percent": "成绩",
-      "section": "班级",
+      "section": "课程",
       "status": "状态"
     },
     "completion": "完成度",
     "details": "详情",
     "ends": "结束",
     "gpa": {
-      "hint": "计入 {credits} 学分，{excluded} 个班级未计入",
-      "info": "按学校的 GPA 等级表，对本学期有等级和学分的班级计算绩点 × 学分",
+      "hint": "计入 {credits} 学分，{excluded} 门课程未计入",
+      "info": "按学校的 GPA 等级表，对本学期有等级和学分的课程计算绩点 × 学分",
       "label": "学期 GPA"
     },
     "gradedWork": "已评分作业",
@@ -357,7 +357,7 @@
     "instructorDashboard": "教师仪表盘",
     "myStanding": "我的情况",
     "noGradedWork": "还没有已评分的作业。",
-    "none": "本学期没有班级。",
+    "none": "本学期没有课程。",
     "notPassing": "未及格",
     "openInLms": "在学习平台中打开",
     "page": {
@@ -366,18 +366,18 @@
       "columns": {
         "average": "平均成绩",
         "gpa": "GPA",
-        "section": "班级",
+        "section": "课程",
         "student": "学生",
         "term": "学期"
       },
-      "description": "各班级的平均成绩，以及按年级的学期报告",
+      "description": "各课程的平均成绩，以及按年级的学期报告",
       "level": "年级",
       "noMembers": "该年级分组没有成员。",
-      "noSections": "本学期没有班级。",
+      "noSections": "本学期没有课程。",
       "pickLevel": "学期报告对象…",
       "reportStarted": "课程成绩报表正在生成——可在“报表”中查看",
       "runReport": "课程成绩报表",
-      "sections": "班级",
+      "sections": "课程",
       "term": "学期",
       "termReport": "学期报告 · {group}（{count, plural, one {# 位学生} other {# 位学生}}）",
       "termReportHint": "选择一个学期和一个带有年级分组的年级，查看每位学生的等级和 GPA。"
@@ -388,12 +388,12 @@
   },
   "credentials": {
     "bulkIssue": {
-      "course": "对应班级",
-      "description": "证书将按该班级颁发给每位接收者；已颁发的会跳过。",
+      "course": "对应课程",
+      "description": "证书将按该课程颁发给每位接收者；已颁发的会跳过。",
       "done": "{count, plural, one {已颁发 # 份证书} other {已颁发 # 份证书}}",
       "groupSize": "{count, plural, one {# 位成员} other {# 位成员}}",
       "oneStudent": "一位学生",
-      "pickCourse": "选择一个班级",
+      "pickCourse": "选择一门课程",
       "pickGroup": "选择一个分组",
       "pickStudent": "选择一位学生",
       "submit": "颁发",
@@ -402,7 +402,7 @@
       "wholeGroup": "某个分组的所有成员"
     },
     "columns": {
-      "course": "班级",
+      "course": "课程",
       "credential": "证书",
       "expires": "过期",
       "issued": "颁发时间",
@@ -410,12 +410,12 @@
     },
     "issue": "颁发证书",
     "issueDialog": {
-      "course": "班级",
+      "course": "课程",
       "credential": "证书",
-      "description": "按某个班级向这位学生颁发平台的一种证书。",
+      "description": "按某门课程向这位学生颁发平台的一种证书。",
       "done": "证书已颁发",
       "narrative": "备注",
-      "pickCourse": "选择一个班级",
+      "pickCourse": "选择一门课程",
       "pickCredential": "选择一种证书",
       "submit": "颁发",
       "title": "颁发证书"
@@ -432,7 +432,7 @@
       },
       "generateCertificates": "生成结业证书",
       "issue": "颁发",
-      "pickSection": "选择一个班级"
+      "pickSection": "选择一门课程"
     },
     "revoke": "撤销",
     "revokeBody": "证书会以“已撤销”状态保留在记录中，并附上你给出的原因。",
@@ -444,7 +444,7 @@
       "revoked": "已撤销",
       "valid": "有效"
     },
-    "studentHint": "在平台上颁发的证书；学习平台的结业证书显示在各班级中。"
+    "studentHint": "在平台上颁发的证书；学习平台的结业证书显示在各课程中。"
   },
   "guardians": {
     "add": "添加监护人",
@@ -462,15 +462,15 @@
       "dates": "日期",
       "gradeLevel": "年级",
       "schedule": "时间安排",
-      "section": "班级",
+      "section": "课程",
       "subject": "科目",
       "term": "学期"
     },
-    "description": "班级即平台的课程运行，并在此设定学期、科目、教室和节次",
+    "description": "每门课程即学习平台上的一次课程运行，并在此设定学期、科目、教室和节次",
     "empty": {
-      "body": "为某个学期重新运行一门课程来创建班级，或在 Studio 中创建课程。",
-      "noMatch": "没有匹配的班级",
-      "title": "还没有班级"
+      "body": "为某个学期重新运行一门现有课程来创建课程，或在 Studio 中创建课程。",
+      "noMatch": "没有匹配的课程",
+      "title": "还没有课程"
     },
     "filters": {
       "allLevels": "所有年级",
@@ -478,26 +478,26 @@
       "allTerms": "所有学期"
     },
     "instructorDashboard": "教师仪表盘",
-    "mine": "你已加入的班级",
-    "newSection": "新建班级",
+    "mine": "你已加入的课程",
+    "newSection": "新建课程",
     "openInLms": "在学习平台中打开",
-    "searchPlaceholder": "搜索班级…",
+    "searchPlaceholder": "搜索课程…",
     "seats": "{count} 个席位",
     "sectionDialog": {
-      "datesNotSet": "班级已创建；请在“设置”中设定其日期。",
-      "description": "班级是把一门现有课程重新运行到某个学期：内容相同，但有自己的名册和成绩册。",
-      "done": "班级“{name}”已创建",
+      "datesNotSet": "课程已创建；请在“设置”中设定其日期。",
+      "description": "新课程是把一门现有课程重新运行到某个学期：内容相同，但有自己的名册和成绩册。",
+      "done": "课程“{name}”已创建",
       "gradeLevel": "年级",
-      "name": "班级名称",
+      "name": "课程名称",
       "noTerms": "请先在“设置”中添加学期",
       "pickSource": "选择要重新运行的课程",
       "pickTerm": "选择一个学期",
       "run": "运行标识",
       "source": "要重新运行的课程",
       "subject": "科目",
-      "submit": "创建班级",
+      "submit": "创建课程",
       "term": "学期",
-      "title": "新建班级"
+      "title": "新建课程"
     },
     "selfPaced": "自定进度",
     "settings": {
@@ -506,7 +506,7 @@
       "addTeacher": "添加教师",
       "applyTerm": "使用某个学期的日期…",
       "assignmentType": "作业类型",
-      "conflict": "其他人同时修改了班级——请刷新后重试。",
+      "conflict": "其他人同时修改了课程——请刷新后重试。",
       "count": "数量",
       "courseInstructors": "课程讲师",
       "courseStaff": "课程人员",
@@ -523,7 +523,7 @@
       "grading": "评分规则",
       "hint": "日期和评分规则保存在 Studio 的课程运行上；教师是学习平台上的课程角色；其余是学校自己的数据。",
       "letter": "等级",
-      "noSetup": "请先设置学校，才能把这个班级放入某个学期。",
+      "noSetup": "请先设置学校，才能把这门课程放入某个学期。",
       "period": "节次",
       "pickTeacher": "选择一位教职工",
       "removeTeacher": "移除教师",
@@ -531,7 +531,7 @@
       "room": "教室",
       "saved": "已保存",
       "seats": "席位",
-      "section": "班级",
+      "section": "课程",
       "selfPaced": "自定进度",
       "start": "开始",
       "subject": "科目",
@@ -624,9 +624,9 @@
       "active": "活跃",
       "admin": "平台管理员",
       "adminGranted": "已成为平台管理员",
-      "adminHint": "管理员管理整个学校并教授每个班级",
+      "adminHint": "管理员管理整个学校并教授每门课程",
       "adminRemoved": "不再是平台管理员",
-      "checkSections": "检查班级",
+      "checkSections": "检查课程",
       "courseInstructor": "讲师",
       "courseStaff": "人员",
       "joined": "加入时间",
@@ -636,11 +636,11 @@
       "removeAdmin": "取消管理员",
       "removeTeacher": "取消教师",
       "roles": "角色",
-      "sectionsHint": "此人在学习平台上拥有课程角色的班级。",
-      "sectionsTaught": "任教班级",
+      "sectionsHint": "此人在学习平台上拥有角色的课程。",
+      "sectionsTaught": "任教课程",
       "teacher": "教师",
       "teacherGranted": "已成为教师",
-      "teacherHint": "教师在学习平台上拥有 org-staff 角色：每个班级的课程人员",
+      "teacherHint": "教师在学习平台上拥有 org-staff 角色：每门课程的人员",
       "teacherRemoved": "不再是教师",
       "v1Note": "在此版本中教师即平台管理员；“教师”角色为下一版本做准备。",
       "yes": "是"
@@ -688,18 +688,18 @@
     "searchPlaceholder": "搜索分组…"
   },
   "reports": {
-    "description": "平台的报表，以及学习平台按班级提供的下载",
+    "description": "平台的报表，以及学习平台按课程提供的下载",
     "download": "下载 CSV",
     "expires": "{when} 过期",
     "from": "起",
     "lms": {
-      "description": "教师仪表盘为某个班级生成的报表及其最近任务",
+      "description": "教师仪表盘为某门课程生成的报表及其最近任务",
       "downloads": "下载",
-      "pickSection": "选择一个班级",
+      "pickSection": "选择一门课程",
       "rosterCsv": "申请名册 CSV",
       "rosterRequested": "名册 CSV 正在生成",
       "tasks": "最近任务",
-      "title": "班级报表"
+      "title": "课程报表"
     },
     "none": "没有可用的报表。",
     "run": "运行",
@@ -732,24 +732,24 @@
       "title": "公告",
       "usernames": "指定用户"
     },
-    "description": "通过学习平台给某个班级发邮件，或向整个平台发公告",
+    "description": "通过学习平台给某门课程发邮件，或向整个平台发公告",
     "email": {
-      "hint": "由学习平台发送给该班级的学习者或人员。",
+      "hint": "由学习平台发送给该课程的学习者或人员。",
       "learners": "学习者",
       "message": "正文",
       "myself": "我自己",
-      "pickSection": "选择一个班级",
+      "pickSection": "选择一门课程",
       "schedule": "定时发送",
       "scheduleSend": "定时",
       "scheduled": "邮件已定时",
       "scheduledItem": "定时邮件",
       "scheduledTitle": "已定时",
-      "section": "班级",
+      "section": "课程",
       "send": "发送",
       "sent": "邮件已发送",
       "staff": "人员",
       "subject": "主题",
-      "title": "班级邮件"
+      "title": "课程邮件"
     }
   },
   "setup": {
@@ -792,13 +792,13 @@
     },
     "periods": {
       "endTime": "结束",
-      "hint": "作息时间表：每个班级在一个节次上课。",
+      "hint": "作息时间表：每门课程在一个节次上课。",
       "name": "节次",
       "startTime": "开始"
     },
     "rooms": {
       "capacity": "容量",
-      "hint": "班级上课的地点。",
+      "hint": "上课的地点。",
       "name": "教室"
     },
     "school": {
@@ -815,7 +815,7 @@
       "title": "学校"
     },
     "subjects": {
-      "hint": "班级归属的科目。",
+      "hint": "课程归属的科目。",
       "name": "科目"
     },
     "tabs": {
@@ -829,7 +829,7 @@
     },
     "terms": {
       "end": "结束",
-      "hint": "学期属于某个学年；班级是某个学期的一次课程运行。",
+      "hint": "学期属于某个学年；课程是某个学期的一次课程运行。",
       "start": "开始",
       "termName": "学期",
       "title": "学期",
@@ -841,37 +841,37 @@
   },
   "where": {
     "announcement": "在此处撰写；由平台通知投递。",
-    "course": "内容和评分作业在 Studio 中编写；名册和分数来自学习平台；班级的学期、科目和教室在此处设置。",
+    "course": "内容和评分作业在 Studio 中编写；名册和分数来自学习平台；课程的学期、科目和教室在此处设置。",
     "courseDates": "日期保存在 Studio 的课程运行上；可在此处编辑。",
     "courseGrading": "评分规则保存在 Studio 的课程运行上；可在此处编辑。",
-    "courses": "课程运行在 Studio 中为本平台的组织创建，然后在此处按学期重新运行为班级。学期、科目、教室和节次在此处设置。",
+    "courses": "课程运行在 Studio 中为本平台的组织创建，然后在此处按学期重新运行为课程。学期、科目、教室和节次在此处设置。",
     "credentials": "证书在 Skills AI 中定义并在此处颁发；结业证书由学习平台生成。",
     "enrollment": "在此处通过课程邀请或 CSV 导入选课；退课在学习平台上操作。",
     "gradeAverages": "来自平台分析数据的平均成绩，基于学习平台上的评分作业。",
     "gradebook": "分数来自学习者在学习平台上的作业；可在此处修改。作业在 Studio 中编写。",
-    "grades": "成绩来自学习平台上的评分作业，或某个班级成绩册中的修改。学分和学期按班级设置；GPA 等级表在设置中。",
+    "grades": "成绩来自学习平台上的评分作业，或某门课程成绩册中的修改。学分和学期按课程设置；GPA 等级表在设置中。",
     "group": "成员在此处从平台名录中添加。",
     "groups": "分组在此处创建，并从平台成员中添加。",
     "guardians": "在此处添加。监护人必须先成为平台成员：请先邀请。",
     "home": "成员在此处或在 Skills AI 中邀请，课程在 Studio 中创建，活动数据会随着学习者在学习平台上使用课程而逐渐填充。",
     "label": "这些数据从哪里来？",
-    "messages": "公告在此处撰写；班级邮件由学习平台发送。",
-    "overviewSections": "班级来自学习平台上的选课；监护人在此处添加。",
+    "messages": "公告在此处撰写；课程邮件由学习平台发送。",
+    "overviewSections": "课程来自学习平台上的选课；监护人在此处添加。",
     "overviewStatus": "状态即平台成员资格：在此处停用，或在 Skills AI 中操作。",
     "record": "在此处录入。自定义字段在设置 › 学生字段中定义。",
-    "reports": "平台报表在此处运行；班级报表由学习平台上的教师仪表盘生成。",
+    "reports": "平台报表在此处运行；课程报表由学习平台上的教师仪表盘生成。",
     "roster": "在此处通过邀请或 CSV 导入选课；名册即该课程在学习平台上的选课记录。",
     "section": "在此处设置，属于学校自己的数据。",
-    "sectionEmail": "由学习平台发送给该班级的学习者；需要一个班级。",
+    "sectionEmail": "由学习平台发送给该课程的学习者；需要一门课程。",
     "sectionReports": "由学习平台上的教师仪表盘生成。",
     "setup": "此处的一切都是手动录入：学年与学期、年级、节次、教室、科目和档案字段。没有任何数据来自其他应用。",
     "staff": "教职工是带有管理员标记的平台成员。在此处邀请他们，或在 Skills AI 中设置该标记。",
-    "staffMember": "管理员和教师标记在此处或在 Skills AI 中设置；任教班级是学习平台上的课程角色。",
+    "staffMember": "管理员和教师标记在此处或在 Skills AI 中设置；任教课程是学习平台上的课程角色。",
     "student": "档案和监护人在此处录入；选课和成绩来自学习平台；证书在 Skills AI 中定义并在此处颁发。",
     "studentCredentials": "证书在 Skills AI 中定义并在此处颁发。",
-    "studentGrades": "成绩来自学习平台上的评分作业，或该班级成绩册中的修改。",
-    "students": "学生是平台的成员。可在此处邀请（通过邮件）、将 CSV 导入某个班级，或在 Skills AI 中添加。",
-    "taught": "学习平台上的课程角色，按班级在课程 › 设置 › 教师中设置。",
+    "studentGrades": "成绩来自学习平台上的评分作业，或该课程成绩册中的修改。",
+    "students": "学生是平台的成员。可在此处邀请（通过邮件）、将 CSV 导入某门课程，或在 Skills AI 中添加。",
+    "taught": "学习平台上的课程角色，按课程在课程 › 设置 › 教师中设置。",
     "teachers": "教师是学习平台上的课程角色；在此处设置。",
     "termReport": "需要一个带有年级分组的年级（设置 › 年级）以及来自学习平台的进度。"
   }

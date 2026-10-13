@@ -5,6 +5,7 @@ import {
   filterSections,
   fromStudioCourse,
   joinSections,
+  sectionLabel,
   sortSections,
   upsertSection,
 } from "../lib/sis/sections";
@@ -133,6 +134,17 @@ describe("filterSections and sortSections", () => {
   });
   it("sorts by term start descending, then name", () => {
     expect(sortSections(rows).map((r) => r.course.name)).toEqual(["Biology", "Algebra", "Art"]);
+  });
+});
+
+describe("sectionLabel", () => {
+  it("names the term, else the run, else the course alone", () => {
+    const rows = joinSections(courses, meta);
+    expect(sectionLabel(rows[0])).toBe(`${rows[0].course.name} · Fall`);
+    expect(sectionLabel({ course: course("course-v1:Org+Alg+Spring", "Algebra") })).toBe(
+      "Algebra · Spring",
+    );
+    expect(sectionLabel({ course: course("solo", "Art") })).toBe("Art");
   });
 });
 

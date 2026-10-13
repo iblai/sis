@@ -99,7 +99,7 @@
     "inviteStudent": "Invitar estudiante",
     "newEmail": "Nuevo correo",
     "newGroup": "Nuevo grupo",
-    "newSection": "Nueva sección",
+    "newSection": "Nuevo curso",
     "noResults": "Sin resultados.",
     "placeholder": "Buscar estudiantes, personal y cursos…",
     "toClose": "para cerrar",
@@ -133,24 +133,24 @@
     },
     "mySections": {
       "info": "Tus inscripciones en la plataforma de aprendizaje, con la calificación y el avance que informa",
-      "title": "Mis secciones"
+      "title": "Mis cursos"
     },
     "onboarding": {
-      "body": "Añade el año escolar, los periodos lectivos y los niveles, invita estudiantes y convierte ediciones de cursos en secciones.",
+      "body": "Añade el año escolar, los periodos lectivos y los niveles, invita estudiantes y ubica tus cursos en periodos lectivos.",
       "inviteStudent": "Invitar a un estudiante",
-      "newSection": "Crear una sección",
+      "newSection": "Crear un curso",
       "setUp": "Configurar la escuela",
       "steps": {
         "sections": {
-          "body": "Una sección es una edición de curso para un periodo lectivo: vuelve a ejecutar un curso existente desde Cursos.",
-          "title": "Crear secciones"
+          "body": "Aquí un curso es una edición para un periodo lectivo: vuelve a ejecutar un curso existente desde Cursos.",
+          "title": "Crear cursos"
         },
         "setup": {
           "body": "Año, periodos lectivos, niveles, horas, aulas, materias y los campos del expediente.",
           "title": "Configurar la escuela"
         },
         "students": {
-          "body": "Invita estudiantes uno a uno, o importa un CSV directamente a una sección.",
+          "body": "Invita estudiantes uno a uno, o importa un CSV directamente a un curso.",
           "title": "Traer estudiantes"
         }
       },
@@ -193,8 +193,8 @@
       },
       "courses": {
         "hint": "{count, plural, one {# periodo lectivo} other {# periodos lectivos}}",
-        "info": "Ediciones de curso de esta plataforma en la plataforma de aprendizaje. Se crean en Studio y aquí se convierten en secciones.",
-        "label": "Secciones"
+        "info": "Ediciones de curso de esta plataforma en la plataforma de aprendizaje. Se crean en Studio y aquí se ubican en periodos lectivos.",
+        "label": "Cursos"
       },
       "grade": {
         "hint": "En todas las ediciones de curso",
@@ -208,7 +208,7 @@
       },
       "members": {
         "label": "Miembros",
-        "info": "Todas las personas de la plataforma que figuran en el directorio: estudiantes y personal. Invítalas aquí o en Skills AI, o importa un CSV a una sección."
+        "info": "Todas las personas de la plataforma que figuran en el directorio: estudiantes y personal. Invítalas aquí o en Skills AI, o importa un CSV a un curso."
       }
     },
     "welcome": "Así va tu escuela.",
@@ -222,7 +222,7 @@
     "countLabel": "estudiantes",
     "description": "Cada miembro de la plataforma que el directorio lista como estudiante",
     "empty": {
-      "body": "Invita a un estudiante o importa un CSV a una sección para empezar.",
+      "body": "Invita a un estudiante o importa un CSV a un curso para empezar.",
       "noMatch": "Ningún estudiante coincide",
       "title": "Aún no hay estudiantes"
     },
@@ -257,10 +257,10 @@
       "description": "Una línea por estudiante: correo, usuario, nombre, país. Las cuentas existentes se inscriben; los correos nuevos reciben una cuenta cuando la plataforma permite altas automáticas.",
       "done": "{count, plural, one {# estudiante importado} other {# estudiantes importados}}, {refused} rechazados",
       "file": "O elige un archivo CSV",
-      "pickSection": "Elige una sección",
+      "pickSection": "Elige un curso",
       "preview": "{count, plural, one {# fila lista} other {# filas listas}}, {errors} con errores",
       "result": "Lo que dijo la plataforma de aprendizaje",
-      "section": "En la sección",
+      "section": "En el curso",
       "submit": "Importar {count, plural, one {# estudiante} other {# estudiantes}}",
       "title": "Importar estudiantes"
     },
@@ -283,8 +283,8 @@
       "reactivate": "Reactivar",
       "reactivated": "Membresía reactivada",
       "saved": "Expediente guardado",
-      "sections": "Secciones",
-      "sectionsAndGuardians": "Secciones y contactos",
+      "sections": "Cursos",
+      "sectionsAndGuardians": "Cursos y contactos",
       "statusLabel": "Estado",
       "summary": "Resumen",
       "tabs": {
@@ -312,7 +312,7 @@
     "columns": {
       "grade": "Calificación",
       "progress": "Avance",
-      "section": "Sección",
+      "section": "Curso",
       "since": "Desde",
       "status": "Estado",
       "term": "Periodo lectivo"
@@ -324,13 +324,13 @@
     "enrollDialog": {
       "description": "Una invitación al curso inscribe al estudiante en la plataforma de aprendizaje de inmediato.",
       "done": "Inscrito",
-      "pickSection": "Elige una sección",
-      "section": "Sección",
+      "pickSection": "Elige un curso",
+      "section": "Curso",
       "submit": "Inscribir",
-      "title": "Inscribir en una sección"
+      "title": "Inscribir en un curso"
     },
     "hint": "Las inscripciones vienen de la plataforma de aprendizaje; la calificación y el avance son los que informa.",
-    "none": "Aún no hay secciones.",
+    "none": "Aún no hay cursos.",
     "passing": "Aprobando",
     "pendingInvitations": "{count, plural, one {# invitación pendiente:} other {# invitaciones pendientes:}}"
   },
@@ -341,15 +341,15 @@
       "credits": "Créditos",
       "letter": "Letra",
       "percent": "Calificación",
-      "section": "Sección",
+      "section": "Curso",
       "status": "Estado"
     },
     "completion": "Avance",
     "details": "Detalles",
     "ends": "Termina",
     "gpa": {
-      "hint": "{credits} créditos contados, {excluded} secciones fuera",
-      "info": "Puntos × créditos sobre las secciones del periodo lectivo con letra y créditos, en la escala GPA de la escuela",
+      "hint": "{credits} créditos contados, {excluded} cursos fuera",
+      "info": "Puntos × créditos sobre los cursos del periodo lectivo con letra y créditos, en la escala GPA de la escuela",
       "label": "GPA del periodo lectivo"
     },
     "gradedWork": "Trabajo calificado",
@@ -357,7 +357,7 @@
     "instructorDashboard": "Panel del instructor",
     "myStanding": "Mi situación",
     "noGradedWork": "Aún no hay trabajo calificado.",
-    "none": "No hay secciones en este periodo lectivo.",
+    "none": "No hay cursos en este periodo lectivo.",
     "notPassing": "No aprobando",
     "openInLms": "Abrir en la plataforma de aprendizaje",
     "page": {
@@ -366,18 +366,18 @@
       "columns": {
         "average": "Calificación media",
         "gpa": "GPA",
-        "section": "Sección",
+        "section": "Curso",
         "student": "Estudiante",
         "term": "Periodo lectivo"
       },
-      "description": "Medias por sección y un informe del periodo lectivo por nivel",
+      "description": "Medias por curso y un informe del periodo lectivo por nivel",
       "level": "Nivel",
       "noMembers": "El grupo de la cohorte no tiene miembros.",
-      "noSections": "No hay secciones en este periodo lectivo.",
+      "noSections": "No hay cursos en este periodo lectivo.",
       "pickLevel": "Informe del periodo para…",
       "reportStarted": "El informe de calificaciones por curso está en marcha: encuéntralo en Informes",
       "runReport": "Informe de calificaciones por curso",
-      "sections": "Secciones",
+      "sections": "Cursos",
       "term": "Periodo lectivo",
       "termReport": "Informe del periodo · {group} ({count, plural, one {# estudiante} other {# estudiantes}})",
       "termReportHint": "Elige un periodo lectivo y un nivel con grupo de cohorte para ver las letras y el GPA de cada estudiante."
@@ -388,12 +388,12 @@
   },
   "credentials": {
     "bulkIssue": {
-      "course": "Por la sección",
-      "description": "La credencial se emite a cada destinatario por la sección; las ya emitidas se omiten.",
+      "course": "Por el curso",
+      "description": "La credencial se emite a cada destinatario por el curso; las ya emitidas se omiten.",
       "done": "{count, plural, one {# credencial emitida} other {# credenciales emitidas}}",
       "groupSize": "{count, plural, one {# miembro} other {# miembros}}",
       "oneStudent": "Un estudiante",
-      "pickCourse": "Elige una sección",
+      "pickCourse": "Elige un curso",
       "pickGroup": "Elige un grupo",
       "pickStudent": "Elige un estudiante",
       "submit": "Emitir",
@@ -402,7 +402,7 @@
       "wholeGroup": "Todos los miembros de un grupo"
     },
     "columns": {
-      "course": "Sección",
+      "course": "Curso",
       "credential": "Credencial",
       "expires": "Caduca",
       "issued": "Emitida",
@@ -410,12 +410,12 @@
     },
     "issue": "Emitir credencial",
     "issueDialog": {
-      "course": "Sección",
+      "course": "Curso",
       "credential": "Credencial",
-      "description": "Emite una de las credenciales de la plataforma a este estudiante por una sección.",
+      "description": "Emite una de las credenciales de la plataforma a este estudiante por un curso.",
       "done": "Credencial emitida",
       "narrative": "Nota",
-      "pickCourse": "Elige una sección",
+      "pickCourse": "Elige un curso",
       "pickCredential": "Elige una credencial",
       "submit": "Emitir",
       "title": "Emitir una credencial"
@@ -432,7 +432,7 @@
       },
       "generateCertificates": "Generar certificados",
       "issue": "Emitir",
-      "pickSection": "Elige una sección"
+      "pickSection": "Elige un curso"
     },
     "revoke": "Revocar",
     "revokeBody": "La credencial queda registrada como revocada, con el motivo que indiques.",
@@ -444,7 +444,7 @@
       "revoked": "Revocada",
       "valid": "Válida"
     },
-    "studentHint": "Credenciales emitidas en la plataforma; los certificados de la plataforma de aprendizaje aparecen en cada sección."
+    "studentHint": "Credenciales emitidas en la plataforma; los certificados de la plataforma de aprendizaje aparecen en cada curso."
   },
   "guardians": {
     "add": "Añadir tutor",
@@ -462,15 +462,15 @@
       "dates": "Fechas",
       "gradeLevel": "Nivel",
       "schedule": "Horario",
-      "section": "Sección",
+      "section": "Curso",
       "subject": "Materia",
       "term": "Periodo lectivo"
     },
-    "description": "Las secciones son las ediciones de curso de la plataforma, con el periodo lectivo, la materia, el aula y la hora fijados aquí",
+    "description": "Cada curso es una edición en la plataforma de aprendizaje, con el periodo lectivo, la materia, el aula y la hora fijados aquí",
     "empty": {
-      "body": "Crea una sección volviendo a ejecutar un curso para un periodo lectivo, o crea cursos en Studio.",
-      "noMatch": "Ninguna sección coincide",
-      "title": "Aún no hay secciones"
+      "body": "Crea un curso volviendo a ejecutar uno para un periodo lectivo, o crea cursos en Studio.",
+      "noMatch": "Ningun curso coincide",
+      "title": "Aún no hay cursos"
     },
     "filters": {
       "allLevels": "Todos los niveles",
@@ -478,26 +478,26 @@
       "allTerms": "Todos los periodos lectivos"
     },
     "instructorDashboard": "Panel del instructor",
-    "mine": "Las secciones en las que estás inscrito",
-    "newSection": "Nueva sección",
+    "mine": "Los cursos en los que estás inscrito",
+    "newSection": "Nuevo curso",
     "openInLms": "Abrir en la plataforma de aprendizaje",
-    "searchPlaceholder": "Buscar secciones…",
+    "searchPlaceholder": "Buscar cursos…",
     "seats": "{count} plazas",
     "sectionDialog": {
-      "datesNotSet": "La sección se creó; fija sus fechas en Ajustes.",
-      "description": "Una sección es una nueva edición de un curso existente para un periodo lectivo: el mismo contenido, con su propia lista y libro de calificaciones.",
-      "done": "Sección “{name}” creada",
+      "datesNotSet": "El curso se creó; fija sus fechas en Ajustes.",
+      "description": "Un curso nuevo es una nueva edición de uno existente para un periodo lectivo: el mismo contenido, con su propia lista y libro de calificaciones.",
+      "done": "Curso “{name}” creado",
       "gradeLevel": "Nivel",
-      "name": "Nombre de la sección",
+      "name": "Nombre del curso",
       "noTerms": "Añade periodos lectivos en Configuración primero",
       "pickSource": "Elige el curso a reeditar",
       "pickTerm": "Elige un periodo lectivo",
       "run": "Identificador de edición",
       "source": "Curso a reeditar",
       "subject": "Materia",
-      "submit": "Crear sección",
+      "submit": "Crear curso",
       "term": "Periodo lectivo",
-      "title": "Nueva sección"
+      "title": "Nuevo curso"
     },
     "selfPaced": "a tu ritmo",
     "settings": {
@@ -506,7 +506,7 @@
       "addTeacher": "Añadir docente",
       "applyTerm": "Usar las fechas de un periodo lectivo…",
       "assignmentType": "Tipo de tarea",
-      "conflict": "Alguien más cambió las secciones mientras tanto: recarga e inténtalo de nuevo.",
+      "conflict": "Alguien más cambió los cursos mientras tanto: recarga e inténtalo de nuevo.",
       "count": "Cantidad",
       "courseInstructors": "Instructores del curso",
       "courseStaff": "Equipo del curso",
@@ -523,7 +523,7 @@
       "grading": "Política de calificación",
       "hint": "Las fechas y la política de calificación viven en la edición del curso en Studio; los docentes son roles de curso en la plataforma de aprendizaje; el resto son datos propios de la escuela.",
       "letter": "Letra",
-      "noSetup": "Configura la escuela primero para ubicar esta sección en un periodo lectivo.",
+      "noSetup": "Configura la escuela primero para ubicar este curso en un periodo lectivo.",
       "period": "Hora",
       "pickTeacher": "Elige un miembro del personal",
       "removeTeacher": "Quitar docente",
@@ -531,7 +531,7 @@
       "room": "Aula",
       "saved": "Guardado",
       "seats": "Plazas",
-      "section": "Sección",
+      "section": "Curso",
       "selfPaced": "A tu ritmo",
       "start": "Inicio",
       "subject": "Materia",
@@ -624,11 +624,11 @@
       "active": "Activo",
       "admin": "Administrador de la plataforma",
       "adminGranted": "Ahora es administrador de la plataforma",
-      "adminHint": "Los administradores gestionan toda la escuela y dan todas las secciones",
+      "adminHint": "Los administradores gestionan toda la escuela y dan todos los cursos",
       "adminRemoved": "Ya no es administrador de la plataforma",
-      "checkSections": "Comprobar secciones",
-      "courseInstructor": "instructor",
-      "courseStaff": "equipo",
+      "checkSections": "Comprobar cursos",
+      "courseInstructor": "Instructor",
+      "courseStaff": "Equipo",
       "joined": "Alta",
       "makeAdmin": "Hacer administrador",
       "makeTeacher": "Hacer docente",
@@ -636,11 +636,11 @@
       "removeAdmin": "Quitar administrador",
       "removeTeacher": "Quitar docente",
       "roles": "Roles",
-      "sectionsHint": "Secciones donde esta persona tiene un rol de curso en la plataforma de aprendizaje.",
-      "sectionsTaught": "Secciones impartidas",
+      "sectionsHint": "Cursos donde esta persona tiene un rol de curso en la plataforma de aprendizaje.",
+      "sectionsTaught": "Cursos impartidos",
       "teacher": "Docente",
       "teacherGranted": "Ahora es docente",
-      "teacherHint": "Los docentes tienen el rol org-staff en la plataforma de aprendizaje: equipo del curso en cada sección",
+      "teacherHint": "Los docentes tienen el rol org-staff en la plataforma de aprendizaje: personal en cada curso",
       "teacherRemoved": "Ya no es docente",
       "v1Note": "En esta versión los docentes son administradores de la plataforma; el rol Docente prepara la siguiente.",
       "yes": "Sí"
@@ -688,18 +688,18 @@
     "searchPlaceholder": "Buscar grupos…"
   },
   "reports": {
-    "description": "Los informes de la plataforma y las descargas por sección de la plataforma de aprendizaje",
+    "description": "Los informes de la plataforma y las descargas por curso de la plataforma de aprendizaje",
     "download": "Descargar CSV",
     "expires": "caduca {when}",
     "from": "Desde",
     "lms": {
-      "description": "Informes que el panel del instructor generó para una sección, y sus tareas recientes",
+      "description": "Informes que el panel del instructor generó para un curso, y sus tareas recientes",
       "downloads": "Descargas",
-      "pickSection": "Elige una sección",
+      "pickSection": "Elige un curso",
       "rosterCsv": "Solicitar CSV de la lista",
       "rosterRequested": "El CSV de la lista se está generando",
       "tasks": "Tareas recientes",
-      "title": "Informes por sección"
+      "title": "Informes por curso"
     },
     "none": "No hay informes disponibles.",
     "run": "Ejecutar",
@@ -732,24 +732,24 @@
       "title": "Anuncio",
       "usernames": "Usuarios concretos"
     },
-    "description": "Envía un correo a una sección a través de la plataforma de aprendizaje, o anuncia a la plataforma",
+    "description": "Envía un correo a un curso a través de la plataforma de aprendizaje, o anuncia a la plataforma",
     "email": {
-      "hint": "Lo envía la plataforma de aprendizaje a los aprendices o al equipo de la sección.",
+      "hint": "Lo envía la plataforma de aprendizaje a los aprendices o al equipo del curso.",
       "learners": "Aprendices",
       "message": "Mensaje",
       "myself": "A mí",
-      "pickSection": "Elige una sección",
+      "pickSection": "Elige un curso",
       "schedule": "Programar para",
       "scheduleSend": "Programar",
       "scheduled": "Correo programado",
       "scheduledItem": "Correo programado",
       "scheduledTitle": "Programados",
-      "section": "Sección",
+      "section": "Curso",
       "send": "Enviar",
       "sent": "Correo enviado",
       "staff": "Equipo",
       "subject": "Asunto",
-      "title": "Correo a la sección"
+      "title": "Correo al curso"
     }
   },
   "setup": {
@@ -792,13 +792,13 @@
     },
     "periods": {
       "endTime": "Termina",
-      "hint": "El horario de timbres: una sección se da en una hora.",
+      "hint": "El horario de timbres: un curso se da en una hora.",
       "name": "Hora",
       "startTime": "Empieza"
     },
     "rooms": {
       "capacity": "Capacidad",
-      "hint": "Dónde se dan las secciones.",
+      "hint": "Dónde se dan los cursos.",
       "name": "Aula"
     },
     "school": {
@@ -815,7 +815,7 @@
       "title": "Escuela"
     },
     "subjects": {
-      "hint": "Materias bajo las que se archiva una sección.",
+      "hint": "Materias bajo las que se archiva un curso.",
       "name": "Materia"
     },
     "tabs": {
@@ -829,7 +829,7 @@
     },
     "terms": {
       "end": "Fin",
-      "hint": "Los periodos lectivos pertenecen a un año; una sección es una edición de curso para un periodo lectivo.",
+      "hint": "Los periodos lectivos pertenecen a un año; un curso es una edición para un periodo lectivo.",
       "start": "Inicio",
       "termName": "Periodo lectivo",
       "title": "Periodos lectivos",
@@ -841,37 +841,37 @@
   },
   "where": {
     "announcement": "Se escribe aquí; lo entregan las notificaciones de la plataforma.",
-    "course": "El contenido y las tareas calificadas se crean en Studio; la lista y las puntuaciones vienen de la plataforma de aprendizaje; el periodo, la materia y el aula de la sección se fijan aquí.",
+    "course": "El contenido y las tareas calificadas se crean en Studio; la lista y las puntuaciones vienen de la plataforma de aprendizaje; el periodo, la materia y el aula del curso se fijan aquí.",
     "courseDates": "Las fechas viven en la edición del curso en Studio; edítalas aquí.",
     "courseGrading": "La política de calificación vive en la edición del curso en Studio; edítala aquí.",
-    "courses": "Las ediciones de curso se crean en Studio para la organización de esta plataforma y luego se vuelven a ejecutar aquí como secciones de un periodo lectivo. Periodo, materia, aula y hora se fijan aquí.",
+    "courses": "Las ediciones de curso se crean en Studio para la organización de esta plataforma y luego se vuelven a ejecutar aquí como cursos de un periodo lectivo. Periodo, materia, aula y hora se fijan aquí.",
     "credentials": "Las credenciales se definen en Skills AI y se emiten aquí; los certificados los genera la plataforma de aprendizaje.",
     "enrollment": "Inscribe aquí con una invitación al curso o con la importación CSV; la baja se hace en la plataforma de aprendizaje.",
     "gradeAverages": "Medias de la analítica de la plataforma, a partir del trabajo calificado en la plataforma de aprendizaje.",
     "gradebook": "Las puntuaciones vienen del trabajo de los aprendices en la plataforma de aprendizaje; modifícalas aquí. Las tareas se crean en Studio.",
-    "grades": "Las calificaciones vienen del trabajo calificado en la plataforma de aprendizaje o de las modificaciones en el libro de calificaciones de una sección. Los créditos y periodos se fijan por sección; la escala de GPA, en Configuración.",
+    "grades": "Las calificaciones vienen del trabajo calificado en la plataforma de aprendizaje o de las modificaciones en el libro de calificaciones de un curso. Los créditos y periodos se fijan por curso; la escala de GPA, en Configuración.",
     "group": "Los miembros se agregan aquí, desde el directorio de la plataforma.",
     "groups": "Los grupos se crean y se llenan aquí, con los miembros de la plataforma.",
     "guardians": "Se agregan aquí. El tutor debe ser antes miembro de la plataforma: invítalo.",
     "home": "Los miembros se invitan aquí o en Skills AI, los cursos se crean en Studio y las cifras de actividad se llenan a medida que los aprendices usan sus cursos en la plataforma de aprendizaje.",
     "label": "¿De dónde viene esto?",
-    "messages": "Los anuncios se escriben aquí; el correo a una sección lo envía la plataforma de aprendizaje.",
-    "overviewSections": "Las secciones vienen de las inscripciones en la plataforma de aprendizaje; los tutores se agregan aquí.",
+    "messages": "Los anuncios se escriben aquí; el correo a un curso lo envía la plataforma de aprendizaje.",
+    "overviewSections": "Los cursos vienen de las inscripciones en la plataforma de aprendizaje; los tutores se agregan aquí.",
     "overviewStatus": "El estado es la pertenencia a la plataforma: Desactivar aquí o en Skills AI.",
     "record": "Se escribe aquí. Los campos personalizados se definen en Configuración › Campos del estudiante.",
-    "reports": "Los informes de la plataforma se ejecutan aquí; los informes por sección los genera el panel del instructor en la plataforma de aprendizaje.",
+    "reports": "Los informes de la plataforma se ejecutan aquí; los informes por curso los genera el panel del instructor en la plataforma de aprendizaje.",
     "roster": "Inscribe aquí por invitación o importación CSV; la lista es la inscripción del curso en la plataforma de aprendizaje.",
     "section": "Se fija aquí, en los datos de la escuela.",
-    "sectionEmail": "Lo envía la plataforma de aprendizaje a los aprendices de la sección; necesita una sección.",
+    "sectionEmail": "Lo envía la plataforma de aprendizaje a los aprendices del curso; necesita un curso.",
     "sectionReports": "Los genera el panel del instructor en la plataforma de aprendizaje.",
     "setup": "Todo lo de aquí se escribe a mano: años y periodos lectivos, niveles, horas, aulas, materias y los campos del expediente. Nada viene de otra aplicación.",
     "staff": "El personal son miembros de la plataforma con la marca de administrador. Invítalos aquí o activa la marca en Skills AI.",
-    "staffMember": "Las marcas de administrador y docente se activan aquí o en Skills AI; las secciones impartidas son roles de curso en la plataforma de aprendizaje.",
+    "staffMember": "Las marcas de administrador y docente se activan aquí o en Skills AI; los cursos impartidos son roles de curso en la plataforma de aprendizaje.",
     "student": "El expediente y los tutores se escriben aquí; las inscripciones y calificaciones vienen de la plataforma de aprendizaje; las credenciales se definen en Skills AI y se emiten aquí.",
     "studentCredentials": "Las credenciales se definen en Skills AI y se emiten aquí.",
-    "studentGrades": "Las calificaciones vienen del trabajo calificado en la plataforma de aprendizaje o de las modificaciones en el libro de calificaciones de la sección.",
-    "students": "Los estudiantes son miembros de la plataforma. Agrégalos con Invitar (por correo), con la importación CSV a una sección o en Skills AI.",
-    "taught": "Roles de curso en la plataforma de aprendizaje, asignados por sección en Curso › Ajustes › Docentes.",
+    "studentGrades": "Las calificaciones vienen del trabajo calificado en la plataforma de aprendizaje o de las modificaciones en el libro de calificaciones del curso.",
+    "students": "Los estudiantes son miembros de la plataforma. Agrégalos con Invitar (por correo), con la importación CSV a un curso o en Skills AI.",
+    "taught": "Roles de curso en la plataforma de aprendizaje, asignados por curso en Curso › Ajustes › Docentes.",
     "teachers": "Los docentes son roles de curso en la plataforma de aprendizaje; asígnalos aquí.",
     "termReport": "Necesita un nivel con grupo de cohorte (Configuración › Niveles) y el avance de la plataforma de aprendizaje."
   }

@@ -16,6 +16,7 @@ import config from "@/lib/iblai/config";
 import { LOCAL_STORAGE_KEYS } from "@/lib/iblai/auth-utils";
 import { makeBaseQuery } from "./base-query";
 import { qs } from "./qs";
+import { roleMembers } from "./roles";
 import type {
   CourseHomeMetadata,
   CourseRole,
@@ -113,6 +114,11 @@ export const lmsApi = createApi({
         url: instructor(courseId, "list_course_role_members"),
         method: "POST",
         body: form({ rolename }),
+      }),
+      transformResponse: (raw: Record<string, unknown>, _m, a) => ({
+        course_id: String(raw.course_id ?? a.courseId),
+        rolename: a.rolename,
+        users: roleMembers(raw, a.rolename),
       }),
       providesTags: (_r, _e, a) => [{ type: "RoleMembers", id: `${a.courseId}:${a.rolename}` }],
     }),

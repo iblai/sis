@@ -28,6 +28,7 @@ import { ConfirmDialog } from "@/components/sis/confirm-dialog";
 import { EmptyState } from "@/components/sis/empty-state";
 import { LoadError } from "@/components/sis/load-error";
 import { SimpleSelect } from "@/components/sis/simple-select";
+import { SectionPicker } from "@/components/sis/section-picker";
 import { StatusPill } from "@/components/sis/status-pill";
 import { useIsLiveAdmin } from "@/components/sis/admin-mode";
 import { WhereTip } from "@/components/sis/where-tip";
@@ -248,11 +249,12 @@ export function IssueDialog({
             )}
           </div>
           <div className="space-y-1.5">
-            <Label>{t("course")}</Label>
-            <SimpleSelect
+            <Label htmlFor="credential-course">{t("course")}</Label>
+            <SectionPicker
+              id="credential-course"
               value={courseId}
               onChange={setCourseId}
-              options={sections.rows.map((r) => ({ value: r.course.id, label: r.course.name }))}
+              rows={sections.rows}
               placeholder={t("pickCourse")}
               disabled={sections.isLoading}
             />

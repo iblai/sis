@@ -20,6 +20,7 @@ import { PaginationBar } from "@/components/sis/pagination-bar";
 import { EmptyState } from "@/components/sis/empty-state";
 import { LoadError } from "@/components/sis/load-error";
 import { SimpleSelect } from "@/components/sis/simple-select";
+import { SectionPicker } from "@/components/sis/section-picker";
 import { UserPicker } from "@/components/sis/user-picker";
 import { useBreadcrumbs } from "@/components/sis/breadcrumbs";
 import { useIsLiveAdmin } from "@/components/sis/admin-mode";
@@ -82,10 +83,10 @@ export default function CredentialsPage() {
         toolbar={
           isLiveAdmin ? (
             <>
-              <SimpleSelect
+              <SectionPicker
                 value={certCourse}
                 onChange={setCertCourse}
-                options={sections.rows.map((r) => ({ value: r.course.id, label: r.course.name }))}
+                rows={sections.rows}
                 placeholder={t("pickSection")}
                 size="sm"
                 className="w-64"
@@ -229,11 +230,12 @@ function BulkIssueDialog({ credential, onClose }: { credential: Credential; onCl
         </DialogHeader>
         <div className="space-y-4">
           <div className="space-y-1.5">
-            <Label>{t("course")}</Label>
-            <SimpleSelect
+            <Label htmlFor="issue-course">{t("course")}</Label>
+            <SectionPicker
+              id="issue-course"
               value={courseId}
               onChange={setCourseId}
-              options={sections.rows.map((r) => ({ value: r.course.id, label: r.course.name }))}
+              rows={sections.rows}
               placeholder={t("pickCourse")}
             />
           </div>

@@ -11,7 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { PageHeader } from "@/components/sis/page-header";
 import { EmptyState } from "@/components/sis/empty-state";
 import { LoadError } from "@/components/sis/load-error";
-import { SimpleSelect } from "@/components/sis/simple-select";
+import { SectionPicker } from "@/components/sis/section-picker";
 import { StatusPill } from "@/components/sis/status-pill";
 import { useBreadcrumbs } from "@/components/sis/breadcrumbs";
 import { useIsLiveAdmin } from "@/components/sis/admin-mode";
@@ -216,10 +216,10 @@ function SectionReports() {
           <p className="text-muted-foreground text-xs">{t("description")}</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <SimpleSelect
+          <SectionPicker
             value={courseId}
             onChange={setCourseId}
-            options={sections.rows.map((r) => ({ value: r.course.id, label: r.course.name }))}
+            rows={sections.rows}
             placeholder={t("pickSection")}
             size="sm"
             className="w-full sm:w-64"

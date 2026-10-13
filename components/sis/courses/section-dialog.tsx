@@ -17,6 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { SimpleSelect } from "@/components/sis/simple-select";
+import { SectionPicker } from "@/components/sis/section-picker";
 import { useSections } from "@/hooks/use-sections";
 import { useSession } from "@/hooks/use-session";
 import { useSisMetadata } from "@/hooks/use-sis-metadata";
@@ -116,14 +117,12 @@ export function SectionDialog({
         </DialogHeader>
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-1.5 sm:col-span-2">
-            <Label>{t("source")}</Label>
-            <SimpleSelect
+            <Label htmlFor="section-source">{t("source")}</Label>
+            <SectionPicker
+              id="section-source"
               value={source}
               onChange={setSource}
-              options={sections.rows.map((r) => ({
-                value: r.course.id,
-                label: `${r.course.name} · ${r.course.run}`,
-              }))}
+              rows={sections.rows}
               placeholder={t("pickSource")}
               disabled={sections.isLoading}
             />

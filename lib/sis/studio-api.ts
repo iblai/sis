@@ -55,6 +55,11 @@ export const studioApi = createApi({
     }),
     courseGrading: b.query<CourseGrading, string>({
       query: (courseId) => `/api/contentstore/v1/course_grading/${courseId}`,
+      // Studio nests the policy under `course_details`; the POST takes and returns it bare.
+      transformResponse: (
+        r: CourseGrading | { course_details: CourseGrading; is_credit_course?: boolean },
+      ) =>
+        "course_details" in r ? { ...r.course_details, is_credit_course: r.is_credit_course } : r,
       providesTags: (_r, _e, id) => [{ type: "CourseGrading", id }],
     }),
     updateCourseGrading: b.mutation<CourseGrading, { courseId: string; body: CourseGrading }>({

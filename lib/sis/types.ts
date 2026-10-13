@@ -424,6 +424,7 @@ export interface RoleMember {
   last_name?: string;
 }
 
+/** As the slice normalises it: the LMS keys the list by the role name (`lib/sis/roles.ts`). */
 export interface RoleMembersResponse {
   course_id: string;
   rolename: CourseRole;
@@ -640,6 +641,7 @@ export interface Grader {
   id?: number;
 }
 
+/** The grading policy as the slice normalises it (Studio's GET nests it under `course_details`). */
 export interface CourseGrading {
   graders: Grader[];
   grade_cutoffs: Record<string, number>;

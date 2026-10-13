@@ -4,7 +4,7 @@
  * contains an identical set of keys. Reports missing/extra keys per locale and
  * flags entries that are byte-identical to English (possible untranslated text),
  * excluding an allowlist of terms that legitimately stay the same. Fails on the
- * words the UI never shows ("tenant", "pupil", "class period"), on ASCII apostrophes and
+ * words the UI never shows ("tenant", "pupil", "section", "class period"), on ASCII apostrophes and
  * on an English label that is not Title Case (AGENTS.md rule 8).
  *
  * Exits non-zero if any locale file is missing, any key is missing, or a value
@@ -88,9 +88,9 @@ for (const l of LOCALES) {
 
 // 3. Vocabulary: the words we never show (see AGENTS.md) and ASCII apostrophes.
 const FORBIDDEN = {
-  en: [/\btenant/i, /\bpupils?\b/i, /\bclass periods?\b/i],
-  es: [/\btenant/i, /\binquilin/i],
-  fr: [/\btenant/i, /\blocataire/i],
+  en: [/\btenant/i, /\bpupils?\b/i, /\bsections?\b/i, /\bclass periods?\b/i],
+  es: [/\btenant/i, /\binquilin/i, /\bsecci[oó]n/i],
+  fr: [/\btenant/i, /\blocataire/i, /\bsections?\b/i],
   zh: [/租户/],
 };
 for (const l of LOCALES) {
@@ -122,8 +122,6 @@ const PROSE_KEYS = new Set([
   "courses.selfPaced",
   "reports.expires",
   "students.importDialog.preview",
-  "staff.member.courseInstructor",
-  "staff.member.courseStaff",
   "gradebook.flagOff.title",
   "students.pending",
   "roster.count",

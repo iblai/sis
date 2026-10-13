@@ -15,7 +15,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Spinner } from "@iblai/iblai-js/web-containers";
-import { SimpleSelect } from "@/components/sis/simple-select";
+import { SectionPicker } from "@/components/sis/section-picker";
 import { useSections } from "@/hooks/use-sections";
 import { useToastError } from "@/hooks/use-toast-error";
 import { buildImportCsv, parseImportRows } from "@/lib/sis/csv";
@@ -87,14 +87,12 @@ export function ImportDialog({
         <div className="space-y-4">
           {!fixedCourseId ? (
             <div className="space-y-1.5">
-              <Label>{t("section")}</Label>
-              <SimpleSelect
+              <Label htmlFor="import-section">{t("section")}</Label>
+              <SectionPicker
+                id="import-section"
                 value={courseId}
                 onChange={setCourseId}
-                options={sections.rows.map((r) => ({
-                  value: r.course.id,
-                  label: r.term ? `${r.course.name} · ${r.term.name}` : r.course.name,
-                }))}
+                rows={sections.rows}
                 placeholder={t("pickSection")}
                 disabled={sections.isLoading}
               />

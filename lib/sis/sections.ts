@@ -12,6 +12,14 @@ export interface SectionRow {
   period?: Period;
 }
 
+/** "Name · Term" when the term is known, else "Name · run", else the name. */
+export const sectionLabel = (r: SectionRow): string =>
+  r.term
+    ? `${r.course.name} · ${r.term.name}`
+    : r.course.run
+      ? `${r.course.name} · ${r.course.run}`
+      : r.course.name;
+
 export interface SectionFilters {
   termId?: string;
   subjectId?: string;
