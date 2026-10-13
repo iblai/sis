@@ -22,6 +22,8 @@ import { LoadError } from "@/components/sis/load-error";
 import { SimpleSelect } from "@/components/sis/simple-select";
 import { useBreadcrumbs } from "@/components/sis/breadcrumbs";
 import { useIsLiveAdmin } from "@/components/sis/admin-mode";
+import { WhereTip } from "@/components/sis/where-tip";
+import { PageGate, useGateLoading } from "@/components/sis/page-gate";
 import { useSections } from "@/hooks/use-sections";
 import { useSession } from "@/hooks/use-session";
 import { useToastError } from "@/hooks/use-toast-error";
@@ -65,8 +67,9 @@ export default function GradesPage() {
   };
 
   return (
-    <>
+    <PageGate loading={sections.isLoading}>
       <PageHeader
+        where="grades"
         icon={<GraduationCap />}
         title={tn("grades")}
         description={t("description")}
@@ -118,13 +121,12 @@ export default function GradesPage() {
       />
       <div className="flex-1 space-y-4 overflow-auto p-4 md:p-6">
         <section className="overflow-hidden rounded-xl border border-[var(--border-color,#e5e7eb)] bg-white">
-          <h2 className="border-b border-gray-100 px-4 py-2.5 text-sm font-semibold text-gray-900">
-            {t("sections")}
+          <h2 className="flex items-center gap-1 border-b border-gray-100 px-4 py-2.5 text-sm font-semibold text-gray-900">
+            <span>{t("sections")}</span>
+            <WhereTip k="gradeAverages" />
           </h2>
           {sections.error ? (
             <LoadError error={sections.error} />
-          ) : sections.isLoading ? (
-            <Skeleton className="m-4 h-24" />
           ) : rows.length === 0 ? (
             <EmptyState title={t("noSections")} className="border-0" />
           ) : (
@@ -151,7 +153,7 @@ export default function GradesPage() {
           <p className="text-muted-foreground text-xs">{t("termReportHint")}</p>
         )}
       </div>
-    </>
+    </PageGate>
   );
 }
 
@@ -160,6 +162,7 @@ function SectionAverageRow({ row }: { row: SectionRow }) {
   const locale = useLocale();
   const { tenantKey, href } = useSession();
   const avg = useCourseGradingAverageQuery({ platformKey: tenantKey, courseId: row.course.id });
+  useGateLoading(avg.isLoading);
   const value = typeof avg.data?.data === "number" ? avg.data.data : null;
   return (
     <TableRow>
@@ -202,6 +205,7 @@ function TermReport({
   const { href } = useSession();
   const sections = useSections();
   const group = useUserGroupQuery(groupId);
+  useGateLoading(group.isLoading);
   const inTerm = rows.filter((r) => r.section?.termId === termId);
   const scale = sections.meta?.gpaScale ?? {};
   if (group.error) return <LoadError error={group.error} />;
@@ -209,8 +213,9 @@ function TermReport({
   const users = group.data?.users ?? [];
   return (
     <section className="overflow-auto rounded-xl border border-[var(--border-color,#e5e7eb)] bg-white">
-      <h2 className="border-b border-gray-100 px-4 py-2.5 text-sm font-semibold text-gray-900">
-        {t("termReport", { group: group.data?.name ?? "", count: users.length })}
+      <h2 className="flex items-center gap-1 border-b border-gray-100 px-4 py-2.5 text-sm font-semibold text-gray-900">
+        <span>{t("termReport", { group: group.data?.name ?? "", count: users.length })}</span>
+        <WhereTip k="termReport" />
       </h2>
       {users.length === 0 ? (
         <EmptyState title={t("noMembers")} className="border-0" />
@@ -305,6 +310,7 @@ function LetterCell({
 }) {
   const locale = useLocale();
   const { data, isLoading, error } = useProgressQuery({ courseId, studentId });
+  useGateLoading(isLoading);
   useLetterEffect(data, courseId, onLetter);
   if (isLoading)
     return (

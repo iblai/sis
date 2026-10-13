@@ -18,7 +18,6 @@ import { Spinner } from "@iblai/iblai-js/web-containers";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PageHeader } from "@/components/sis/page-header";
 import { LoadError } from "@/components/sis/load-error";
@@ -26,6 +25,7 @@ import { LoadingScreen } from "@/components/loading-screen";
 import { useBreadcrumbs } from "@/components/sis/breadcrumbs";
 import { ListEditor, type Column } from "@/components/sis/setup/list-editor";
 import { FieldsTab } from "@/components/sis/setup/fields-tab";
+import { PageGate } from "@/components/sis/page-gate";
 import { useSession } from "@/hooks/use-session";
 import { useSisMetadata } from "@/hooks/use-sis-metadata";
 import { useToastError } from "@/hooks/use-toast-error";
@@ -82,13 +82,16 @@ function SetupView() {
   const meta = metadata.meta ?? EMPTY_SIS_METADATA;
 
   return (
-    <>
-      <PageHeader icon={<Settings />} title={tn("setup")} description={t("description")} />
+    <PageGate loading={metadata.isLoading}>
+      <PageHeader
+        where="setup"
+        icon={<Settings />}
+        title={tn("setup")}
+        description={t("description")}
+      />
       <div className="flex-1 overflow-auto p-4 md:p-6">
         {metadata.error ? (
           <LoadError error={metadata.error} />
-        ) : metadata.isLoading ? (
-          <Skeleton className="h-96 rounded-xl" />
         ) : metadata.invalid ? (
           <LoadError error={{ status: 0, detail: t("invalidVersion") }} />
         ) : (
@@ -125,12 +128,14 @@ function SetupView() {
               <SubjectsTab key={JSON.stringify(meta.subjects)} meta={meta} />
             </TabsContent>
             <TabsContent value="fields">
-              <FieldsTab />
+              <PageGate inline>
+                <FieldsTab />
+              </PageGate>
             </TabsContent>
           </Tabs>
         )}
       </div>
-    </>
+    </PageGate>
   );
 }
 

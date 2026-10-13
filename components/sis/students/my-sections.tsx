@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { Skeleton } from "@/components/ui/skeleton";
 import { LoadError } from "@/components/sis/load-error";
+import { useGateLoading } from "@/components/sis/page-gate";
 import { useSections } from "@/hooks/use-sections";
 import { useSession } from "@/hooks/use-session";
 import { useProgressQuery, useUserEnrollmentsQuery } from "@/lib/sis/lms-api";
@@ -15,8 +16,8 @@ export function MySections({ username, studentId }: { username: string; studentI
   const { href } = useSession();
   const enrollments = useUserEnrollmentsQuery(username, { skip: !username });
   const sections = useSections();
+  useGateLoading(enrollments.isLoading || sections.isLoading);
   if (enrollments.error) return <LoadError error={enrollments.error} className="m-4" />;
-  if (enrollments.isLoading) return <Skeleton className="m-4 h-24 rounded-lg" />;
   const rows = (enrollments.data ?? []).filter((e) => e.is_active);
   if (!rows.length)
     return <p className="text-muted-foreground p-6 text-center text-sm">{t("none")}</p>;
@@ -62,6 +63,7 @@ export function ProgressCells({ courseId, studentId }: { courseId: string; stude
   const locale = useLocale();
   const t = useTranslations("enrollment");
   const { data, isLoading, error } = useProgressQuery({ courseId, studentId });
+  useGateLoading(isLoading);
   if (isLoading)
     return (
       <td colSpan={2} className="px-4 py-2">

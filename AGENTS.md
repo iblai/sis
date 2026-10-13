@@ -79,7 +79,12 @@ Three backends carry the data, all through existing endpoints:
 11. **Pages** are client components: `<PageHeader/>` then
     `<div className="flex-1 overflow-auto">` inside the platform layout.
     Admin writes render only when `useIsLiveAdmin()` (admin AND Admin mode);
-    `lib/sis/permissions.ts#canOpen` is the route gate.
+    `lib/sis/permissions.ts#canOpen` is the route gate. A page renders inside
+    `PageGate` and stays behind the loading screen until every query it and its
+    children issue on mount has answered (`useGateLoading` in each fetching
+    component, per-row cells included); after the first paint nothing changes
+    without a user action — no number, row or card fills in later. A tab panel
+    gates itself the same way (`<PageGate inline>`).
 12. **Web only** — no `src-tauri/`, no Tauri workflows — until rei says
     otherwise. `@tauri-apps/plugin-os` and the livekit packages are installed
     only because the SDK's bundle imports them; the app never calls them.
@@ -107,4 +112,5 @@ Three backends carry the data, all through existing endpoints:
 | Translations                     | `i18n/`, `messages/{en,es,fr,zh}.json`, `scripts/validate-i18n.mjs`                      |
 | Shell                            | `app/platform/[tenantKey]/layout.tsx`, `components/sis/app-sidebar.tsx`, `top-bar.tsx`   |
 | Areas                            | `components/sis/{students,courses,groups,setup,dashboard}/`                              |
+| Page load gate                   | `components/sis/page-gate.tsx`, `lib/sis/gate.ts`                                        |
 | The LMS probe                    | `scripts/probe-lms.mjs`                                                                  |

@@ -16,7 +16,6 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -31,6 +30,8 @@ import { LoadError } from "@/components/sis/load-error";
 import { SimpleSelect } from "@/components/sis/simple-select";
 import { StatusPill } from "@/components/sis/status-pill";
 import { useIsLiveAdmin } from "@/components/sis/admin-mode";
+import { WhereTip } from "@/components/sis/where-tip";
+import { useGateLoading } from "@/components/sis/page-gate";
 import { useSections } from "@/hooks/use-sections";
 import { useSession } from "@/hooks/use-session";
 import { useToastError } from "@/hooks/use-toast-error";
@@ -58,6 +59,7 @@ export function CredentialsTab({ username }: { username: string }) {
     include_expired: true,
     page_size: 100,
   });
+  useGateLoading(assertions.isLoading);
   const [issueOpen, setIssueOpen] = useState(false);
   const [revoking, setRevoking] = useState<Assertion | null>(null);
   const [reason, setReason] = useState("");
@@ -85,7 +87,9 @@ export function CredentialsTab({ username }: { username: string }) {
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <p className="text-muted-foreground text-xs">{t("studentHint")}</p>
+        <p className="text-muted-foreground text-xs">
+          {t("studentHint")} <WhereTip k="studentCredentials" />
+        </p>
         {isLiveAdmin ? (
           <Button size="sm" className="ibl-button-primary" onClick={() => setIssueOpen(true)}>
             <Plus data-icon="inline-start" /> {t("issue")}
@@ -95,8 +99,6 @@ export function CredentialsTab({ username }: { username: string }) {
       <div className="overflow-hidden rounded-xl border border-[var(--border-color,#e5e7eb)] bg-white">
         {assertions.error ? (
           <LoadError error={assertions.error} />
-        ) : assertions.isLoading ? (
-          <Skeleton className="m-4 h-24 rounded-lg" />
         ) : rows.length === 0 ? (
           <EmptyState icon={<Award strokeWidth={1.75} />} title={t("none")} className="border-0" />
         ) : (

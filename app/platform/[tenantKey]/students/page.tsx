@@ -8,7 +8,6 @@ import { Mail, Search, Upload, UserPlus, Users } from "lucide-react";
 import { InviteUserDialog, InvitedUsersDialog } from "@iblai/iblai-js/web-containers";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -26,6 +25,7 @@ import { LoadingScreen } from "@/components/loading-screen";
 import { useBreadcrumbs } from "@/components/sis/breadcrumbs";
 import { useIsLiveAdmin } from "@/components/sis/admin-mode";
 import { ImportDialog } from "@/components/sis/students/import-dialog";
+import { PageGate } from "@/components/sis/page-gate";
 import { useDebounced } from "@/hooks/use-debounced";
 import { useSession } from "@/hooks/use-session";
 import { usePlatformInvitationsQuery, usePlatformUsersQuery } from "@/lib/sis/api";
@@ -84,8 +84,9 @@ function StudentsView() {
   };
 
   return (
-    <>
+    <PageGate loading={isLoading || pending.isLoading}>
       <PageHeader
+        where="students"
         icon={<Users />}
         title={tn("students")}
         description={t("description")}
@@ -144,12 +145,6 @@ function StudentsView() {
         ) : null}
         {error ? (
           <LoadError error={error} className="m-4" />
-        ) : isLoading ? (
-          <div className="space-y-2 p-4 md:p-6">
-            {Array.from({ length: 6 }, (_, i) => (
-              <Skeleton key={i} className="h-10 rounded-lg" />
-            ))}
-          </div>
         ) : rows.length === 0 ? (
           <EmptyState
             icon={<Users strokeWidth={1.75} />}
@@ -202,6 +197,6 @@ function StudentsView() {
         <InvitedUsersDialog onClose={() => setShowPending(false)} tenant={tenantKey} />
       ) : null}
       <ImportDialog open={importOpen} onOpenChange={(o) => (o ? null : closeDialogs())} />
-    </>
+    </PageGate>
   );
 }

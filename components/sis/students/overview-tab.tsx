@@ -1,9 +1,10 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { Skeleton } from "@/components/ui/skeleton";
 import { FieldRow } from "@/components/sis/inline-field";
 import { StatusPill } from "@/components/sis/status-pill";
+import { WhereTip } from "@/components/sis/where-tip";
+import { useGateLoading } from "@/components/sis/page-gate";
 import { useSession } from "@/hooks/use-session";
 import { useLearnerLastAccessQuery, useWatchedGroupsQuery } from "@/lib/sis/api";
 import { useUserEnrollmentsQuery } from "@/lib/sis/lms-api";
@@ -35,6 +36,7 @@ export function OverviewTab({
     { platformKey: tenantKey, username },
     { skip: !isAdmin },
   );
+  useGateLoading(enrollments.isLoading || guardians.isLoading || lastAccess.isLoading);
   const custom = demographics?.custom_fields ?? {};
   const watchers = (guardians.data?.results ?? [])
     .filter((g) => g.watched_users.some((u) => u.username === username))
@@ -50,7 +52,10 @@ export function OverviewTab({
   return (
     <div className="grid gap-4 lg:grid-cols-2">
       <section className="rounded-xl border border-[var(--border-color,#e5e7eb)] bg-white p-4">
-        <h2 className="text-sm font-semibold text-gray-900">{t("summary")}</h2>
+        <h2 className="flex items-center gap-1 text-sm font-semibold text-gray-900">
+          <span>{t("summary")}</span>
+          <WhereTip k="overviewStatus" />
+        </h2>
         <dl className="mt-2">
           <FieldRow label={t("statusLabel")}>
             <StatusPill
@@ -68,36 +73,23 @@ export function OverviewTab({
           <FieldRow label={t("joined")}>{formatDate(link?.added_on, locale)}</FieldRow>
           {isAdmin ? (
             <FieldRow label={t("lastAccess")} hint={t("lastAccessHint")}>
-              {lastAccess.isLoading ? (
-                <Skeleton className="h-4 w-24" />
-              ) : lastSeen ? (
-                formatDateTime(lastSeen, locale)
-              ) : (
-                "—"
-              )}
+              {lastSeen ? formatDateTime(lastSeen, locale) : "—"}
             </FieldRow>
           ) : null}
         </dl>
       </section>
       <section className="rounded-xl border border-[var(--border-color,#e5e7eb)] bg-white p-4">
-        <h2 className="text-sm font-semibold text-gray-900">{t("sectionsAndGuardians")}</h2>
+        <h2 className="flex items-center gap-1 text-sm font-semibold text-gray-900">
+          <span>{t("sectionsAndGuardians")}</span>
+          <WhereTip k="overviewSections" />
+        </h2>
         <dl className="mt-2">
           <FieldRow label={t("sections")}>
-            {enrollments.isLoading ? (
-              <Skeleton className="h-4 w-12" />
-            ) : (
-              String((enrollments.data ?? []).filter((e) => e.is_active).length)
-            )}
+            {String((enrollments.data ?? []).filter((e) => e.is_active).length)}
           </FieldRow>
           {isAdmin ? (
             <FieldRow label={t("guardians")}>
-              {guardians.isLoading ? (
-                <Skeleton className="h-4 w-24" />
-              ) : watchers.length ? (
-                watchers.map((w) => w.email || w.username).join(", ")
-              ) : (
-                "—"
-              )}
+              {watchers.length ? watchers.map((w) => w.email || w.username).join(", ") : "—"}
             </FieldRow>
           ) : null}
           <FieldRow label={tf("guardian_name")}>{str(custom.guardian_name)}</FieldRow>

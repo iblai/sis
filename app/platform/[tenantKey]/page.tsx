@@ -14,7 +14,6 @@ import {
   Users,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import { PageHeader } from "@/components/sis/page-header";
 import { SimpleSelect } from "@/components/sis/simple-select";
 import { StatCard } from "@/components/sis/stat-card";
@@ -24,6 +23,7 @@ import { OnboardingCard } from "@/components/sis/dashboard/onboarding-card";
 import { OverTimeChart } from "@/components/sis/dashboard/over-time-chart";
 import { EntityAvatar } from "@/components/sis/entity-avatar";
 import { MySections } from "@/components/sis/students/my-sections";
+import { PageGate, useGateLoading } from "@/components/sis/page-gate";
 import { useSession } from "@/hooks/use-session";
 import { useSections } from "@/hooks/use-sections";
 import { useSisMetadata } from "@/hooks/use-sis-metadata";
@@ -51,14 +51,15 @@ export default function HomePage() {
   const tn = useTranslations("nav");
   const { displayName, isAdmin } = useSession();
   return (
-    <>
+    <PageGate>
       <PageHeader
+        where="home"
         icon={<Home />}
         title={tn("home")}
         description={displayName ? t("welcomeNamed", { name: displayName }) : t("welcome")}
       />
       {isAdmin ? <AdminDashboard /> : <StudentHome />}
-    </>
+    </PageGate>
   );
 }
 
@@ -79,9 +80,19 @@ function AdminDashboard() {
   const grade = useAverageGradeQuery({ platformKey: tenantKey });
   const mostActive = useMostActiveCoursesQuery({ platformKey: tenantKey, ...range, length: 6 });
   const learners = useLearnersOverviewQuery({ platformKey: tenantKey, length: 8 });
+  useGateLoading(
+    metadata.isLoading ||
+      sections.isLoading ||
+      directory.isLoading ||
+      registered.isLoading ||
+      active.isLoading ||
+      enrollments.isLoading ||
+      grade.isLoading ||
+      mostActive.isLoading ||
+      learners.isLoading,
+  );
 
   const memberCount = directory.data?.count ?? null;
-  const loading = metadata.isLoading || sections.isLoading;
   const mostActiveRows = (mostActive.data?.data ?? []) as Record<string, unknown>[];
   const learnerRows = (learners.data?.data ?? []) as Record<string, unknown>[];
   const avg = num(grade.data?.data) ?? num(rec(grade.data?.data).average);
@@ -91,12 +102,6 @@ function AdminDashboard() {
       <div className="mx-auto w-full max-w-7xl space-y-4 p-4 md:p-6">
         {metadata.error ? (
           <LoadError error={metadata.error} />
-        ) : loading ? (
-          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-            {Array.from({ length: 4 }, (_, i) => (
-              <Skeleton key={i} className="h-24 rounded-xl" />
-            ))}
-          </div>
         ) : (
           <>
             {metadata.meta ? null : <OnboardingCard />}

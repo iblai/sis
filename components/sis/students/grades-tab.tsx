@@ -17,6 +17,8 @@ import { EmptyState } from "@/components/sis/empty-state";
 import { LoadError } from "@/components/sis/load-error";
 import { SimpleSelect } from "@/components/sis/simple-select";
 import { StatCard } from "@/components/sis/stat-card";
+import { WhereTip } from "@/components/sis/where-tip";
+import { useGateLoading } from "@/components/sis/page-gate";
 import { useSections } from "@/hooks/use-sections";
 import { useSession } from "@/hooks/use-session";
 import { useProgressQuery, useUserEnrollmentsQuery } from "@/lib/sis/lms-api";
@@ -33,6 +35,7 @@ export function GradesTab({ username, studentId }: { username: string; studentId
   const { href } = useSession();
   const enrollments = useUserEnrollmentsQuery(username, { skip: !username });
   const sections = useSections();
+  useGateLoading(enrollments.isLoading || sections.isLoading);
   const terms = sections.meta?.terms ?? [];
   const [termId, setTermId] = useState<string | null>(null);
   const selected = termId ?? currentTerm(terms, isoDay())?.id ?? "";
@@ -61,7 +64,9 @@ export function GradesTab({ username, studentId }: { username: string; studentId
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <p className="text-muted-foreground text-xs">{t("hint")}</p>
+        <p className="text-muted-foreground text-xs">
+          {t("hint")} <WhereTip k="studentGrades" />
+        </p>
         {terms.length ? (
           <SimpleSelect
             value={selected}
@@ -88,8 +93,6 @@ export function GradesTab({ username, studentId }: { username: string; studentId
       <div className="overflow-hidden rounded-xl border border-[var(--border-color,#e5e7eb)] bg-white">
         {enrollments.error ? (
           <LoadError error={enrollments.error} />
-        ) : enrollments.isLoading ? (
-          <Skeleton className="m-4 h-24 rounded-lg" />
         ) : rows.length === 0 ? (
           <EmptyState
             icon={<GraduationCap strokeWidth={1.75} />}
@@ -149,6 +152,7 @@ function GradeRow({
   const t = useTranslations("grades");
   const [open, setOpen] = useState(false);
   const { data, isLoading, error } = useProgressQuery({ courseId, studentId });
+  useGateLoading(isLoading);
   const letter = data?.course_grade.letter_grade ?? null;
   useEffect(() => {
     if (data) onGrade(courseId, letter);

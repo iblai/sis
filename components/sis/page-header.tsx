@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { WhereTip, type WhereKey } from "@/components/sis/where-tip";
 import { cn } from "@/lib/utils";
 
 /**
@@ -15,6 +16,7 @@ export function PageHeader({
   description,
   actions,
   toolbar,
+  where,
   className,
 }: {
   icon?: ReactNode;
@@ -23,6 +25,8 @@ export function PageHeader({
   description?: ReactNode;
   actions?: ReactNode;
   toolbar?: ReactNode;
+  /** Where this page's data is added, as a question-mark tooltip. */
+  where?: WhereKey;
   className?: string;
 }) {
   return (
@@ -44,6 +48,7 @@ export function PageHeader({
                   {count}
                 </span>
               ) : null}
+              {where ? <WhereTip k={where} side="bottom" /> : null}
             </h1>
             {description ? (
               <p className="text-muted-foreground truncate text-xs">{description}</p>

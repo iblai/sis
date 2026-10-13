@@ -14,6 +14,7 @@ import { useBreadcrumbs } from "@/components/sis/breadcrumbs";
 import { RosterTab } from "@/components/sis/courses/roster-tab";
 import { GradebookTab } from "@/components/sis/courses/gradebook-tab";
 import { SettingsTab } from "@/components/sis/courses/settings-tab";
+import { PageGate, useGateLoading } from "@/components/sis/page-gate";
 import { useSections } from "@/hooks/use-sections";
 import { useSession } from "@/hooks/use-session";
 import { useCourseMetadataQuery, useProgressQuery } from "@/lib/sis/lms-api";
@@ -71,8 +72,9 @@ function CourseView() {
   } as const;
 
   return (
-    <>
+    <PageGate loading={sections.isLoading || meta.isLoading}>
       <PageHeader
+        where="course"
         icon={<BookOpen />}
         title={name}
         description={
@@ -120,18 +122,24 @@ function CourseView() {
               })}
             </TabsList>
             <TabsContent value="roster">
-              <RosterTab courseId={courseId} />
+              <PageGate inline>
+                <RosterTab courseId={courseId} />
+              </PageGate>
             </TabsContent>
             <TabsContent value="gradebook">
-              <GradebookTab courseId={courseId} />
+              <PageGate inline>
+                <GradebookTab courseId={courseId} />
+              </PageGate>
             </TabsContent>
             <TabsContent value="settings">
-              <SettingsTab courseId={courseId} row={row} />
+              <PageGate inline>
+                <SettingsTab courseId={courseId} row={row} />
+              </PageGate>
             </TabsContent>
           </Tabs>
         )}
       </div>
-    </>
+    </PageGate>
   );
 }
 
@@ -140,6 +148,7 @@ function StudentCourseView({ courseId }: { courseId: string }) {
   const t = useTranslations("grades");
   const locale = useLocale();
   const { data, isLoading, error } = useProgressQuery({ courseId });
+  useGateLoading(isLoading);
   if (error) return <LoadError error={error} />;
   if (isLoading || !data) return <Skeleton className="h-48 rounded-xl" />;
   const done = data.completion_summary;

@@ -13,6 +13,7 @@ import config from "@/lib/iblai/config";
 import { LOCAL_STORAGE_KEYS } from "@/lib/iblai/auth-utils";
 import { makeBaseQuery } from "./base-query";
 import { qs } from "./qs";
+import { customFieldsBySlug } from "./demographics";
 import type {
   Assertion,
   AxdPage,
@@ -21,6 +22,7 @@ import type {
   CourseInvitationCreate,
   Credential,
   Demographics,
+  DemographicsResponse,
   DemographicsWrite,
   DmEnrollment,
   FieldDefinition,
@@ -119,13 +121,10 @@ export const sisApi = createApi({
     demographics: b.query<Demographics, { platformKey: string; username: string }>({
       query: ({ platformKey, username }) =>
         `/api/core/platforms/${enc(platformKey)}/${enc(username)}/demographics/`,
-      // An empty record comes back with `custom_fields: []`; the PUT only takes an object.
-      transformResponse: (r: Demographics) => ({
+      // The DM reads custom fields back as a list; the app keeps the PUT shape, by slug.
+      transformResponse: (r: DemographicsResponse) => ({
         ...r,
-        custom_fields:
-          r.custom_fields && typeof r.custom_fields === "object" && !Array.isArray(r.custom_fields)
-            ? r.custom_fields
-            : {},
+        custom_fields: customFieldsBySlug(r.custom_fields),
       }),
       providesTags: (_r, _e, a) => [{ type: "Demographics", id: a.username }],
     }),
@@ -138,6 +137,10 @@ export const sisApi = createApi({
         url: `/api/core/platforms/${enc(platformKey)}/${enc(username)}/demographics/`,
         method: "PUT",
         body,
+      }),
+      transformResponse: (r: DemographicsResponse) => ({
+        ...r,
+        custom_fields: customFieldsBySlug(r.custom_fields),
       }),
       invalidatesTags: (_r, _e, a) => [{ type: "Demographics", id: a.username }],
     }),

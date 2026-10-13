@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { BookOpen, ExternalLink, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -21,6 +20,8 @@ import { StatusPill } from "@/components/sis/status-pill";
 import { useIsLiveAdmin } from "@/components/sis/admin-mode";
 import { EnrollDialog } from "@/components/sis/students/enroll-dialog";
 import { ProgressCells } from "@/components/sis/students/my-sections";
+import { WhereTip } from "@/components/sis/where-tip";
+import { useGateLoading } from "@/components/sis/page-gate";
 import { useSections } from "@/hooks/use-sections";
 import { useSession } from "@/hooks/use-session";
 import { useCourseInvitationsQuery } from "@/lib/sis/api";
@@ -41,13 +42,16 @@ export function EnrollmentTab({ username, studentId }: { username: string; stude
     { platformKey: tenantKey, username, active: true, page_size: 50 },
     { skip: !isLiveAdmin },
   );
+  useGateLoading(enrollments.isLoading || sections.isLoading || pending.isLoading);
   const rows = enrollments.data ?? [];
   const pendingRows = (pending.data?.results ?? []).filter((i) => !i.started);
 
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <p className="text-muted-foreground text-xs">{t("hint")}</p>
+        <p className="text-muted-foreground text-xs">
+          {t("hint")} <WhereTip k="enrollment" />
+        </p>
         {isLiveAdmin ? (
           <Button size="sm" className="ibl-button-primary" onClick={() => setEnrollOpen(true)}>
             <Plus data-icon="inline-start" /> {t("enroll")}
@@ -65,8 +69,6 @@ export function EnrollmentTab({ username, studentId }: { username: string; stude
       <div className="overflow-hidden rounded-xl border border-[var(--border-color,#e5e7eb)] bg-white">
         {enrollments.error ? (
           <LoadError error={enrollments.error} />
-        ) : enrollments.isLoading ? (
-          <Skeleton className="m-4 h-24 rounded-lg" />
         ) : rows.length === 0 ? (
           <EmptyState
             icon={<BookOpen strokeWidth={1.75} />}

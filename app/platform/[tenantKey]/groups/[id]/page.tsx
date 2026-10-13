@@ -8,7 +8,6 @@ import { Megaphone, Pencil, Plus, Trash2, UsersRound, X } from "lucide-react";
 import { toast } from "sonner";
 import { Spinner } from "@iblai/iblai-js/web-containers";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
 import { PageHeader } from "@/components/sis/page-header";
 import { ConfirmDialog } from "@/components/sis/confirm-dialog";
@@ -19,6 +18,7 @@ import { UserPicker } from "@/components/sis/user-picker";
 import { useBreadcrumbs } from "@/components/sis/breadcrumbs";
 import { useIsLiveAdmin } from "@/components/sis/admin-mode";
 import { GroupDialog } from "@/components/sis/groups/group-dialog";
+import { PageGate } from "@/components/sis/page-gate";
 import { useSession } from "@/hooks/use-session";
 import { useToastError } from "@/hooks/use-toast-error";
 import {
@@ -108,8 +108,9 @@ export default function GroupPage() {
   };
 
   return (
-    <>
+    <PageGate loading={group.isLoading}>
       <PageHeader
+        where="group"
         icon={<UsersRound />}
         title={group.data?.name ?? "…"}
         count={group.data ? users.length : undefined}
@@ -139,8 +140,6 @@ export default function GroupPage() {
           <section className="overflow-hidden rounded-xl border border-[var(--border-color,#e5e7eb)] bg-white">
             {group.error ? (
               <LoadError error={group.error} />
-            ) : group.isLoading ? (
-              <Skeleton className="m-4 h-32 rounded-lg" />
             ) : users.length === 0 ? (
               <EmptyState
                 icon={<UsersRound strokeWidth={1.75} />}
@@ -243,6 +242,6 @@ export default function GroupPage() {
         loading={removeState.isLoading}
         onConfirm={confirmDelete}
       />
-    </>
+    </PageGate>
   );
 }

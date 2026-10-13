@@ -15,7 +15,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { Skeleton } from "@/components/ui/skeleton";
 import { PageHeader } from "@/components/sis/page-header";
 import { PaginationBar } from "@/components/sis/pagination-bar";
 import { EmptyState } from "@/components/sis/empty-state";
@@ -24,6 +23,7 @@ import { SimpleSelect } from "@/components/sis/simple-select";
 import { UserPicker } from "@/components/sis/user-picker";
 import { useBreadcrumbs } from "@/components/sis/breadcrumbs";
 import { useIsLiveAdmin } from "@/components/sis/admin-mode";
+import { PageGate } from "@/components/sis/page-gate";
 import { useSections } from "@/hooks/use-sections";
 import { useSession } from "@/hooks/use-session";
 import { useToastError } from "@/hooks/use-toast-error";
@@ -72,8 +72,9 @@ export default function CredentialsPage() {
   };
 
   return (
-    <>
+    <PageGate loading={credentials.isLoading || sections.isLoading}>
       <PageHeader
+        where="credentials"
         icon={<Award />}
         title={tn("credentials")}
         count={credentials.data?.count}
@@ -111,12 +112,6 @@ export default function CredentialsPage() {
       <div className="flex-1 overflow-auto p-4 md:p-6">
         {credentials.error ? (
           <LoadError error={credentials.error} />
-        ) : credentials.isLoading ? (
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
-            {Array.from({ length: 6 }, (_, i) => (
-              <Skeleton key={i} className="h-28 rounded-xl" />
-            ))}
-          </div>
         ) : rows.length === 0 ? (
           <EmptyState
             icon={<Award strokeWidth={1.75} />}
@@ -176,7 +171,7 @@ export default function CredentialsPage() {
         label={t("countLabel")}
       />
       {issuing ? <BulkIssueDialog credential={issuing} onClose={() => setIssuing(null)} /> : null}
-    </>
+    </PageGate>
   );
 }
 

@@ -15,6 +15,8 @@ import { SimpleSelect } from "@/components/sis/simple-select";
 import { StatusPill } from "@/components/sis/status-pill";
 import { useBreadcrumbs } from "@/components/sis/breadcrumbs";
 import { useIsLiveAdmin } from "@/components/sis/admin-mode";
+import { WhereTip } from "@/components/sis/where-tip";
+import { PageGate, useGateLoading } from "@/components/sis/page-gate";
 import { useSections } from "@/hooks/use-sections";
 import { useSession } from "@/hooks/use-session";
 import { useToastError } from "@/hooks/use-toast-error";
@@ -41,17 +43,16 @@ export default function ReportsPage() {
   const reports = useReportsQuery(tenantKey);
   useBreadcrumbs([{ label: tn("reports"), href: href("/reports") }]);
   return (
-    <>
-      <PageHeader icon={<FileChartColumn />} title={tn("reports")} description={t("description")} />
+    <PageGate loading={reports.isLoading}>
+      <PageHeader
+        where="reports"
+        icon={<FileChartColumn />}
+        title={tn("reports")}
+        description={t("description")}
+      />
       <div className="flex-1 space-y-6 overflow-auto p-4 md:p-6">
         {reports.error ? (
           <LoadError error={reports.error} />
-        ) : reports.isLoading ? (
-          <div className="grid gap-3 lg:grid-cols-2">
-            {Array.from({ length: 4 }, (_, i) => (
-              <Skeleton key={i} className="h-32 rounded-xl" />
-            ))}
-          </div>
         ) : (reports.data?.length ?? 0) === 0 ? (
           <EmptyState icon={<FileChartColumn strokeWidth={1.75} />} title={t("none")} />
         ) : (
@@ -63,7 +64,7 @@ export default function ReportsPage() {
         )}
         <SectionReports />
       </div>
-    </>
+    </PageGate>
   );
 }
 
@@ -81,6 +82,7 @@ function ReportCard({ report }: { report: ReportInfo }) {
     { platformKey: tenantKey, report_name: report.report_name },
     { skip: !running, pollingInterval: 5000 },
   );
+  useGateLoading(detail.isLoading);
   const status = detail.data?.status ?? report.status;
   const wantsDates = report.extra_query_params?.some((p) => /date/.test(p)) ?? true;
 
@@ -193,6 +195,7 @@ function SectionReports() {
   const [courseId, setCourseId] = useState("");
   const downloads = useInstructorReportsQuery(courseId, { skip: !courseId });
   const tasks = useInstructorTasksQuery(courseId, { skip: !courseId });
+  useGateLoading(sections.isLoading || downloads.isLoading || tasks.isLoading);
   const [rosterCsv, rosterState] = useRosterCsvMutation();
   const request = async () => {
     try {
@@ -206,7 +209,10 @@ function SectionReports() {
     <section className="space-y-3 rounded-xl border border-[var(--border-color,#e5e7eb)] bg-white p-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div>
-          <h2 className="text-sm font-semibold text-gray-900">{t("title")}</h2>
+          <h2 className="flex items-center gap-1 text-sm font-semibold text-gray-900">
+            <span>{t("title")}</span>
+            <WhereTip k="sectionReports" />
+          </h2>
           <p className="text-muted-foreground text-xs">{t("description")}</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">

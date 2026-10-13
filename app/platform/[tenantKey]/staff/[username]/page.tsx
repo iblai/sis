@@ -15,6 +15,8 @@ import { FieldRow } from "@/components/sis/inline-field";
 import { StatusPill } from "@/components/sis/status-pill";
 import { useBreadcrumbs } from "@/components/sis/breadcrumbs";
 import { useIsLiveAdmin } from "@/components/sis/admin-mode";
+import { WhereTip } from "@/components/sis/where-tip";
+import { PageGate } from "@/components/sis/page-gate";
 import { useSections } from "@/hooks/use-sections";
 import { useSession } from "@/hooks/use-session";
 import { useToastError } from "@/hooks/use-toast-error";
@@ -35,11 +37,12 @@ export default function StaffMemberPage() {
   const links = useUserLinksQuery({ platformKey: tenantKey, username });
   const link = links.data?.find((l) => l.key === tenantKey);
   // The link carries no name; the directory row does.
-  const member = usePlatformUsersQuery({
+  const directory = usePlatformUsersQuery({
     platformKey: tenantKey,
     query: username,
     page_size: 5,
-  }).data?.results.find((u) => u.username === username);
+  });
+  const member = directory.data?.results.find((u) => u.username === username);
   const [setLink, linkState] = useSetUserLinkMutation();
   const [setRole, roleState] = useSetOrgRoleMutation();
   const [showSections, setShowSections] = useState(false);
@@ -85,8 +88,9 @@ export default function StaffMemberPage() {
   }
 
   return (
-    <>
+    <PageGate loading={links.isLoading || directory.isLoading}>
       <PageHeader
+        where="staffMember"
         icon={<UserCog />}
         title={name}
         description={link?.email ?? username}
@@ -119,35 +123,34 @@ export default function StaffMemberPage() {
         <div className="grid gap-4 lg:grid-cols-2">
           <section className="rounded-xl border border-[var(--border-color,#e5e7eb)] bg-white p-4">
             <h2 className="text-sm font-semibold text-gray-900">{t("roles")}</h2>
-            {links.isLoading ? (
-              <Skeleton className="mt-2 h-24" />
-            ) : (
-              <dl className="mt-2">
-                <FieldRow label={t("admin")} hint={t("adminHint")}>
-                  <StatusPill
-                    label={link?.is_admin ? t("yes") : t("no")}
-                    tone={link?.is_admin ? "ok" : "muted"}
-                  />
-                </FieldRow>
-                <FieldRow label={t("teacher")} hint={t("teacherHint")}>
-                  <StatusPill
-                    label={link?.is_staff ? t("yes") : t("no")}
-                    tone={link?.is_staff ? "ok" : "muted"}
-                  />
-                </FieldRow>
-                <FieldRow label={t("active")}>
-                  <StatusPill
-                    label={link?.active === false ? t("no") : t("yes")}
-                    tone={link?.active === false ? "muted" : "ok"}
-                  />
-                </FieldRow>
-                <FieldRow label={t("joined")}>{formatDate(link?.added_on, locale)}</FieldRow>
-              </dl>
-            )}
+            <dl className="mt-2">
+              <FieldRow label={t("admin")} hint={t("adminHint")}>
+                <StatusPill
+                  label={link?.is_admin ? t("yes") : t("no")}
+                  tone={link?.is_admin ? "ok" : "muted"}
+                />
+              </FieldRow>
+              <FieldRow label={t("teacher")} hint={t("teacherHint")}>
+                <StatusPill
+                  label={link?.is_staff ? t("yes") : t("no")}
+                  tone={link?.is_staff ? "ok" : "muted"}
+                />
+              </FieldRow>
+              <FieldRow label={t("active")}>
+                <StatusPill
+                  label={link?.active === false ? t("no") : t("yes")}
+                  tone={link?.active === false ? "muted" : "ok"}
+                />
+              </FieldRow>
+              <FieldRow label={t("joined")}>{formatDate(link?.added_on, locale)}</FieldRow>
+            </dl>
             <p className="text-muted-foreground mt-3 text-xs">{t("v1Note")}</p>
           </section>
           <section className="rounded-xl border border-[var(--border-color,#e5e7eb)] bg-white p-4">
-            <h2 className="text-sm font-semibold text-gray-900">{t("sectionsTaught")}</h2>
+            <h2 className="flex items-center gap-1 text-sm font-semibold text-gray-900">
+              <span>{t("sectionsTaught")}</span>
+              <WhereTip k="taught" />
+            </h2>
             <p className="text-muted-foreground mt-1 text-xs">{t("sectionsHint")}</p>
             {!showSections ? (
               <Button
@@ -178,7 +181,7 @@ export default function StaffMemberPage() {
           </section>
         </div>
       </div>
-    </>
+    </PageGate>
   );
 }
 

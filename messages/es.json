@@ -163,23 +163,23 @@
     },
     "panels": {
       "active": {
-        "info": "Aprendices con actividad en la plataforma de aprendizaje, por día, en el periodo elegido",
+        "info": "Aprendices con actividad en la plataforma de aprendizaje, por día, en el periodo elegido. Se llena a medida que los aprendices usan sus cursos.",
         "series": "Aprendices activos",
         "title": "Aprendices activos"
       },
       "cached": "La analítica se actualiza en menos de una hora",
       "empty": "Nada en este periodo todavía.",
       "enrollments": {
-        "info": "Nuevas inscripciones por día en el periodo elegido",
+        "info": "Nuevas inscripciones por día en el periodo elegido. Inscribe aquí, con la importación CSV o en la plataforma de aprendizaje.",
         "series": "Inscripciones",
         "title": "Inscripciones"
       },
       "learners": {
-        "info": "Aprendices que la analítica vio más recientemente",
+        "info": "Aprendices que la analítica vio más recientemente. Aparecen en cuanto usan un curso en la plataforma de aprendizaje.",
         "title": "Aprendices"
       },
       "mostActive": {
-        "info": "Ediciones de curso con más tiempo dedicado en el periodo elegido",
+        "info": "Ediciones de curso con más tiempo dedicado en el periodo elegido. Según el tiempo dedicado a los cursos en la plataforma de aprendizaje.",
         "title": "Cursos más activos"
       }
     },
@@ -188,17 +188,17 @@
     "stats": {
       "active": {
         "hint": "{count, plural, one {# registrado} other {# registrados}}",
-        "info": "Aprendices con actividad en el periodo, según la analítica de la plataforma",
+        "info": "Aprendices con actividad en el periodo, según la analítica de la plataforma. Se llena a medida que los aprendices usan sus cursos en la plataforma de aprendizaje.",
         "label": "Aprendices activos"
       },
       "courses": {
         "hint": "{count, plural, one {# periodo lectivo} other {# periodos lectivos}}",
-        "info": "Ediciones de curso de esta plataforma en la plataforma de aprendizaje",
+        "info": "Ediciones de curso de esta plataforma en la plataforma de aprendizaje. Se crean en Studio y aquí se convierten en secciones.",
         "label": "Secciones"
       },
       "grade": {
         "hint": "En todas las ediciones de curso",
-        "info": "La calificación media de curso que la analítica informa para la plataforma",
+        "info": "La calificación media de curso que la analítica informa para la plataforma. Se llena a medida que los aprendices completan trabajo calificado en la plataforma de aprendizaje.",
         "label": "Calificación media"
       },
       "students": {
@@ -208,7 +208,7 @@
       },
       "members": {
         "label": "Miembros",
-        "info": "Todas las personas de la plataforma que figuran en el directorio: estudiantes y personal"
+        "info": "Todas las personas de la plataforma que figuran en el directorio: estudiantes y personal. Invítalas aquí o en Skills AI, o importa un CSV a una sección."
       }
     },
     "welcome": "Así va tu escuela.",
@@ -826,5 +826,41 @@
       "years": "Años escolares",
       "yearsHint": "Un año escolar contiene sus periodos lectivos."
     }
+  },
+  "where": {
+    "announcement": "Se escribe aquí; lo entregan las notificaciones de la plataforma.",
+    "course": "El contenido y las tareas calificadas se crean en Studio; la lista y las puntuaciones vienen de la plataforma de aprendizaje; el periodo, la materia y el aula de la sección se fijan aquí.",
+    "courseDates": "Las fechas viven en la edición del curso en Studio; edítalas aquí.",
+    "courseGrading": "La política de calificación vive en la edición del curso en Studio; edítala aquí.",
+    "courses": "Las ediciones de curso se crean en Studio para la organización de esta plataforma y luego se vuelven a ejecutar aquí como secciones de un periodo lectivo. Periodo, materia, aula y hora se fijan aquí.",
+    "credentials": "Las credenciales se definen en Skills AI y se emiten aquí; los certificados los genera la plataforma de aprendizaje.",
+    "enrollment": "Inscribe aquí con una invitación al curso o con la importación CSV; la baja se hace en la plataforma de aprendizaje.",
+    "gradeAverages": "Medias de la analítica de la plataforma, a partir del trabajo calificado en la plataforma de aprendizaje.",
+    "gradebook": "Las puntuaciones vienen del trabajo de los aprendices en la plataforma de aprendizaje; modifícalas aquí. Las tareas se crean en Studio.",
+    "grades": "Las calificaciones vienen del trabajo calificado en la plataforma de aprendizaje o de las modificaciones en el libro de calificaciones de una sección. Los créditos y periodos se fijan por sección; la escala de GPA, en Configuración.",
+    "group": "Los miembros se agregan aquí, desde el directorio de la plataforma.",
+    "groups": "Los grupos se crean y se llenan aquí, con los miembros de la plataforma.",
+    "guardians": "Se agregan aquí. El tutor debe ser antes miembro de la plataforma: invítalo.",
+    "home": "Los miembros se invitan aquí o en Skills AI, los cursos se crean en Studio y las cifras de actividad se llenan a medida que los aprendices usan sus cursos en la plataforma de aprendizaje.",
+    "label": "¿De dónde viene esto?",
+    "messages": "Los anuncios se escriben aquí; el correo a una sección lo envía la plataforma de aprendizaje.",
+    "overviewSections": "Las secciones vienen de las inscripciones en la plataforma de aprendizaje; los tutores se agregan aquí.",
+    "overviewStatus": "El estado es la pertenencia a la plataforma: Desactivar aquí o en Skills AI.",
+    "record": "Se escribe aquí. Los campos personalizados se definen en Configuración › Campos del estudiante.",
+    "reports": "Los informes de la plataforma se ejecutan aquí; los informes por sección los genera el panel del instructor en la plataforma de aprendizaje.",
+    "roster": "Inscribe aquí por invitación o importación CSV; la lista es la inscripción del curso en la plataforma de aprendizaje.",
+    "section": "Se fija aquí, en los datos de la escuela.",
+    "sectionEmail": "Lo envía la plataforma de aprendizaje a los aprendices de la sección; necesita una sección.",
+    "sectionReports": "Los genera el panel del instructor en la plataforma de aprendizaje.",
+    "setup": "Todo lo de aquí se escribe a mano: años y periodos lectivos, niveles, horas, aulas, materias y los campos del expediente. Nada viene de otra aplicación.",
+    "staff": "El personal son miembros de la plataforma con la marca de administrador. Invítalos aquí o activa la marca en Skills AI.",
+    "staffMember": "Las marcas de administrador y docente se activan aquí o en Skills AI; las secciones impartidas son roles de curso en la plataforma de aprendizaje.",
+    "student": "El expediente y los tutores se escriben aquí; las inscripciones y calificaciones vienen de la plataforma de aprendizaje; las credenciales se definen en Skills AI y se emiten aquí.",
+    "studentCredentials": "Las credenciales se definen en Skills AI y se emiten aquí.",
+    "studentGrades": "Las calificaciones vienen del trabajo calificado en la plataforma de aprendizaje o de las modificaciones en el libro de calificaciones de la sección.",
+    "students": "Los estudiantes son miembros de la plataforma. Agrégalos con Invitar (por correo), con la importación CSV a una sección o en Skills AI.",
+    "taught": "Roles de curso en la plataforma de aprendizaje, asignados por sección en Curso › Ajustes › Docentes.",
+    "teachers": "Los docentes son roles de curso en la plataforma de aprendizaje; asígnalos aquí.",
+    "termReport": "Necesita un nivel con grupo de cohorte (Configuración › Niveles) y el avance de la plataforma de aprendizaje."
   }
 }

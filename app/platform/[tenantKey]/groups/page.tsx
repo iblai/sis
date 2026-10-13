@@ -7,7 +7,6 @@ import { useTranslations } from "next-intl";
 import { Plus, Search, UsersRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -25,6 +24,7 @@ import { LoadingScreen } from "@/components/loading-screen";
 import { useBreadcrumbs } from "@/components/sis/breadcrumbs";
 import { useIsLiveAdmin } from "@/components/sis/admin-mode";
 import { GroupDialog } from "@/components/sis/groups/group-dialog";
+import { PageGate } from "@/components/sis/page-gate";
 import { useDebounced } from "@/hooks/use-debounced";
 import { useSession } from "@/hooks/use-session";
 import { useUserGroupsQuery } from "@/lib/sis/api";
@@ -63,8 +63,9 @@ function GroupsView() {
   const newOpen = searchParams.get("new") === "1";
 
   return (
-    <>
+    <PageGate loading={isLoading}>
       <PageHeader
+        where="groups"
         icon={<UsersRound />}
         title={tn("groups")}
         count={data?.count}
@@ -99,12 +100,6 @@ function GroupsView() {
       <div className="flex-1 overflow-auto">
         {error ? (
           <LoadError error={error} className="m-4" />
-        ) : isLoading ? (
-          <div className="space-y-2 p-4 md:p-6">
-            {Array.from({ length: 4 }, (_, i) => (
-              <Skeleton key={i} className="h-10 rounded-lg" />
-            ))}
-          </div>
         ) : rows.length === 0 ? (
           <EmptyState
             icon={<UsersRound strokeWidth={1.75} />}
@@ -157,6 +152,6 @@ function GroupsView() {
         open={newOpen}
         onOpenChange={(o) => (o ? null : router.replace(href("/groups")))}
       />
-    </>
+    </PageGate>
   );
 }

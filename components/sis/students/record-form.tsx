@@ -8,9 +8,10 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Skeleton } from "@/components/ui/skeleton";
 import { LoadError } from "@/components/sis/load-error";
 import { SimpleSelect } from "@/components/sis/simple-select";
+import { WhereTip } from "@/components/sis/where-tip";
+import { useGateLoading } from "@/components/sis/page-gate";
 import { useSession } from "@/hooks/use-session";
 import { useSisMetadata } from "@/hooks/use-sis-metadata";
 import { useToastError } from "@/hooks/use-toast-error";
@@ -38,9 +39,9 @@ export function RecordForm({ username, link }: { username: string; link?: UserPl
   const { tenantKey } = useSession();
   const record = useDemographicsQuery({ platformKey: tenantKey, username });
   const fields = useFieldDefinitionsQuery(tenantKey);
+  useGateLoading(record.isLoading || fields.isLoading);
   if (record.error) return <LoadError error={record.error} />;
-  if (record.isLoading || fields.isLoading || !record.data)
-    return <Skeleton className="h-64 rounded-xl" />;
+  if (!record.data) return null;
   return (
     <RecordFormFields
       key={record.data.updated_at}
@@ -72,7 +73,8 @@ function RecordFormFields({
   const { tenantKey } = useSession();
   const toastError = useToastError();
   const dispatch = useDispatch<IblaiAppDispatch>();
-  const { meta } = useSisMetadata();
+  const { meta, isLoading: metaLoading } = useSisMetadata();
+  useGateLoading(metaLoading);
   const [save, saveState] = usePutDemographicsMutation();
   const [updateGroup] = useUpdateUserGroupMutation();
   const [base, setBase] = useState<Record<BaseField, string>>({
@@ -142,7 +144,9 @@ function RecordFormFields({
         void submit();
       }}
     >
-      <p className="text-muted-foreground text-xs">{t("visibleToStudent")}</p>
+      <p className="text-muted-foreground text-xs">
+        {t("visibleToStudent")} <WhereTip k="record" />
+      </p>
       <fieldset className="grid gap-4 sm:grid-cols-2">
         <legend className="mb-2 text-sm font-semibold text-gray-900">{t("baseFields")}</legend>
         {BASE_FIELDS.map((key) => (

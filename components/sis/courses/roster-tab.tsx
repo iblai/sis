@@ -8,7 +8,6 @@ import { toast } from "sonner";
 import { Spinner } from "@iblai/iblai-js/web-containers";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -23,6 +22,8 @@ import { EntityAvatar } from "@/components/sis/entity-avatar";
 import { UserPicker } from "@/components/sis/user-picker";
 import { useIsLiveAdmin } from "@/components/sis/admin-mode";
 import { ImportDialog } from "@/components/sis/students/import-dialog";
+import { WhereTip } from "@/components/sis/where-tip";
+import { useGateLoading } from "@/components/sis/page-gate";
 import { useSession } from "@/hooks/use-session";
 import { useToastError } from "@/hooks/use-toast-error";
 import { useCreateCourseInvitationMutation } from "@/lib/sis/api";
@@ -41,6 +42,7 @@ export function RosterTab({ courseId }: { courseId: string }) {
   const isLiveAdmin = useIsLiveAdmin();
   const toastError = useToastError();
   const roster = useRosterQuery(courseId);
+  useGateLoading(roster.isLoading);
   const [query, setQuery] = useState("");
   const [picked, setPicked] = useState<PlatformUser | null>(null);
   const [importOpen, setImportOpen] = useState(false);
@@ -92,6 +94,7 @@ export function RosterTab({ courseId }: { courseId: string }) {
             aria-label={tc("search")}
           />
         </div>
+        <WhereTip k="roster" />
         <div className="ml-auto flex flex-wrap items-center gap-2">
           <Button
             variant="outline"
@@ -141,8 +144,6 @@ export function RosterTab({ courseId }: { courseId: string }) {
       <div className="overflow-hidden rounded-xl border border-[var(--border-color,#e5e7eb)] bg-white">
         {roster.error ? (
           <LoadError error={roster.error} />
-        ) : roster.isLoading ? (
-          <Skeleton className="m-4 h-32 rounded-lg" />
         ) : rows.length === 0 ? (
           <EmptyState
             icon={<Users strokeWidth={1.75} />}

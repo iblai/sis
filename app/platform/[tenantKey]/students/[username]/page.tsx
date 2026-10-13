@@ -19,6 +19,7 @@ import { EnrollmentTab } from "@/components/sis/students/enrollment-tab";
 import { GradesTab } from "@/components/sis/students/grades-tab";
 import { CredentialsTab } from "@/components/sis/students/credentials-tab";
 import { GuardiansTab } from "@/components/sis/students/guardians-tab";
+import { PageGate } from "@/components/sis/page-gate";
 import { useSession } from "@/hooks/use-session";
 import { useToastError } from "@/hooks/use-toast-error";
 import {
@@ -62,11 +63,12 @@ function StudentView() {
   const links = useUserLinksQuery({ platformKey: tenantKey, username });
   const link = links.data?.find((l) => l.key === tenantKey);
   // The link carries no name; the directory row does.
-  const member = usePlatformUsersQuery({
+  const directory = usePlatformUsersQuery({
     platformKey: tenantKey,
     query: username,
     page_size: 5,
-  }).data?.results.find((u) => u.username === username);
+  });
+  const member = directory.data?.results.find((u) => u.username === username);
   const demographics = useDemographicsQuery({ platformKey: tenantKey, username });
   const [setLink, linkState] = useSetUserLinkMutation();
   const tabs = isAdmin ? ADMIN_TABS : SELF_TABS;
@@ -121,8 +123,9 @@ function StudentView() {
   }
 
   return (
-    <>
+    <PageGate loading={links.isLoading || directory.isLoading || demographics.isLoading}>
       <PageHeader
+        where="student"
         icon={<User />}
         title={name}
         description={link?.email ?? username}
@@ -165,29 +168,41 @@ function StudentView() {
             })}
           </TabsList>
           <TabsContent value="overview">
-            <OverviewTab username={username} link={link} demographics={demographics.data} />
+            <PageGate inline>
+              <OverviewTab username={username} link={link} demographics={demographics.data} />
+            </PageGate>
           </TabsContent>
           {isAdmin ? (
             <TabsContent value="record">
-              <RecordForm username={username} link={link} />
+              <PageGate inline>
+                <RecordForm username={username} link={link} />
+              </PageGate>
             </TabsContent>
           ) : null}
           <TabsContent value="enrollment">
-            <EnrollmentTab username={username} studentId={link?.user_id} />
+            <PageGate inline>
+              <EnrollmentTab username={username} studentId={link?.user_id} />
+            </PageGate>
           </TabsContent>
           <TabsContent value="grades">
-            <GradesTab username={username} studentId={link?.user_id} />
+            <PageGate inline>
+              <GradesTab username={username} studentId={link?.user_id} />
+            </PageGate>
           </TabsContent>
           <TabsContent value="credentials">
-            <CredentialsTab username={username} />
+            <PageGate inline>
+              <CredentialsTab username={username} />
+            </PageGate>
           </TabsContent>
           {isAdmin ? (
             <TabsContent value="guardians">
-              <GuardiansTab username={username} userId={link?.user_id} />
+              <PageGate inline>
+                <GuardiansTab username={username} userId={link?.user_id} />
+              </PageGate>
             </TabsContent>
           ) : null}
         </Tabs>
       </div>
-    </>
+    </PageGate>
   );
 }

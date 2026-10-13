@@ -8,7 +8,6 @@ import { Search, UserCog, UserPlus } from "lucide-react";
 import { InviteUserDialog } from "@iblai/iblai-js/web-containers";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -26,6 +25,7 @@ import { StatusPill } from "@/components/sis/status-pill";
 import { LoadingScreen } from "@/components/loading-screen";
 import { useBreadcrumbs } from "@/components/sis/breadcrumbs";
 import { useIsLiveAdmin } from "@/components/sis/admin-mode";
+import { PageGate } from "@/components/sis/page-gate";
 import { useDebounced } from "@/hooks/use-debounced";
 import { useSession } from "@/hooks/use-session";
 import { usePlatformUsersQuery } from "@/lib/sis/api";
@@ -68,8 +68,9 @@ function StaffView() {
   const count = data && !data.next_page && !data.previous_page ? rows.length : (data?.count ?? 0);
 
   return (
-    <>
+    <PageGate loading={isLoading}>
       <PageHeader
+        where="staff"
         icon={<UserCog />}
         title={tn("staff")}
         description={t("description")}
@@ -103,12 +104,6 @@ function StaffView() {
       <div className="flex-1 overflow-auto">
         {error ? (
           <LoadError error={error} className="m-4" />
-        ) : isLoading ? (
-          <div className="space-y-2 p-4 md:p-6">
-            {Array.from({ length: 4 }, (_, i) => (
-              <Skeleton key={i} className="h-10 rounded-lg" />
-            ))}
-          </div>
         ) : rows.length === 0 ? (
           <EmptyState
             icon={<UserCog strokeWidth={1.75} />}
@@ -173,6 +168,6 @@ function StaffView() {
         onClose={() => router.replace(href("/staff"))}
         tenant={tenantKey}
       />
-    </>
+    </PageGate>
   );
 }

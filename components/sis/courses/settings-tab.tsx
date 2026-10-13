@@ -9,11 +9,12 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Skeleton } from "@/components/ui/skeleton";
 import { LoadError } from "@/components/sis/load-error";
 import { SimpleSelect } from "@/components/sis/simple-select";
 import { UserPicker } from "@/components/sis/user-picker";
 import { useIsLiveAdmin } from "@/components/sis/admin-mode";
+import { WhereTip, type WhereKey } from "@/components/sis/where-tip";
+import { useGateLoading } from "@/components/sis/page-gate";
 import { MetadataConflictError, useSisMetadata } from "@/hooks/use-sis-metadata";
 import { useToastError } from "@/hooks/use-toast-error";
 import { useModifyAccessMutation, useRoleMembersQuery } from "@/lib/sis/lms-api";
@@ -27,9 +28,20 @@ import { WEEKDAYS, type Section, type Weekday } from "@/lib/sis/metadata";
 import { upsertSection, type SectionRow } from "@/lib/sis/sections";
 import type { CourseGrading, CourseRole, PlatformUser, StudioCourseDetails } from "@/lib/sis/types";
 
-const Card = ({ title, children }: { title: string; children: React.ReactNode }) => (
+const Card = ({
+  title,
+  where,
+  children,
+}: {
+  title: string;
+  where?: WhereKey;
+  children: React.ReactNode;
+}) => (
   <section className="space-y-3 rounded-xl border border-[var(--border-color,#e5e7eb)] bg-white p-4">
-    <h2 className="text-sm font-semibold text-gray-900">{title}</h2>
+    <h2 className="flex items-center gap-1 text-sm font-semibold text-gray-900">
+      <span>{title}</span>
+      {where ? <WhereTip k={where} /> : null}
+    </h2>
     {children}
   </section>
 );
@@ -53,18 +65,14 @@ const day = (v?: string | null) => (v ? v.slice(0, 10) : "");
 function DatesCard({ courseId }: { courseId: string }) {
   const t = useTranslations("courses.settings");
   const details = useCourseDetailsQuery(courseId);
+  useGateLoading(details.isLoading);
   if (details.error)
     return (
-      <Card title={t("dates")}>
+      <Card title={t("dates")} where="courseDates">
         <LoadError error={details.error} />
       </Card>
     );
-  if (details.isLoading || !details.data)
-    return (
-      <Card title={t("dates")}>
-        <Skeleton className="h-32" />
-      </Card>
-    );
+  if (!details.data) return null;
   return (
     <DatesForm key={JSON.stringify(details.data)} courseId={courseId} details={details.data} />
   );
@@ -119,7 +127,7 @@ function DatesForm({ courseId, details }: { courseId: string; details: StudioCou
     </div>
   );
   return (
-    <Card title={t("dates")}>
+    <Card title={t("dates")} where="courseDates">
       {meta?.terms.length && isLiveAdmin ? (
         <SimpleSelect
           value=""
@@ -170,6 +178,7 @@ function SectionCard({ courseId, row }: { courseId: string; row?: SectionRow }) 
   const isLiveAdmin = useIsLiveAdmin();
   const toastError = useToastError();
   const { meta, saveList, isSaving, isLoading } = useSisMetadata();
+  useGateLoading(isLoading);
   const current = row?.section;
   const [form, setForm] = useState<Section>({
     courseId,
@@ -182,15 +191,9 @@ function SectionCard({ courseId, row }: { courseId: string; row?: SectionRow }) 
     credits: current?.credits,
     seats: current?.seats,
   });
-  if (isLoading)
-    return (
-      <Card title={t("section")}>
-        <Skeleton className="h-32" />
-      </Card>
-    );
   if (!meta)
     return (
-      <Card title={t("section")}>
+      <Card title={t("section")} where="section">
         <p className="text-muted-foreground text-sm">{t("noSetup")}</p>
       </Card>
     );
@@ -228,7 +231,7 @@ function SectionCard({ courseId, row }: { courseId: string; row?: SectionRow }) 
     }
   };
   return (
-    <Card title={t("section")}>
+    <Card title={t("section")} where="section">
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         {pick("termId", t("term"), meta.terms)}
         {pick("subjectId", t("subject"), meta.subjects)}
@@ -310,6 +313,7 @@ function TeachersCard({ courseId }: { courseId: string }) {
   const toastError = useToastError();
   const staff = useRoleMembersQuery({ courseId, rolename: "staff" });
   const instructors = useRoleMembersQuery({ courseId, rolename: "instructor" });
+  useGateLoading(staff.isLoading || instructors.isLoading);
   const [picked, setPicked] = useState<PlatformUser | null>(null);
   const [modify, { isLoading }] = useModifyAccessMutation();
   const change = async (identifier: string, rolename: CourseRole, action: "allow" | "revoke") => {
@@ -332,8 +336,6 @@ function TeachersCard({ courseId }: { courseId: string }) {
       <p className="text-muted-foreground text-xs font-medium">{title}</p>
       {q.error ? (
         <LoadError error={q.error} className="py-4" />
-      ) : q.isLoading ? (
-        <Skeleton className="mt-1 h-8" />
       ) : (q.data?.users.length ?? 0) === 0 ? (
         <p className="text-muted-foreground mt-1 text-sm">—</p>
       ) : (
@@ -362,7 +364,7 @@ function TeachersCard({ courseId }: { courseId: string }) {
     </div>
   );
   return (
-    <Card title={t("teachers")}>
+    <Card title={t("teachers")} where="teachers">
       <p className="text-muted-foreground text-xs">{t("teachersHint")}</p>
       {list(t("courseStaff"), "staff", staff)}
       {list(t("courseInstructors"), "instructor", instructors)}
@@ -398,18 +400,14 @@ function TeachersCard({ courseId }: { courseId: string }) {
 function GradingCard({ courseId }: { courseId: string }) {
   const t = useTranslations("courses.settings");
   const grading = useCourseGradingQuery(courseId);
+  useGateLoading(grading.isLoading);
   if (grading.error)
     return (
-      <Card title={t("grading")}>
+      <Card title={t("grading")} where="courseGrading">
         <LoadError error={grading.error} />
       </Card>
     );
-  if (grading.isLoading || !grading.data)
-    return (
-      <Card title={t("grading")}>
-        <Skeleton className="h-32" />
-      </Card>
-    );
+  if (!grading.data) return null;
   return (
     <GradingForm key={JSON.stringify(grading.data)} courseId={courseId} grading={grading.data} />
   );
@@ -456,7 +454,7 @@ function GradingForm({ courseId, grading }: { courseId: string; grading: CourseG
   const edit = (i: number, patch: Partial<CourseGrading["graders"][number]>) =>
     setGraders((g) => g.map((x, j) => (j === i ? { ...x, ...patch } : x)));
   return (
-    <Card title={t("grading")}>
+    <Card title={t("grading")} where="courseGrading">
       <div className="overflow-x-auto">
         <table className="w-full text-xs">
           <thead className="text-muted-foreground text-left text-[11px] font-semibold tracking-wide uppercase">

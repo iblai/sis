@@ -7,7 +7,6 @@ import { useLocale, useTranslations } from "next-intl";
 import { BookOpen, Plus, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -25,6 +24,7 @@ import { useBreadcrumbs } from "@/components/sis/breadcrumbs";
 import { useIsLiveAdmin } from "@/components/sis/admin-mode";
 import { SectionDialog } from "@/components/sis/courses/section-dialog";
 import { MySections } from "@/components/sis/students/my-sections";
+import { PageGate } from "@/components/sis/page-gate";
 import { useSections } from "@/hooks/use-sections";
 import { useSession } from "@/hooks/use-session";
 import { filterSections } from "@/lib/sis/sections";
@@ -59,14 +59,14 @@ function CoursesView() {
 
   if (!isAdmin) {
     return (
-      <>
+      <PageGate>
         <PageHeader icon={<BookOpen />} title={tn("courses")} description={t("mine")} />
         <div className="flex-1 overflow-auto p-4 md:p-6">
           <div className="overflow-hidden rounded-xl border border-[var(--border-color,#e5e7eb)] bg-white">
             <MySections username={username} />
           </div>
         </div>
-      </>
+      </PageGate>
     );
   }
 
@@ -74,8 +74,9 @@ function CoursesView() {
   const meta = sections.meta;
 
   return (
-    <>
+    <PageGate loading={sections.isLoading}>
       <PageHeader
+        where="courses"
         icon={<BookOpen />}
         title={tn("courses")}
         count={sections.rows.length}
@@ -145,12 +146,6 @@ function CoursesView() {
       <div className="flex-1 overflow-auto">
         {sections.error ? (
           <LoadError error={sections.error} className="m-4" />
-        ) : sections.isLoading ? (
-          <div className="space-y-2 p-4 md:p-6">
-            {Array.from({ length: 6 }, (_, i) => (
-              <Skeleton key={i} className="h-10 rounded-lg" />
-            ))}
-          </div>
         ) : rows.length === 0 ? (
           <EmptyState
             icon={<BookOpen strokeWidth={1.75} />}
@@ -216,6 +211,6 @@ function CoursesView() {
         )}
       </div>
       <SectionDialog open={newOpen} onOpenChange={(o) => (o ? null : closeNew())} />
-    </>
+    </PageGate>
   );
 }

@@ -16,6 +16,8 @@ import { LoadError } from "@/components/sis/load-error";
 import { StatusPill } from "@/components/sis/status-pill";
 import { useIsLiveAdmin } from "@/components/sis/admin-mode";
 import { GradebookEmbed } from "@/components/sis/courses/gradebook-embed";
+import { WhereTip } from "@/components/sis/where-tip";
+import { useGateLoading } from "@/components/sis/page-gate";
 import { useDebounced } from "@/hooks/use-debounced";
 import { useSession } from "@/hooks/use-session";
 import { useToastError } from "@/hooks/use-toast-error";
@@ -57,6 +59,7 @@ export function GradebookTab({ courseId }: { courseId: string }) {
   const q = useDebounced(query.trim(), 300);
   const info = useGradingInfoQuery(courseId);
   const grid = useGradebookQuery({ courseId, cursor, user_contains: q || undefined });
+  useGateLoading(info.isLoading || grid.isLoading);
   const columns = (info.data?.subsections ?? []).filter((s) => s.graded);
   const frozen = info.data?.grades_frozen ?? false;
   const forbidden = errorStatus(grid.error) === 403 || errorStatus(info.error) === 403;
@@ -77,6 +80,7 @@ export function GradebookTab({ courseId }: { courseId: string }) {
             aria-label={tc("search")}
           />
         </div>
+        <WhereTip k="gradebook" />
         {frozen ? <StatusPill label={t("frozen")} tone="bad" /> : null}
         <Button variant="outline" size="sm" className="ml-auto" onClick={() => setEmbedOpen(true)}>
           <ExternalLink data-icon="inline-start" /> {t("openEmbed")}
@@ -95,8 +99,6 @@ export function GradebookTab({ courseId }: { courseId: string }) {
         />
       ) : grid.error || info.error ? (
         <LoadError error={grid.error ?? info.error} />
-      ) : grid.isLoading || info.isLoading ? (
-        <Skeleton className="h-64 rounded-xl" />
       ) : (grid.data?.results.length ?? 0) === 0 ? (
         <EmptyState title={q ? t("noMatch") : t("none")} />
       ) : (

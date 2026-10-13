@@ -61,6 +61,9 @@ export interface Demographics {
   updated_at: string;
 }
 
+/** What the DM answers: custom fields as a list (`[]` when empty), never the PUT's dict. */
+export type DemographicsResponse = Omit<Demographics, "custom_fields"> & { custom_fields: unknown };
+
 export type DemographicsWrite = Partial<
   Omit<Demographics, "username" | "created_at" | "updated_at">
 >;

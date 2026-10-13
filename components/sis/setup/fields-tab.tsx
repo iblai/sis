@@ -8,10 +8,10 @@ import { Spinner } from "@iblai/iblai-js/web-containers";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
-import { Skeleton } from "@/components/ui/skeleton";
 import { ConfirmDialog } from "@/components/sis/confirm-dialog";
 import { LoadError } from "@/components/sis/load-error";
 import { SimpleSelect } from "@/components/sis/simple-select";
+import { useGateLoading } from "@/components/sis/page-gate";
 import { useSession } from "@/hooks/use-session";
 import { useSisMetadata } from "@/hooks/use-sis-metadata";
 import { useToastError } from "@/hooks/use-toast-error";
@@ -37,6 +37,7 @@ export function FieldsTab() {
   const toastError = useToastError();
   const { meta } = useSisMetadata();
   const fields = useFieldDefinitionsQuery(tenantKey);
+  useGateLoading(fields.isLoading);
   const [create, createState] = useCreateFieldMutation();
   const [update] = useUpdateFieldMutation();
   const [remove, removeState] = useDeleteFieldMutation();
@@ -174,8 +175,6 @@ export function FieldsTab() {
       <div className="overflow-auto rounded-xl border border-[var(--border-color,#e5e7eb)] bg-white">
         {fields.error ? (
           <LoadError error={fields.error} />
-        ) : fields.isLoading ? (
-          <Skeleton className="m-4 h-32" />
         ) : (
           <table className="min-w-full text-sm">
             <thead className="text-muted-foreground text-left text-[11px] font-semibold tracking-wide uppercase">

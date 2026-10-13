@@ -6,12 +6,13 @@ import { Plus, UsersRound, X } from "lucide-react";
 import { toast } from "sonner";
 import { Spinner } from "@iblai/iblai-js/web-containers";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import { EmptyState } from "@/components/sis/empty-state";
 import { LoadError } from "@/components/sis/load-error";
 import { EntityAvatar } from "@/components/sis/entity-avatar";
 import { UserPicker } from "@/components/sis/user-picker";
 import { useIsLiveAdmin } from "@/components/sis/admin-mode";
+import { WhereTip } from "@/components/sis/where-tip";
+import { useGateLoading } from "@/components/sis/page-gate";
 import { useSession } from "@/hooks/use-session";
 import { useToastError } from "@/hooks/use-toast-error";
 import {
@@ -34,6 +35,7 @@ export function GuardiansTab({ username, userId }: { username: string; userId?: 
   const isLiveAdmin = useIsLiveAdmin();
   const toastError = useToastError();
   const groups = useWatchedGroupsQuery({ platformKey: tenantKey, limit: 100 });
+  useGateLoading(groups.isLoading);
   const [picked, setPicked] = useState<PlatformUser | null>(null);
   const [createGroup, createState] = useCreateWatchedGroupMutation();
   const [addWatcher, addState] = useAddWatcherMutation();
@@ -80,7 +82,9 @@ export function GuardiansTab({ username, userId }: { username: string; userId?: 
 
   return (
     <div className="space-y-4">
-      <p className="text-muted-foreground text-xs">{t("hint")}</p>
+      <p className="text-muted-foreground text-xs">
+        {t("hint")} <WhereTip k="guardians" />
+      </p>
       {isLiveAdmin ? (
         <div className="flex flex-wrap items-end gap-2 rounded-xl border border-[var(--border-color,#e5e7eb)] bg-white p-4">
           <div className="min-w-64 flex-1">
@@ -103,8 +107,6 @@ export function GuardiansTab({ username, userId }: { username: string; userId?: 
       <div className="overflow-hidden rounded-xl border border-[var(--border-color,#e5e7eb)] bg-white">
         {groups.error ? (
           <LoadError error={groups.error} />
-        ) : groups.isLoading ? (
-          <Skeleton className="m-4 h-24 rounded-lg" />
         ) : watchers.length === 0 ? (
           <EmptyState
             icon={<UsersRound strokeWidth={1.75} />}

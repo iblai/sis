@@ -11,8 +11,10 @@ export default defineConfig({
       include: [
         "lib/sis/csv.ts",
         "lib/sis/dates.ts",
+        "lib/sis/demographics.ts",
         "lib/sis/errors.ts",
         "lib/sis/format.ts",
+        "lib/sis/gate.ts",
         "lib/sis/grades.ts",
         "lib/sis/metadata.ts",
         "lib/sis/over-time.ts",

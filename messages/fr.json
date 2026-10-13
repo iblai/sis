@@ -163,23 +163,23 @@
     },
     "panels": {
       "active": {
-        "info": "Apprenants actifs sur la plateforme d’apprentissage, par jour, sur la période choisie",
+        "info": "Apprenants actifs sur la plateforme d’apprentissage, par jour, sur la période choisie. Se remplit à mesure que les apprenants utilisent leurs cours.",
         "series": "Apprenants actifs",
         "title": "Apprenants actifs"
       },
       "cached": "Les analyses se rafraîchissent en moins d’une heure",
       "empty": "Rien sur cette période pour l’instant.",
       "enrollments": {
-        "info": "Nouvelles inscriptions par jour sur la période choisie",
+        "info": "Nouvelles inscriptions par jour sur la période choisie. Inscrivez ici, avec l’import CSV, ou sur la plateforme d’apprentissage.",
         "series": "Inscriptions",
         "title": "Inscriptions"
       },
       "learners": {
-        "info": "Apprenants vus le plus récemment par les analyses",
+        "info": "Apprenants vus le plus récemment par les analyses. Ils apparaissent dès qu’ils utilisent un cours sur la plateforme d’apprentissage.",
         "title": "Apprenants"
       },
       "mostActive": {
-        "info": "Sessions de cours au temps passé le plus élevé sur la période choisie",
+        "info": "Sessions de cours au temps passé le plus élevé sur la période choisie. D’après le temps passé dans les cours sur la plateforme d’apprentissage.",
         "title": "Cours les plus actifs"
       }
     },
@@ -188,17 +188,17 @@
     "stats": {
       "active": {
         "hint": "{count, plural, one {# inscrit} other {# inscrits}}",
-        "info": "Apprenants actifs sur la période, d’après les analyses de la plateforme",
+        "info": "Apprenants actifs sur la période, d’après les analyses de la plateforme. Se remplit à mesure que les apprenants utilisent leurs cours sur la plateforme d’apprentissage.",
         "label": "Apprenants actifs"
       },
       "courses": {
         "hint": "{count, plural, one {# trimestre} other {# trimestres}}",
-        "info": "Sessions de cours de cette plateforme sur la plateforme d’apprentissage",
+        "info": "Sessions de cours de cette plateforme sur la plateforme d’apprentissage. Créées dans Studio, transformées en sections ici.",
         "label": "Sections"
       },
       "grade": {
         "hint": "Sur toutes les sessions de cours",
-        "info": "La note moyenne de cours que les analyses rapportent pour la plateforme",
+        "info": "La note moyenne de cours que les analyses rapportent pour la plateforme. Se remplit à mesure que les apprenants terminent du travail noté sur la plateforme d’apprentissage.",
         "label": "Note moyenne"
       },
       "students": {
@@ -208,7 +208,7 @@
       },
       "members": {
         "label": "Membres",
-        "info": "Toutes les personnes de la plateforme que l’annuaire liste : élèves et personnel"
+        "info": "Toutes les personnes de la plateforme que l’annuaire liste : élèves et personnel. Invitez-les ici ou dans Skills AI, ou importez un CSV dans une section."
       }
     },
     "welcome": "Voici où en est votre école.",
@@ -826,5 +826,41 @@
       "years": "Années scolaires",
       "yearsHint": "Une année scolaire contient ses trimestres."
     }
+  },
+  "where": {
+    "announcement": "Se rédige ici ; remis par les notifications de la plateforme.",
+    "course": "Le contenu et les devoirs notés sont rédigés dans Studio ; la liste et les scores viennent de la plateforme d’apprentissage ; le trimestre, la matière et la salle de la section se règlent ici.",
+    "courseDates": "Les dates vivent sur la session de cours dans Studio ; modifiez-les ici.",
+    "courseGrading": "La politique de notation vit sur la session de cours dans Studio ; modifiez-la ici.",
+    "courses": "Les sessions de cours sont créées dans Studio pour l’organisation de cette plateforme, puis relancées ici comme sections d’un trimestre. Trimestre, matière, salle et créneau se règlent ici.",
+    "credentials": "Les attestations sont définies dans Skills AI et délivrées ici ; les certificats sont générés par la plateforme d’apprentissage.",
+    "enrollment": "Inscrivez ici par invitation au cours ou avec l’import CSV ; la désinscription se fait sur la plateforme d’apprentissage.",
+    "gradeAverages": "Moyennes issues des analyses de la plateforme, à partir du travail noté sur la plateforme d’apprentissage.",
+    "gradebook": "Les scores viennent du travail des apprenants sur la plateforme d’apprentissage ; modifiez-les ici. Les devoirs sont rédigés dans Studio.",
+    "grades": "Les notes viennent du travail noté sur la plateforme d’apprentissage, ou des modifications dans le carnet de notes d’une section. Les crédits et les trimestres se règlent par section ; l’échelle de GPA dans Configuration.",
+    "group": "Les membres s’ajoutent ici, depuis l’annuaire de la plateforme.",
+    "groups": "Les groupes sont créés et remplis ici, avec les membres de la plateforme.",
+    "guardians": "S’ajoutent ici. Un responsable doit d’abord être membre de la plateforme : invitez-le.",
+    "home": "Les membres sont invités ici ou dans Skills AI, les cours sont créés dans Studio, et les chiffres d’activité se remplissent à mesure que les apprenants utilisent leurs cours sur la plateforme d’apprentissage.",
+    "label": "D’où vient ceci ?",
+    "messages": "Les annonces se rédigent ici ; l’e-mail à une section est envoyé par la plateforme d’apprentissage.",
+    "overviewSections": "Les sections viennent des inscriptions sur la plateforme d’apprentissage ; les responsables s’ajoutent ici.",
+    "overviewStatus": "Le statut est l’appartenance à la plateforme : Désactiver ici, ou dans Skills AI.",
+    "record": "Se saisit ici. Les champs personnalisés se définissent dans Configuration › Champs étudiant.",
+    "reports": "Les rapports de la plateforme s’exécutent ici ; les rapports de section sont générés par le tableau de bord instructeur de la plateforme d’apprentissage.",
+    "roster": "Inscrivez ici par invitation ou import CSV ; la liste est l’inscription au cours sur la plateforme d’apprentissage.",
+    "section": "Se règle ici, dans les données de l’école.",
+    "sectionEmail": "Envoyé par la plateforme d’apprentissage aux apprenants de la section ; nécessite une section.",
+    "sectionReports": "Générés par le tableau de bord instructeur de la plateforme d’apprentissage.",
+    "setup": "Tout ici se saisit à la main : années et trimestres, niveaux, créneaux, salles, matières et les champs du dossier. Rien ne vient d’une autre application.",
+    "staff": "Le personnel regroupe les membres de la plateforme ayant le statut d’administrateur. Invitez-les ici, ou donnez ce statut dans Skills AI.",
+    "staffMember": "Les statuts d’administrateur et d’enseignant se donnent ici ou dans Skills AI ; les sections enseignées sont des rôles de cours sur la plateforme d’apprentissage.",
+    "student": "Le dossier et les responsables se saisissent ici ; les inscriptions et les notes viennent de la plateforme d’apprentissage ; les attestations sont définies dans Skills AI et délivrées ici.",
+    "studentCredentials": "Les attestations sont définies dans Skills AI et délivrées ici.",
+    "studentGrades": "Les notes viennent du travail noté sur la plateforme d’apprentissage, ou des modifications dans le carnet de notes de la section.",
+    "students": "Les étudiants sont des membres de la plateforme. Ajoutez-les avec Inviter (par e-mail), avec l’import CSV dans une section, ou dans Skills AI.",
+    "taught": "Rôles de cours sur la plateforme d’apprentissage, attribués par section dans Cours › Réglages › Enseignants.",
+    "teachers": "Les enseignants sont des rôles de cours sur la plateforme d’apprentissage ; attribuez-les ici.",
+    "termReport": "Nécessite un niveau avec un groupe de cohorte (Configuration › Niveaux) et l’avancement venant de la plateforme d’apprentissage."
   }
 }

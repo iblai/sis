@@ -17,6 +17,8 @@ import { LoadError } from "@/components/sis/load-error";
 import { LoadingScreen } from "@/components/loading-screen";
 import { SimpleSelect } from "@/components/sis/simple-select";
 import { useBreadcrumbs } from "@/components/sis/breadcrumbs";
+import { WhereTip } from "@/components/sis/where-tip";
+import { PageGate, useGateLoading } from "@/components/sis/page-gate";
 import { useSections } from "@/hooks/use-sections";
 import { useSession } from "@/hooks/use-session";
 import { useToastError } from "@/hooks/use-toast-error";
@@ -46,15 +48,20 @@ function MessagesView() {
   const { href } = useSession();
   useBreadcrumbs([{ label: tn("messages"), href: href("/messages") }]);
   return (
-    <>
-      <PageHeader icon={<Megaphone />} title={tn("messages")} description={t("description")} />
+    <PageGate>
+      <PageHeader
+        where="messages"
+        icon={<Megaphone />}
+        title={tn("messages")}
+        description={t("description")}
+      />
       <div className="flex-1 overflow-auto p-4 md:p-6">
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           <SectionEmail initialCourseId={searchParams.get("course") ?? ""} />
           <Announcement initialGroupId={searchParams.get("group") ?? ""} />
         </div>
       </div>
-    </>
+    </PageGate>
   );
 }
 
@@ -72,6 +79,7 @@ function SectionEmail({ initialCourseId }: { initialCourseId: string }) {
   const [schedule, setSchedule] = useState("");
   const [send, { isLoading }] = useSendEmailMutation();
   const schedules = useEmailSchedulesQuery(courseId, { skip: !courseId });
+  useGateLoading(sections.isLoading || schedules.isLoading);
   const audience = [toMyself && "myself", toStaff && "staff", toLearners && "learners"].filter(
     Boolean,
   ) as string[];
@@ -99,7 +107,7 @@ function SectionEmail({ initialCourseId }: { initialCourseId: string }) {
     <section className="space-y-4 rounded-xl border border-[var(--border-color,#e5e7eb)] bg-white p-4">
       <div>
         <h2 className="flex items-center gap-2 text-sm font-semibold text-gray-900">
-          <Mail className="size-4" /> {t("title")}
+          <Mail className="size-4" /> {t("title")} <WhereTip k="sectionEmail" />
         </h2>
         <p className="text-muted-foreground text-xs">{t("hint")}</p>
       </div>
@@ -216,6 +224,7 @@ function Announcement({ initialGroupId }: { initialGroupId: string }) {
   const [runPreview, previewState] = usePreviewNotificationMutation();
   const [runSend, sendState] = useSendNotificationMutation();
   const context = useNotificationContextQuery(tenantKey);
+  useGateLoading(groups.isLoading || context.isLoading);
   const channelId = (name: string) => context.data?.channels.find((c) => c.name === name)?.id;
   const channels = [email && channelId("email"), inApp && channelId("push_notification")].filter(
     (id): id is number => typeof id === "number",
@@ -266,7 +275,7 @@ function Announcement({ initialGroupId }: { initialGroupId: string }) {
     <section className="space-y-4 rounded-xl border border-[var(--border-color,#e5e7eb)] bg-white p-4">
       <div>
         <h2 className="flex items-center gap-2 text-sm font-semibold text-gray-900">
-          <Megaphone className="size-4" /> {t("title")}
+          <Megaphone className="size-4" /> {t("title")} <WhereTip k="announcement" />
         </h2>
         <p className="text-muted-foreground text-xs">{t("hint")}</p>
       </div>
