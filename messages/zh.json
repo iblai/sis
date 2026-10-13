@@ -361,6 +361,7 @@
     "notPassing": "未及格",
     "openInLms": "在学习平台中打开",
     "page": {
+      "allPlatforms": "所有平台",
       "allTerms": "所有学期",
       "cached": "一小时内刷新",
       "columns": {
@@ -474,6 +475,7 @@
     },
     "filters": {
       "allLevels": "所有年级",
+      "allPlatforms": "所有平台",
       "allSubjects": "所有科目",
       "allTerms": "所有学期"
     },

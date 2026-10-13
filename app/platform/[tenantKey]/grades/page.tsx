@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { Spinner } from "@iblai/iblai-js/web-containers";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Switch } from "@/components/ui/switch";
 import {
   Table,
   TableBody,
@@ -47,7 +48,8 @@ export default function GradesPage() {
   const { tenantKey, href } = useSession();
   const isLiveAdmin = useIsLiveAdmin();
   const toastError = useToastError();
-  const sections = useSections();
+  const [allPlatforms, setAllPlatforms] = useState(false);
+  const sections = useSections({ allPlatforms });
   const terms = sections.meta?.terms ?? [];
   const [termId, setTermId] = useState<string | null>(null);
   const selected = termId ?? currentTerm(terms, isoDay())?.id ?? "";
@@ -116,6 +118,14 @@ export default function GradesPage() {
                 aria-label={t("level")}
               />
             ) : null}
+            <label className="text-muted-foreground flex items-center gap-2 text-xs font-medium">
+              <Switch
+                checked={allPlatforms}
+                onCheckedChange={setAllPlatforms}
+                className="data-[checked]:bg-[#0058cc]"
+              />
+              {t("allPlatforms")}
+            </label>
           </>
         }
       />

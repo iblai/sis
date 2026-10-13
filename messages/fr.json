@@ -361,6 +361,7 @@
     "notPassing": "Non admis",
     "openInLms": "Ouvrir dans la plateforme d’apprentissage",
     "page": {
+      "allPlatforms": "Toutes les plateformes",
       "allTerms": "Tous les trimestres",
       "cached": "se rafraîchit en moins d’une heure",
       "columns": {
@@ -474,6 +475,7 @@
     },
     "filters": {
       "allLevels": "Tous les niveaux",
+      "allPlatforms": "Toutes les plateformes",
       "allSubjects": "Toutes les matières",
       "allTerms": "Tous les trimestres"
     },

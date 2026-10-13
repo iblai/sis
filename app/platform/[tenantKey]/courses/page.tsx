@@ -7,6 +7,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { BookOpen, Plus, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 import {
   Table,
   TableBody,
@@ -48,7 +49,8 @@ function CoursesView() {
   const searchParams = useSearchParams();
   const { isAdmin, username, href } = useSession();
   const isLiveAdmin = useIsLiveAdmin();
-  const sections = useSections({ skip: !isAdmin });
+  const [allPlatforms, setAllPlatforms] = useState(false);
+  const sections = useSections({ skip: !isAdmin, allPlatforms });
   const [query, setQuery] = useState("");
   const [termId, setTermId] = useState("");
   const [subjectId, setSubjectId] = useState("");
@@ -140,6 +142,14 @@ function CoursesView() {
                 aria-label={t("columns.gradeLevel")}
               />
             ) : null}
+            <label className="text-muted-foreground flex items-center gap-2 text-xs font-medium">
+              <Switch
+                checked={allPlatforms}
+                onCheckedChange={setAllPlatforms}
+                className="data-[checked]:bg-[#0058cc]"
+              />
+              {t("filters.allPlatforms")}
+            </label>
           </>
         }
       />

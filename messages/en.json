@@ -361,6 +361,7 @@
     "notPassing": "Not Passing",
     "openInLms": "Open in the Learning Platform",
     "page": {
+      "allPlatforms": "All Platforms",
       "allTerms": "All Terms",
       "cached": "refreshes within an hour",
       "columns": {
@@ -474,6 +475,7 @@
     },
     "filters": {
       "allLevels": "All Grade Levels",
+      "allPlatforms": "All Platforms",
       "allSubjects": "All Subjects",
       "allTerms": "All Terms"
     },

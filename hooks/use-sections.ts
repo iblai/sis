@@ -16,24 +16,25 @@ import {
 /**
  * The caller's course runs joined with the school's section data: Studio's org
  * list (what an admin can author) for an admin, their own enrollments for a
- * student, to whom Studio lists nothing.
+ * student, to whom Studio lists nothing. The platform's own runs unless
+ * `allPlatforms` keeps the other orgs an admin can author.
  */
-export function useSections(options?: { skip?: boolean }) {
+export function useSections(options?: { skip?: boolean; allPlatforms?: boolean }) {
   const { org, isAdmin, username } = useSession();
   const skip = options?.skip;
+  const allPlatforms = options?.allPlatforms ?? false;
   const courses = useHomeCoursesQuery({ org }, { skip: skip || !org || !isAdmin });
   const enrollments = useUserEnrollmentsQuery(username, { skip: skip || isAdmin || !username });
   const metadata = useSisMetadata();
-  const runs = useMemo(
-    () =>
-      isAdmin
-        ? [
-            ...(courses.data?.courses ?? []).map((c) => fromStudioCourse(c)),
-            ...(courses.data?.archived_courses ?? []).map((c) => fromStudioCourse(c, true)),
-          ]
-        : (enrollments.data ?? []).filter((e) => e.is_active).map(fromEnrollment),
-    [isAdmin, courses.data, enrollments.data],
-  );
+  const runs = useMemo(() => {
+    const all = isAdmin
+      ? [
+          ...(courses.data?.courses ?? []).map((c) => fromStudioCourse(c)),
+          ...(courses.data?.archived_courses ?? []).map((c) => fromStudioCourse(c, true)),
+        ]
+      : (enrollments.data ?? []).filter((e) => e.is_active).map(fromEnrollment);
+    return allPlatforms ? all : all.filter((c) => c.org === org);
+  }, [isAdmin, courses.data, enrollments.data, allPlatforms, org]);
   const rows = useMemo<SectionRow[]>(
     () => sortSections(joinSections(runs, metadata.meta)),
     [runs, metadata.meta],

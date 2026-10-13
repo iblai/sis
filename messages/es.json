@@ -361,6 +361,7 @@
     "notPassing": "No aprobando",
     "openInLms": "Abrir en la plataforma de aprendizaje",
     "page": {
+      "allPlatforms": "Todas las plataformas",
       "allTerms": "Todos los periodos lectivos",
       "cached": "se actualiza en menos de una hora",
       "columns": {
@@ -474,6 +475,7 @@
     },
     "filters": {
       "allLevels": "Todos los niveles",
+      "allPlatforms": "Todas las plataformas",
       "allSubjects": "Todas las materias",
       "allTerms": "Todos los periodos lectivos"
     },
