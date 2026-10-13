@@ -43,11 +43,11 @@
   "nav": {
     "courses": "Cursos",
     "credentials": "Credenciales",
+    "details": "Detalles",
     "grades": "Calificaciones",
     "groups": "Grupos",
     "home": "Inicio",
     "messages": "Mensajes",
-    "myRecord": "Mi expediente",
     "reports": "Informes",
     "search": "Buscar",
     "setup": "Configuración",

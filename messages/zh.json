@@ -43,11 +43,11 @@
   "nav": {
     "courses": "课程",
     "credentials": "证书",
+    "details": "详情",
     "grades": "成绩",
     "groups": "分组",
     "home": "首页",
     "messages": "消息",
-    "myRecord": "我的档案",
     "reports": "报表",
     "search": "搜索",
     "setup": "设置",

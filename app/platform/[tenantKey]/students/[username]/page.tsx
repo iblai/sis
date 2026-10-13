@@ -79,7 +79,7 @@ function StudentView() {
           { label: tn("students"), href: href("/students") },
           { label: name, href: base },
         ]
-      : [{ label: tn("myRecord"), href: base }],
+      : [{ label: tn("details"), href: base }],
   );
 
   const tab = useMemo<Tab>(() => {

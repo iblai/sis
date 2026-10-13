@@ -69,13 +69,13 @@ export function AppSidebar() {
       ]
     : [
         { id: "home", label: t("home"), path: "", icon: Home, exact: true },
+        { id: "courses", label: t("courses"), path: "/courses", icon: BookOpen },
         {
-          id: "myRecord",
-          label: t("myRecord"),
+          id: "details",
+          label: t("details"),
           path: `/students/${encodeURIComponent(username)}`,
           icon: IdCard,
         },
-        { id: "courses", label: t("courses"), path: "/courses", icon: BookOpen },
       ];
 
   const sections: PlatformSidebarSectionConfig[] = [

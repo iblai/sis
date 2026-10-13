@@ -1,4 +1,4 @@
-import type { LmsCourse, StudioHomeCourse } from "./types";
+import type { LmsCourse, LmsEnrollment, StudioHomeCourse } from "./types";
 import type { GradeLevel, Period, Room, Section, SisMetadata, Subject, Term } from "./metadata";
 
 /** An LMS course run joined with the school's section data and its teachers. */
@@ -46,6 +46,23 @@ export function fromStudioCourse(row: StudioHomeCourse, archived = false): LmsCo
     number: row.number || parts?.number || "",
     run: row.run || parts?.run,
     hidden: archived || row.is_active === false,
+  };
+}
+
+/** A user's LMS enrollment as the course run it is in (a student's own course list). */
+export function fromEnrollment(e: LmsEnrollment): LmsCourse {
+  const id = e.course_details.course_id;
+  const parts = courseRunParts(id);
+  return {
+    id,
+    course_id: id,
+    name: e.course_details.course_name || id,
+    org: parts?.org ?? "",
+    number: parts?.number ?? "",
+    run: parts?.run,
+    start: e.course_details.course_start,
+    end: e.course_details.course_end,
+    hidden: false,
   };
 }
 

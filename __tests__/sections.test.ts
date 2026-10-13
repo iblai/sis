@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   courseRunParts,
   filterSections,
+  fromEnrollment,
   fromStudioCourse,
   joinSections,
   sectionLabel,
@@ -50,6 +51,35 @@ const courses = [
   course("course-v1:Org+Bio+Spring", "Biology"),
   course("course-v1:Org+Art+Open", "Art", "2026-01-01"),
 ];
+
+describe("fromEnrollment", () => {
+  const enrollment = (course_id: string, course_name: string) => ({
+    created: "2026-09-01T00:00:00Z",
+    mode: "audit",
+    is_active: true,
+    user: "jane",
+    course_details: { course_id, course_name, course_start: "2026-09-01T00:00:00Z" },
+  });
+  it("maps a user's enrollment onto the course run it is in", () => {
+    expect(fromEnrollment(enrollment("course-v1:Org+Alg+Fall", "Algebra"))).toEqual({
+      id: "course-v1:Org+Alg+Fall",
+      course_id: "course-v1:Org+Alg+Fall",
+      name: "Algebra",
+      org: "Org",
+      number: "Alg",
+      run: "Fall",
+      start: "2026-09-01T00:00:00Z",
+      end: undefined,
+      hidden: false,
+    });
+  });
+  it("falls back to the id as the name and leaves the parts empty for an old-style key", () => {
+    const run = fromEnrollment(enrollment("Org/Alg/Fall", ""));
+    expect(run.name).toBe("Org/Alg/Fall");
+    expect(run.org).toBe("");
+    expect(run.run).toBeUndefined();
+  });
+});
 
 describe("fromStudioCourse", () => {
   it("maps a Studio course-home row onto the app's course run", () => {

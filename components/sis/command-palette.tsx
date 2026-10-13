@@ -121,8 +121,8 @@ function CommandPalette({
       ] as const)
     : ([
         ["home", "", Home],
-        ["myRecord", `/students/${encodeURIComponent(username)}`, IdCard],
         ["courses", "/courses", BookOpen],
+        ["details", `/students/${encodeURIComponent(username)}`, IdCard],
       ] as const);
 
   return (

@@ -43,11 +43,11 @@
   "nav": {
     "courses": "Courses",
     "credentials": "Credentials",
+    "details": "Details",
     "grades": "Grades",
     "groups": "Groups",
     "home": "Home",
     "messages": "Messages",
-    "myRecord": "My Record",
     "reports": "Reports",
     "search": "Search",
     "setup": "Setup",
