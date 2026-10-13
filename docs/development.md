@@ -81,8 +81,9 @@ changed meanwhile (last writer wins otherwise).
 - A **teacher** in this version is a platform admin. The Staff page can grant the
   LMS `org-staff` role (`POST /api/ibl/users/manage/roles/`), which the next
   version will use as the Teacher role.
-- A **student** opens home, their own record (`/students/<self>`), courses and
-  notifications; everything else redirects home (`lib/sis/permissions.ts`).
+- A **student** opens home, their own record (`/students/<self>`, "My Record" in the
+  sidebar, read-only), courses and notifications; everything else redirects home
+  (`lib/sis/permissions.ts`).
 - Admin writes render only in **Admin Mode** (`useIsLiveAdmin()`); Setup and the
   SDK Management surface open only then.
 

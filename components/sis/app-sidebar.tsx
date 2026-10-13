@@ -10,6 +10,7 @@ import {
   FileChartColumn,
   GraduationCap,
   Home,
+  IdCard,
   Megaphone,
   Search,
   Settings,
@@ -42,7 +43,7 @@ import { tenantDisplayName } from "@/lib/iblai/tenant";
 export function AppSidebar() {
   const t = useTranslations("nav");
   const router = useRouter();
-  const { tenantKey, isAdmin, currentTenant, href } = useSession();
+  const { tenantKey, isAdmin, currentTenant, href, username } = useSession();
   const { adminMode } = useAdminMode();
   const { isMobile, setOpenMobile } = useSidebar();
   const { open: openPalette } = useCommandPalette();
@@ -68,6 +69,12 @@ export function AppSidebar() {
       ]
     : [
         { id: "home", label: t("home"), path: "", icon: Home, exact: true },
+        {
+          id: "myRecord",
+          label: t("myRecord"),
+          path: `/students/${encodeURIComponent(username)}`,
+          icon: IdCard,
+        },
         { id: "courses", label: t("courses"), path: "/courses", icon: BookOpen },
       ];
 

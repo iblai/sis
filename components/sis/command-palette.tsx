@@ -9,6 +9,7 @@ import {
   FileChartColumn,
   GraduationCap,
   Home,
+  IdCard,
   Megaphone,
   Plus,
   Settings,
@@ -79,7 +80,7 @@ function CommandPalette({
   const tn = useTranslations("nav");
   const tc = useTranslations("common");
   const router = useRouter();
-  const { tenantKey, isAdmin, href } = useSession();
+  const { tenantKey, isAdmin, href, username } = useSession();
   const isLiveAdmin = useIsLiveAdmin();
   const [query, setQuery] = useState("");
 
@@ -120,6 +121,7 @@ function CommandPalette({
       ] as const)
     : ([
         ["home", "", Home],
+        ["myRecord", `/students/${encodeURIComponent(username)}`, IdCard],
         ["courses", "/courses", BookOpen],
       ] as const);
 

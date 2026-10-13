@@ -37,10 +37,20 @@ type BaseField = "date_of_birth" | "gender" | "primary_language" | "nationality"
  * save sends the whole record. A new grade level also moves the student
  * between the grade-level cohort groups.
  */
-export function RecordForm({ username, link }: { username: string; link?: UserPlatformLink }) {
-  const { tenantKey } = useSession();
+export function RecordForm({
+  username,
+  link,
+  readOnly = false,
+}: {
+  username: string;
+  link?: UserPlatformLink;
+  /** Every control inert and no Save: a student reading their own record, an admin outside Admin mode. */
+  readOnly?: boolean;
+}) {
+  const { tenantKey, isAdmin } = useSession();
   const record = useDemographicsQuery({ platformKey: tenantKey, username });
-  const fields = useFieldDefinitionsQuery(tenantKey);
+  // The field list is an admin read; a student sees the values their own record holds.
+  const fields = useFieldDefinitionsQuery(tenantKey, { skip: !isAdmin });
   useGateLoading(record.isLoading || fields.isLoading);
   if (record.error) return <LoadError error={record.error} />;
   if (!record.data) return null;
@@ -50,8 +60,9 @@ export function RecordForm({ username, link }: { username: string; link?: UserPl
       username={username}
       link={link}
       record={record.data}
-      definitions={fields.data}
+      definitions={isAdmin ? fields.data : null}
       fieldsError={fields.error}
+      readOnly={readOnly}
     />
   );
 }
@@ -62,13 +73,15 @@ function RecordFormFields({
   record: previous,
   definitions: allDefinitions,
   fieldsError,
+  readOnly,
 }: {
   username: string;
   link?: UserPlatformLink;
   record: Demographics;
-  /** Undefined while the list is unknown, so no field gets created on a guess. */
-  definitions?: FieldDefinition[];
+  /** Undefined while the list is unknown, so no field gets created on a guess; null when the caller may not read it. */
+  definitions?: FieldDefinition[] | null;
   fieldsError: unknown;
+  readOnly: boolean;
 }) {
   const t = useTranslations("students.record");
   const tf = useTranslations("students.fields");
@@ -113,6 +126,9 @@ function RecordFormFields({
         .sort((a, b) => (a.display_order ?? 0) - (b.display_order ?? 0)),
     [allDefinitions],
   );
+  // Without the field list (a student), the record's own values with the seeded labels.
+  const own =
+    allDefinitions === null ? Object.entries(custom).filter(([slug]) => slug !== RESIDENCE) : null;
 
   // `grade_level` lists the school's levels; `enrollment_status` shows its values translated.
   const optionsFor = (f: FieldDefinition): SelectOption[] => {
@@ -183,13 +199,15 @@ function RecordFormFields({
       className="space-y-6 rounded-xl border border-[var(--border-color,#e5e7eb)] bg-white p-4 md:p-6"
       onSubmit={(e) => {
         e.preventDefault();
-        void submit();
+        if (!readOnly) void submit();
       }}
     >
-      <p className="text-muted-foreground text-xs">
-        {t("visibleToStudent")} <WhereTip k="record" />
-      </p>
-      <fieldset className="grid min-w-0 gap-4 sm:grid-cols-2">
+      {readOnly ? null : (
+        <p className="text-muted-foreground text-xs">
+          {t("visibleToStudent")} <WhereTip k="record" />
+        </p>
+      )}
+      <fieldset disabled={readOnly} className="grid min-w-0 gap-4 sm:grid-cols-2">
         <legend className="mb-2 text-sm font-semibold text-gray-900">{t("baseFields")}</legend>
         <Field id="base-date_of_birth" label={tf("date_of_birth")}>
           <Input
@@ -236,9 +254,25 @@ function RecordFormFields({
           />
         </Field>
       </fieldset>
-      <fieldset className="grid min-w-0 gap-4 sm:grid-cols-2">
+      <fieldset disabled={readOnly} className="grid min-w-0 gap-4 sm:grid-cols-2">
         <legend className="mb-2 text-sm font-semibold text-gray-900">{t("customFields")}</legend>
-        {definitions.length === 0 ? (
+        {own ? (
+          own.map(([slug, value]) => (
+            <Field key={slug} id={`custom-${slug}`} label={isSeedSlug(slug) ? tf(slug) : slug}>
+              <Input
+                id={`custom-${slug}`}
+                readOnly
+                value={
+                  slug === "enrollment_status" &&
+                  typeof value === "string" &&
+                  isEnrollmentStatus(value)
+                    ? ts(value)
+                    : String(value ?? "")
+                }
+              />
+            </Field>
+          ))
+        ) : definitions.length === 0 ? (
           <p className="text-muted-foreground text-sm sm:col-span-2">{t("noFields")}</p>
         ) : (
           definitions.map((f) => (
@@ -254,12 +288,14 @@ function RecordFormFields({
         )}
       </fieldset>
       {fieldsError ? <LoadError error={fieldsError} /> : null}
-      <div className="flex justify-end">
-        <Button type="submit" className="ibl-button-primary" disabled={busy}>
-          {busy ? <Spinner size="sm" className="size-4 text-current" /> : null}
-          {tc("save")}
-        </Button>
-      </div>
+      {readOnly ? null : (
+        <div className="flex justify-end">
+          <Button type="submit" className="ibl-button-primary" disabled={busy}>
+            {busy ? <Spinner size="sm" className="size-4 text-current" /> : null}
+            {tc("save")}
+          </Button>
+        </div>
+      )}
     </form>
   );
 }

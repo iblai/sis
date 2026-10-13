@@ -38,7 +38,7 @@ const ADMIN_TABS = [
   "credentials",
   "guardians",
 ] as const;
-const SELF_TABS = ["overview", "enrollment", "grades", "credentials"] as const;
+const SELF_TABS = ["overview", "record", "enrollment", "grades", "credentials"] as const;
 type Tab = (typeof ADMIN_TABS)[number];
 
 export default function StudentPage() {
@@ -57,27 +57,30 @@ function StudentView() {
   const username = decodeURIComponent(params.username);
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { tenantKey, isAdmin, href } = useSession();
+  const { tenantKey, isAdmin, href, displayName: ownName } = useSession();
   const isLiveAdmin = useIsLiveAdmin();
   const toastError = useToastError();
   const links = useUserLinksQuery({ platformKey: tenantKey, username });
   const link = links.data?.find((l) => l.key === tenantKey);
   // The link carries no name; the directory row does.
-  const directory = usePlatformUsersQuery({
-    platformKey: tenantKey,
-    query: username,
-    page_size: 5,
-  });
+  const directory = usePlatformUsersQuery(
+    { platformKey: tenantKey, query: username, page_size: 5 },
+    { skip: !isAdmin },
+  );
   const member = directory.data?.results.find((u) => u.username === username);
   const demographics = useDemographicsQuery({ platformKey: tenantKey, username });
   const [setLink, linkState] = useSetUserLinkMutation();
   const tabs = isAdmin ? ADMIN_TABS : SELF_TABS;
   const base = href(`/students/${encodeURIComponent(username)}`);
-  const name = displayName(member ?? link ?? { username });
-  useBreadcrumbs([
-    { label: tn("students"), href: href("/students") },
-    { label: name, href: base },
-  ]);
+  const name = isAdmin ? displayName(member ?? link ?? { username }) : ownName || username;
+  useBreadcrumbs(
+    isAdmin
+      ? [
+          { label: tn("students"), href: href("/students") },
+          { label: name, href: base },
+        ]
+      : [{ label: tn("myRecord"), href: base }],
+  );
 
   const tab = useMemo<Tab>(() => {
     const raw = searchParams.get("tab");
@@ -172,13 +175,11 @@ function StudentView() {
               <OverviewTab username={username} link={link} demographics={demographics.data} />
             </PageGate>
           </TabsContent>
-          {isAdmin ? (
-            <TabsContent value="record">
-              <PageGate inline>
-                <RecordForm username={username} link={link} />
-              </PageGate>
-            </TabsContent>
-          ) : null}
+          <TabsContent value="record">
+            <PageGate inline>
+              <RecordForm username={username} link={link} readOnly={!isLiveAdmin} />
+            </PageGate>
+          </TabsContent>
           <TabsContent value="enrollment">
             <PageGate inline>
               <EnrollmentTab username={username} studentId={link?.user_id} />
