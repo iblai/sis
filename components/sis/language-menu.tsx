@@ -47,13 +47,13 @@ export function LanguageMenu({ className }: { className?: string }) {
       <TooltipTrigger
         render={
           <label className={className}>
-            <Languages className="size-4 text-[#5f5f61]" strokeWidth={1.75} aria-hidden />
+            <Languages className="size-5 text-[#646464]" strokeWidth={1.75} aria-hidden />
             <span className="sr-only">{t("label")}</span>
             <select
               value={locale}
               disabled={metadataLoading}
               onChange={(event) => void choose(event.target.value)}
-              className="h-8 cursor-pointer rounded-md border border-transparent bg-transparent pr-1 text-xs text-[#4a5568] hover:bg-[#f0f4fa] focus-visible:border-[#0058cc] focus-visible:outline-none"
+              className="h-8 cursor-pointer rounded-md border border-transparent bg-transparent pr-1 text-sm font-medium text-[#646464] hover:bg-[#f0f4fa] focus-visible:border-[#0058cc] focus-visible:outline-none"
             >
               {SUPPORTED_LOCALES.map((code) => (
                 <option key={code} value={code}>

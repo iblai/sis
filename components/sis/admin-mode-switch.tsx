@@ -18,9 +18,7 @@ export function AdminModeSwitch({ className }: { className?: string }) {
   const pathname = usePathname() ?? "/";
   if (!isAdmin) return null;
   return (
-    <div
-      className={cn("text-muted-foreground flex items-center gap-2 text-xs font-medium", className)}
-    >
+    <div className={cn("flex items-center gap-2 text-sm font-medium text-[#646464]", className)}>
       <span className={adminMode ? "" : "text-[#0058cc]"}>{tc("user")}</span>
       <Tooltip>
         <TooltipTrigger
