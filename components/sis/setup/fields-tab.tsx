@@ -24,7 +24,7 @@ import {
   useUpdateFieldMutation,
 } from "@/lib/sis/api";
 import { downloadFile } from "@/lib/sis/download";
-import { missingSeeds } from "@/lib/sis/seed";
+import { isSeedSlug, missingSeeds } from "@/lib/sis/seed";
 import type { FieldDefinition } from "@/lib/sis/types";
 
 const TYPES = ["text", "number", "date", "select", "boolean"] as const;
@@ -32,6 +32,7 @@ const TYPES = ["text", "number", "date", "select", "boolean"] as const;
 /** The platform's custom demographics fields: the student record's shape. */
 export function FieldsTab() {
   const t = useTranslations("setup.fields");
+  const tf = useTranslations("students.fields");
   const tc = useTranslations("common");
   const { tenantKey } = useSession();
   const toastError = useToastError();
@@ -198,7 +199,9 @@ export function FieldsTab() {
               ) : (
                 rows.map((f) => (
                   <tr key={f.slug}>
-                    <td className="px-3 py-2 font-medium text-gray-900">{f.name}</td>
+                    <td className="px-3 py-2 font-medium text-gray-900">
+                      {isSeedSlug(f.slug) ? tf(f.slug) : f.name}
+                    </td>
                     <td className="text-muted-foreground px-3 py-2 font-mono text-xs">{f.slug}</td>
                     <td className="text-muted-foreground px-3 py-2">{f.field_type}</td>
                     <td className="text-muted-foreground px-3 py-2 text-xs">

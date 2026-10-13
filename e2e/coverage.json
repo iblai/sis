@@ -34,7 +34,7 @@
     {
       "id": "S2",
       "journey": "shell",
-      "name": "⌘K lists Students/Staff/Courses and Invite student",
+      "name": "⌘K lists Students/Staff/Courses and Invite Student",
       "spec": "journeys/shell.journey.spec.ts"
     },
     {
@@ -46,7 +46,7 @@
     {
       "id": "S4",
       "journey": "shell",
-      "name": "Setup hidden outside Admin mode and /setup redirects home",
+      "name": "Setup hidden outside Admin Mode and /setup redirects home",
       "spec": "journeys/shell.journey.spec.ts"
     },
     {

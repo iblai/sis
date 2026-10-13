@@ -83,7 +83,7 @@ changed meanwhile (last writer wins otherwise).
   version will use as the Teacher role.
 - A **student** opens home, their own record (`/students/<self>`), courses and
   notifications; everything else redirects home (`lib/sis/permissions.ts`).
-- Admin writes render only in **Admin mode** (`useIsLiveAdmin()`); Setup and the
+- Admin writes render only in **Admin Mode** (`useIsLiveAdmin()`); Setup and the
   SDK Management surface open only then.
 
 ## The LMS probe

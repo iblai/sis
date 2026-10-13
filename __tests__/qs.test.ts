@@ -26,9 +26,9 @@ describe("dates", () => {
 });
 
 describe("seed", () => {
-  it("defines the eleven starting fields with the school's grade levels", () => {
+  it("defines the twelve starting fields with the school's grade levels", () => {
     const seeds = seedFieldDefinitions(["Grade 9", "Grade 10"]);
-    expect(seeds).toHaveLength(11);
+    expect(seeds).toHaveLength(12);
     expect(seeds.find((f) => f.slug === "grade_level")?.choices).toEqual(["Grade 9", "Grade 10"]);
     expect(seeds.filter((f) => f.required).map((f) => f.slug)).toEqual([
       "student_id",
@@ -37,7 +37,7 @@ describe("seed", () => {
     ]);
   });
   it("only seeds what is missing", () => {
-    expect(missingSeeds([{ slug: "student_id" }, { slug: "homeroom" }], [])).toHaveLength(9);
+    expect(missingSeeds([{ slug: "student_id" }, { slug: "homeroom" }], [])).toHaveLength(10);
     expect(
       missingSeeds(
         seedFieldDefinitions([]).map((f) => ({ slug: f.slug! })),

@@ -67,9 +67,18 @@ Three backends carry the data, all through existing endpoints:
    none (`pnpm i18n:check`). Keys are typed from `messages/en.json`
    (`global.d.ts`). Dates and ratios go through `lib/sis/format.ts` with
    `useLocale()`. Typographic `’` and `…`.
-8. **Vocabulary.** Students, staff, courses (a section is a course run),
-   groups, terms, platform. Never "tenant", "pupil" or "class period" in
-   anything a user sees (`scripts/validate-i18n.mjs` enforces it).
+8. **Vocabulary and case.** Students, staff, courses (a section is a course
+   run), groups, terms, platform. Never "tenant", "pupil" or "class period" in
+   anything a user sees. English labels are Title Case — field labels, columns,
+   tabs, nav, buttons, titles, legends, options, status words ("Date of Birth",
+   "Add Guardian"); minor words stay lowercase unless first, last or in a
+   phrasal verb ("Set Up", "Sign In"). Sentences stay sentence case:
+   descriptions, hints, tooltips, toasts, errors, empty states, placeholders
+   and "Pick a …" prompts; es/fr keep their own rules. `scripts/validate-i18n.mjs`
+   enforces both on `pnpm i18n:check`: a short English value without terminal
+   punctuation must be Title Case unless its key says prose (`…Hint`, `.body`,
+   `.description`, `.placeholder`, `pick…`, a toast verb such as `saved`) —
+   name a new short prose key for what it is.
 9. **Never touch tokens in prose or logs.** `dm_token`, `axd_token` and
    `edx_jwt_token` stay in localStorage; the probe prints statuses, never tokens.
 10. **Brand.** Primary `#0058cc`, tint `#eef6fc`, gradient CTA
@@ -78,7 +87,7 @@ Three backends carry the data, all through existing endpoints:
     status dot is grey unless it means good or bad. No dark mode work unless asked.
 11. **Pages** are client components: `<PageHeader/>` then
     `<div className="flex-1 overflow-auto">` inside the platform layout.
-    Admin writes render only when `useIsLiveAdmin()` (admin AND Admin mode);
+    Admin writes render only when `useIsLiveAdmin()` (admin AND Admin Mode);
     `lib/sis/permissions.ts#canOpen` is the route gate. A page renders inside
     `PageGate` and stays behind the loading screen until every query it and its
     children issue on mount has answered (`useGateLoading` in each fetching

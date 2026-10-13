@@ -201,10 +201,15 @@ export interface WatchedUser {
   events?: string[];
 }
 
-export interface WatchedGroup {
+/** A list row: the DM's list carries no members. */
+export interface WatchedGroupRow {
   id: number;
   name: string;
   platform_key: string;
+}
+
+/** The detail route, with `?watcher_limit` and `?watched_user_limit` asked for. */
+export interface WatchedGroup extends WatchedGroupRow {
   watcher_count: number;
   watchers: WatchedUser[];
   watched_user_count: number;

@@ -70,8 +70,8 @@ test.describe("sis journey", () => {
     await first.click();
     await page.waitForURL((url) => /\/students\/[^/]+/.test(url.pathname), { timeout: 30_000 });
     await page.getByRole("tab", { name: /record/i }).click();
-    const language = page.getByLabel("Primary language");
-    await language.fill(`English ${stamp}`);
+    await page.getByLabel("Primary language").click();
+    await page.getByRole("option", { name: "English", exact: true }).click();
     await page.getByRole("button", { name: "Save", exact: true }).click();
     await expect(page.getByText("Record saved")).toBeVisible({ timeout: 15_000 });
   });

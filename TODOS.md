@@ -48,6 +48,11 @@ Each entry: what the app does today · what it needs · where that change sits.
   DELETE wipes the record on every platform; the app lets a student read only and calls no
   DELETE. Needs a per-field `self_access` (hidden, read, write) and an admin-only,
   platform-scoped DELETE (#3104); then the record form hides and locks fields per the definition.
+- **Country of residence** — the DM record has `country_of_birth` and no residence column, so the
+  app keeps it as the platform custom field `country_of_residence` (an ISO 3166-1 alpha-3 code),
+  created on the first save that carries a value; a student on two platforms has one record and
+  two residence fields. Needs a `country_of_residence` base column beside `country_of_birth`;
+  then it moves into the shared record and the seed row goes.
 - **Pending invitations** — listed, never revoked: `DELETE /api/catalog/invitations/platform/`
   and `…/course/` answer 200 and delete nothing. Needs the DELETE to revoke a pending invitation
   (#3104: 204, 404, 409 for a redeemed one); then the list gets a Revoke action.

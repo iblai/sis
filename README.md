@@ -93,19 +93,19 @@ Node.js 22+ and pnpm 12 (`corepack enable` picks the pinned version up from `pac
 
 ### Scripts
 
-| Command           | What it does                                                                                                  |
-| ----------------- | ------------------------------------------------------------------------------------------------------------- |
-| `pnpm dev`        | Dev server on port 3000                                                                                       |
-| `pnpm build`      | Production build (standalone output)                                                                          |
-| `pnpm start`      | Serve the production build                                                                                    |
-| `pnpm typecheck`  | TypeScript 7                                                                                                  |
-| `pnpm lint`       | oxlint, zero warnings                                                                                         |
-| `pnpm format`     | oxfmt (`pnpm format:check` in CI)                                                                             |
-| `pnpm i18n:check` | Same keys in the four catalogs; no “tenant”, “pupil” or “class period”; no ASCII apostrophe                   |
-| `pnpm test`       | Vitest unit tests (`pnpm test:coverage` in CI: 95 % lines on `lib/`)                                          |
-| `pnpm test:e2e`   | Playwright journeys on a throwaway platform (needs `e2e/.env.development`)                                    |
-| `pnpm probe:lms`  | Which learning-platform capabilities this platform really exposes ([docs](docs/development.md#the-lms-probe)) |
-| `pnpm release`    | release-it: version from the commits, CHANGELOG, tag, GitHub Release (CI runs it on every push to main)       |
+| Command           | What it does                                                                                                           |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `pnpm dev`        | Dev server on port 3000                                                                                                |
+| `pnpm build`      | Production build (standalone output)                                                                                   |
+| `pnpm start`      | Serve the production build                                                                                             |
+| `pnpm typecheck`  | TypeScript 7                                                                                                           |
+| `pnpm lint`       | oxlint, zero warnings                                                                                                  |
+| `pnpm format`     | oxfmt (`pnpm format:check` in CI)                                                                                      |
+| `pnpm i18n:check` | Same keys in the four catalogs; no “tenant”, “pupil” or “class period”; no ASCII apostrophe; English labels Title Case |
+| `pnpm test`       | Vitest unit tests (`pnpm test:coverage` in CI: 95 % lines on `lib/`)                                                   |
+| `pnpm test:e2e`   | Playwright journeys on a throwaway platform (needs `e2e/.env.development`)                                             |
+| `pnpm probe:lms`  | Which learning-platform capabilities this platform really exposes ([docs](docs/development.md#the-lms-probe))          |
+| `pnpm release`    | release-it: version from the commits, CHANGELOG, tag, GitHub Release (CI runs it on every push to main)                |
 
 ---
 

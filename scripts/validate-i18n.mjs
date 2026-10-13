@@ -4,7 +4,8 @@
  * contains an identical set of keys. Reports missing/extra keys per locale and
  * flags entries that are byte-identical to English (possible untranslated text),
  * excluding an allowlist of terms that legitimately stay the same. Fails on the
- * words the UI never shows ("tenant", "pupil", "class period") and on ASCII apostrophes.
+ * words the UI never shows ("tenant", "pupil", "class period"), on ASCII apostrophes and
+ * on an English label that is not Title Case (AGENTS.md rule 8).
  *
  * Exits non-zero if any locale file is missing, any key is missing, or a value
  * breaks the vocabulary rule.
@@ -103,7 +104,59 @@ for (const l of LOCALES) {
   }
 }
 
-// 4. Soft check: non-English entries identical to English (possible untranslated).
+// 4. English labels are Title Case (AGENTS.md rule 8); short prose is named for what it is.
+const MINOR = /^(a|an|the|of|and|or|nor|for|to|in|on|at|by|with|from|vs|per|as)$/;
+const PROSE_KEY = [
+  /^(where|auth)\./,
+  /^errors\.(?!goHome$|signInAgain$|code$)/,
+  /(^|\.)(description|body|bodyNamed|fallbackBody|info|hint|note|empty|noMatch|placeholder|cached|countLabel|previewCount|groupSize|searching|typeToSearch|clickToEdit|loading|showing|groupName|defaultComment|revokeDefaultReason|conflict|roleRefused|invalidVersion|errorGeneric|errorLoadTitle|mine|weightTotal|pendingInvitations)$/,
+  /(Hint|Body|Note|Placeholder|Started|Requested|Granted|Added|Removed|Missing|Created|Updated|Scheduled)$/,
+  /(^|\.)(pick|no)[A-Z]\w*$/,
+  /\.empty\./,
+  /^palette\.to[A-Z]/,
+  /^fields\.pagination\./,
+  /(^|\.)(saved|added|removed|deleted|created|updated|imported|seeded|sent|scheduled|invited|started|deactivated|reactivated|done)$/,
+];
+const PROSE_KEYS = new Set([
+  "courses.seats",
+  "courses.selfPaced",
+  "reports.expires",
+  "students.importDialog.preview",
+  "staff.member.courseInstructor",
+  "staff.member.courseStaff",
+  "gradebook.flagOff.title",
+  "students.pending",
+  "roster.count",
+  "gradebook.count",
+]);
+// The words of a label once ICU syntax is a token: `{days}`, `{n, plural, one {# x} other {# y}}`.
+const labelWords = (v) =>
+  v
+    .replace(/\{\w+(,\s*\w+)*,?\s*/g, " ¤ ")
+    .replace(/\b(zero|one|two|few|many|other|=\d+)\s*\{/g, " ")
+    .replace(/[{}#]/g, " ")
+    .split(/[\s-]+/)
+    .filter(Boolean);
+const isLabel = (k, v) =>
+  typeof v === "string" &&
+  !/[.?!…:]$/.test(v) &&
+  labelWords(v).filter((w) => /[a-z]/i.test(w)).length <= 6 &&
+  !PROSE_KEYS.has(k) &&
+  !PROSE_KEY.some((re) => re.test(k));
+const lowerWords = (v) => {
+  const w = labelWords(v);
+  return w.filter((x, i) => /^[a-z]/.test(x) && !(MINOR.test(x) && i > 0 && i < w.length - 1));
+};
+const offenders = Object.entries(flat.en).filter(([k, v]) => isLabel(k, v) && lowerWords(v).length);
+if (offenders.length) {
+  failed = true;
+  console.log(
+    `\n[en] ${offenders.length} labels are not Title Case (labels Title Case, prose sentence case):`,
+  );
+  offenders.slice(0, 40).forEach(([k, v]) => console.log(`  ✗ ${k}="${v}"`));
+}
+
+// 5. Soft check: non-English entries identical to English (possible untranslated).
 for (const l of LOCALES.filter((l) => l !== "en")) {
   const suspicious = [];
   for (const [k, v] of Object.entries(flat[l])) {

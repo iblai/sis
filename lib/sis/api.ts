@@ -41,6 +41,7 @@ import type {
   UserGroup,
   UserPlatformLink,
   WatchedGroup,
+  WatchedGroupRow,
   WatchedUser,
 } from "./types";
 
@@ -316,12 +317,18 @@ export const sisApi = createApi({
 
     // ------------------------------------------------------------- guardians
     watchedGroups: b.query<
-      PaginatedDrf<WatchedGroup>,
+      PaginatedDrf<WatchedGroupRow>,
       { platformKey: string; limit?: number; offset?: number }
     >({
       query: ({ platformKey, ...params }) =>
         `/api/core/watched-groups/${qs({ platform_key: platformKey, ...params })}`,
       providesTags: (res) => listTags("WatchedGroup", res?.results),
+    }),
+    // The list is lean; members come from here, up to the DM's cap of 100 each.
+    watchedGroup: b.query<WatchedGroup, { platformKey: string; id: number }>({
+      query: ({ platformKey, id }) =>
+        `/api/core/watched-groups/${id}/${qs({ platform_key: platformKey, watcher_limit: 100, watched_user_limit: 100 })}`,
+      providesTags: (_r, _e, a) => [{ type: "WatchedGroup", id: a.id }],
     }),
     createWatchedGroup: b.mutation<
       WatchedGroup,
@@ -590,6 +597,7 @@ export const {
   useBulkCourseInvitationsMutation,
   useMyEnrollmentsQuery,
   useWatchedGroupsQuery,
+  useWatchedGroupQuery,
   useCreateWatchedGroupMutation,
   useDeleteWatchedGroupMutation,
   useAddWatcherMutation,

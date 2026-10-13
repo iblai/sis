@@ -5,10 +5,12 @@ import { FieldRow } from "@/components/sis/inline-field";
 import { StatusPill } from "@/components/sis/status-pill";
 import { WhereTip } from "@/components/sis/where-tip";
 import { useGateLoading } from "@/components/sis/page-gate";
+import { useGuardians } from "@/hooks/use-guardians";
 import { useSession } from "@/hooks/use-session";
-import { useLearnerLastAccessQuery, useWatchedGroupsQuery } from "@/lib/sis/api";
+import { useLearnerLastAccessQuery } from "@/lib/sis/api";
 import { useUserEnrollmentsQuery } from "@/lib/sis/lms-api";
 import { formatDate, formatDateTime } from "@/lib/sis/format";
+import { isEnrollmentStatus } from "@/lib/sis/seed";
 import type { Demographics, UserPlatformLink } from "@/lib/sis/types";
 
 const str = (v: unknown) => (typeof v === "string" && v ? v : "—");
@@ -25,22 +27,19 @@ export function OverviewTab({
 }) {
   const t = useTranslations("students.record");
   const tf = useTranslations("students.fields");
+  const ts = useTranslations("students.enrollmentStatus");
   const locale = useLocale();
   const { tenantKey, isAdmin } = useSession();
   const enrollments = useUserEnrollmentsQuery(username, { skip: !username });
-  const guardians = useWatchedGroupsQuery(
-    { platformKey: tenantKey, limit: 100 },
-    { skip: !isAdmin },
-  );
+  const guardians = useGuardians(username, isAdmin);
   const lastAccess = useLearnerLastAccessQuery(
     { platformKey: tenantKey, username },
     { skip: !isAdmin },
   );
   useGateLoading(enrollments.isLoading || guardians.isLoading || lastAccess.isLoading);
   const custom = demographics?.custom_fields ?? {};
-  const watchers = (guardians.data?.results ?? [])
-    .filter((g) => g.watched_users.some((u) => u.username === username))
-    .flatMap((g) => g.watchers);
+  const watchers = guardians.watchers;
+  const status = custom.enrollment_status;
   const access = lastAccess.data?.data as Record<string, unknown> | string | undefined;
   const lastSeen =
     typeof access === "string"
@@ -65,7 +64,9 @@ export function OverviewTab({
           </FieldRow>
           <FieldRow label={tf("student_id")}>{str(custom.student_id)}</FieldRow>
           <FieldRow label={tf("grade_level")}>{str(custom.grade_level)}</FieldRow>
-          <FieldRow label={tf("enrollment_status")}>{str(custom.enrollment_status)}</FieldRow>
+          <FieldRow label={tf("enrollment_status")}>
+            {typeof status === "string" && isEnrollmentStatus(status) ? ts(status) : str(status)}
+          </FieldRow>
           <FieldRow label={tf("homeroom")}>{str(custom.homeroom)}</FieldRow>
           <FieldRow label={tf("date_of_birth")}>
             {formatDate(demographics?.date_of_birth, locale)}

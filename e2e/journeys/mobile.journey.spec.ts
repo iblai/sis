@@ -43,7 +43,7 @@ test.describe("mobile journey", () => {
       await expectNoSidewaysOverflow(page);
     }
     // Setup needs Admin mode; on a phone the switch and the rows sit in the sidebar sheet.
-    await page.getByRole("button", { name: "Toggle sidebar", exact: true }).click();
+    await page.getByRole("button", { name: "Toggle Sidebar", exact: true }).click();
     const adminSwitch = page.getByRole("switch", { name: /admin mode/i });
     await expect(adminSwitch).toBeVisible({ timeout: 15_000 });
     if (!(await adminSwitch.isChecked())) await adminSwitch.click();
@@ -54,7 +54,7 @@ test.describe("mobile journey", () => {
     });
     await expectNoSidewaysOverflow(page);
     // The sheet reaches the lists too.
-    await page.getByRole("button", { name: "Toggle sidebar", exact: true }).click();
+    await page.getByRole("button", { name: "Toggle Sidebar", exact: true }).click();
     await page.getByRole("button", { name: "Students", exact: true }).first().click();
     await page.waitForURL((url) => url.pathname.endsWith("/students"), { timeout: 15_000 });
     await expectNoSidewaysOverflow(page);

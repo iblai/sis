@@ -1,7 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useMemo, useState, type ReactNode } from "react";
+import { useLocale, useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { Spinner } from "@iblai/iblai-js/web-containers";
 import { Button } from "@/components/ui/button";
@@ -9,25 +9,27 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { LoadError } from "@/components/sis/load-error";
-import { SimpleSelect } from "@/components/sis/simple-select";
+import { SimpleSelect, type SelectOption } from "@/components/sis/simple-select";
 import { WhereTip } from "@/components/sis/where-tip";
 import { useGateLoading } from "@/components/sis/page-gate";
 import { useSession } from "@/hooks/use-session";
 import { useSisMetadata } from "@/hooks/use-sis-metadata";
 import { useToastError } from "@/hooks/use-toast-error";
 import {
+  useCreateFieldMutation,
   useDemographicsQuery,
   useFieldDefinitionsQuery,
   usePutDemographicsMutation,
   useUpdateUserGroupMutation,
   sisApi,
 } from "@/lib/sis/api";
+import { countryOptions, languageOptions } from "@/lib/sis/iso";
+import { RESIDENCE, RESIDENCE_FIELD, isEnrollmentStatus, isSeedSlug } from "@/lib/sis/seed";
 import { useDispatch } from "react-redux";
 import type { IblaiAppDispatch } from "@/store/iblai-store";
 import type { Demographics, FieldDefinition, UserPlatformLink } from "@/lib/sis/types";
 
-const BASE_FIELDS = ["date_of_birth", "gender", "primary_language", "nationality"] as const;
-type BaseField = (typeof BASE_FIELDS)[number];
+type BaseField = "date_of_birth" | "gender" | "primary_language" | "nationality";
 
 /**
  * The student record: the DM demographics (base fields + the platform's
@@ -48,7 +50,7 @@ export function RecordForm({ username, link }: { username: string; link?: UserPl
       username={username}
       link={link}
       record={record.data}
-      definitions={fields.data ?? []}
+      definitions={fields.data}
       fieldsError={fields.error}
     />
   );
@@ -64,18 +66,22 @@ function RecordFormFields({
   username: string;
   link?: UserPlatformLink;
   record: Demographics;
-  definitions: FieldDefinition[];
+  /** Undefined while the list is unknown, so no field gets created on a guess. */
+  definitions?: FieldDefinition[];
   fieldsError: unknown;
 }) {
   const t = useTranslations("students.record");
   const tf = useTranslations("students.fields");
+  const ts = useTranslations("students.enrollmentStatus");
   const tc = useTranslations("common");
+  const locale = useLocale();
   const { tenantKey } = useSession();
   const toastError = useToastError();
   const dispatch = useDispatch<IblaiAppDispatch>();
   const { meta, isLoading: metaLoading } = useSisMetadata();
   useGateLoading(metaLoading);
   const [save, saveState] = usePutDemographicsMutation();
+  const [createField, createState] = useCreateFieldMutation();
   const [updateGroup] = useUpdateUserGroupMutation();
   const [base, setBase] = useState<Record<BaseField, string>>({
     date_of_birth: previous.date_of_birth ?? "",
@@ -84,14 +90,41 @@ function RecordFormFields({
     nationality: previous.nationality ?? "",
   });
   const [custom, setCustom] = useState<Record<string, unknown>>(previous.custom_fields ?? {});
+  const setBaseField = (key: BaseField) => (value: string) =>
+    setBase((b) => ({ ...b, [key]: value }));
+  const residence = custom[RESIDENCE];
+  const busy = saveState.isLoading || createState.isLoading;
 
+  const lists = useMemo(
+    () => ({
+      sex: [
+        { value: "male", label: t("male") },
+        { value: "female", label: t("female") },
+      ],
+      languages: languageOptions(locale),
+      countries: countryOptions(locale),
+    }),
+    [locale, t],
+  );
   const definitions = useMemo(
     () =>
-      [...allDefinitions]
-        .filter((f) => f.active !== false)
+      (allDefinitions ?? [])
+        .filter((f) => f.active !== false && f.slug !== RESIDENCE)
         .sort((a, b) => (a.display_order ?? 0) - (b.display_order ?? 0)),
     [allDefinitions],
   );
+
+  // `grade_level` lists the school's levels; `enrollment_status` shows its values translated.
+  const optionsFor = (f: FieldDefinition): SelectOption[] => {
+    const choices =
+      f.slug === "grade_level" && meta?.gradeLevels.length
+        ? meta.gradeLevels.map((g) => g.name)
+        : (f.choices ?? []);
+    return choices.map((c) => ({
+      value: c,
+      label: f.slug === "enrollment_status" && isEnrollmentStatus(c) ? ts(c) : c,
+    }));
+  };
 
   const moveCohort = async (from: string | undefined, next: string | undefined) => {
     if (!meta || !link || from === next) return;
@@ -113,6 +146,12 @@ function RecordFormFields({
   };
 
   const submit = async () => {
+    // The DM refuses a slug it has no definition for; the first value picked creates the field.
+    const noResidenceField = allDefinitions && !allDefinitions.some((f) => f.slug === RESIDENCE);
+    const customFields =
+      noResidenceField && !residence
+        ? Object.fromEntries(Object.entries(custom).filter(([slug]) => slug !== RESIDENCE))
+        : custom;
     // The DM's text fields refuse null; only the date takes it.
     const body: Partial<Demographics> = {
       gender: base.gender,
@@ -122,9 +161,12 @@ function RecordFormFields({
       country_of_birth: previous.country_of_birth ?? "",
       nationality: base.nationality,
       disability_status: previous.disability_status ?? "",
-      custom_fields: custom,
+      custom_fields: customFields,
     };
     try {
+      if (noResidenceField && residence) {
+        await createField({ platformKey: tenantKey, body: RESIDENCE_FIELD }).unwrap();
+      }
       await save({ platformKey: tenantKey, username, body }).unwrap();
       await moveCohort(
         previous.custom_fields?.grade_level as string | undefined,
@@ -147,21 +189,54 @@ function RecordFormFields({
       <p className="text-muted-foreground text-xs">
         {t("visibleToStudent")} <WhereTip k="record" />
       </p>
-      <fieldset className="grid gap-4 sm:grid-cols-2">
+      <fieldset className="grid min-w-0 gap-4 sm:grid-cols-2">
         <legend className="mb-2 text-sm font-semibold text-gray-900">{t("baseFields")}</legend>
-        {BASE_FIELDS.map((key) => (
-          <div key={key} className="space-y-1.5">
-            <Label htmlFor={`base-${key}`}>{tf(key)}</Label>
-            <Input
-              id={`base-${key}`}
-              type={key === "date_of_birth" ? "date" : "text"}
-              value={base[key]}
-              onChange={(e) => setBase((b) => ({ ...b, [key]: e.target.value }))}
-            />
-          </div>
-        ))}
+        <Field id="base-date_of_birth" label={tf("date_of_birth")}>
+          <Input
+            id="base-date_of_birth"
+            type="date"
+            value={base.date_of_birth}
+            onChange={(e) => setBaseField("date_of_birth")(e.target.value)}
+          />
+        </Field>
+        <Field id="base-gender" label={tf("gender")}>
+          <SimpleSelect
+            id="base-gender"
+            value={base.gender}
+            onChange={setBaseField("gender")}
+            options={lists.sex}
+            allowEmpty
+          />
+        </Field>
+        <Field id="base-primary_language" label={tf("primary_language")}>
+          <SimpleSelect
+            id="base-primary_language"
+            value={base.primary_language}
+            onChange={setBaseField("primary_language")}
+            options={lists.languages}
+            allowEmpty
+          />
+        </Field>
+        <Field id="base-nationality" label={tf("nationality")}>
+          <SimpleSelect
+            id="base-nationality"
+            value={base.nationality}
+            onChange={setBaseField("nationality")}
+            options={lists.countries}
+            allowEmpty
+          />
+        </Field>
+        <Field id={`custom-${RESIDENCE}`} label={tf("country_of_residence")}>
+          <SimpleSelect
+            id={`custom-${RESIDENCE}`}
+            value={typeof residence === "string" ? residence : ""}
+            onChange={(v) => setCustom((c) => ({ ...c, [RESIDENCE]: v }))}
+            options={lists.countries}
+            allowEmpty
+          />
+        </Field>
       </fieldset>
-      <fieldset className="grid gap-4 sm:grid-cols-2">
+      <fieldset className="grid min-w-0 gap-4 sm:grid-cols-2">
         <legend className="mb-2 text-sm font-semibold text-gray-900">{t("customFields")}</legend>
         {definitions.length === 0 ? (
           <p className="text-muted-foreground text-sm sm:col-span-2">{t("noFields")}</p>
@@ -170,8 +245,9 @@ function RecordFormFields({
             <CustomField
               key={f.slug}
               definition={f}
+              label={isSeedSlug(f.slug) ? tf(f.slug) : f.name}
+              options={optionsFor(f)}
               value={custom[f.slug]}
-              gradeLevels={meta?.gradeLevels.map((g) => g.name)}
               onChange={(v) => setCustom((c) => ({ ...c, [f.slug]: v }))}
             />
           ))
@@ -179,8 +255,8 @@ function RecordFormFields({
       </fieldset>
       {fieldsError ? <LoadError error={fieldsError} /> : null}
       <div className="flex justify-end">
-        <Button type="submit" className="ibl-button-primary" disabled={saveState.isLoading}>
-          {saveState.isLoading ? <Spinner size="sm" className="size-4 text-current" /> : null}
+        <Button type="submit" className="ibl-button-primary" disabled={busy}>
+          {busy ? <Spinner size="sm" className="size-4 text-current" /> : null}
           {tc("save")}
         </Button>
       </div>
@@ -188,22 +264,34 @@ function RecordFormFields({
   );
 }
 
-/** One custom field as the input its type asks for; `grade_level` lists the school's levels. */
+/** A labelled control; the id ties the label to the input or to the select's button. */
+function Field({ id, label, children }: { id: string; label: string; children: ReactNode }) {
+  return (
+    <div className="space-y-1.5">
+      <Label htmlFor={id}>{label}</Label>
+      {children}
+    </div>
+  );
+}
+
+/** One custom field as the input its type asks for; a seeded slug is labelled from the catalog. */
 function CustomField({
   definition: f,
+  label: text,
+  options,
   value,
-  gradeLevels,
   onChange,
 }: {
   definition: FieldDefinition;
+  label: string;
+  options: SelectOption[];
   value: unknown;
-  gradeLevels?: string[];
   onChange: (value: unknown) => void;
 }) {
   const id = `custom-${f.slug}`;
   const label = (
     <Label htmlFor={id}>
-      {f.name}
+      {text}
       {f.required ? <span className="text-rose-600"> *</span> : null}
     </Label>
   );
@@ -215,15 +303,15 @@ function CustomField({
       </div>
     );
   }
-  const choices = f.slug === "grade_level" && gradeLevels?.length ? gradeLevels : (f.choices ?? []);
-  if (f.field_type === "select" || choices.length) {
+  if (f.field_type === "select" || options.length) {
     return (
       <div className="space-y-1.5">
         {label}
         <SimpleSelect
+          id={id}
           value={typeof value === "string" ? value : ""}
           onChange={onChange}
-          options={choices.map((c) => ({ value: c, label: c }))}
+          options={options}
           allowEmpty
         />
         {f.description ? <p className="text-muted-foreground text-xs">{f.description}</p> : null}

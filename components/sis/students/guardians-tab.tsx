@@ -13,13 +13,13 @@ import { UserPicker } from "@/components/sis/user-picker";
 import { useIsLiveAdmin } from "@/components/sis/admin-mode";
 import { WhereTip } from "@/components/sis/where-tip";
 import { useGateLoading } from "@/components/sis/page-gate";
+import { useGuardians } from "@/hooks/use-guardians";
 import { useSession } from "@/hooks/use-session";
 import { useToastError } from "@/hooks/use-toast-error";
 import {
   useAddWatcherMutation,
   useCreateWatchedGroupMutation,
   useRemoveWatcherMutation,
-  useWatchedGroupsQuery,
 } from "@/lib/sis/api";
 import { displayName } from "@/lib/sis/format";
 import type { PlatformUser } from "@/lib/sis/types";
@@ -34,25 +34,23 @@ export function GuardiansTab({ username, userId }: { username: string; userId?: 
   const { tenantKey } = useSession();
   const isLiveAdmin = useIsLiveAdmin();
   const toastError = useToastError();
-  const groups = useWatchedGroupsQuery({ platformKey: tenantKey, limit: 100 });
-  useGateLoading(groups.isLoading);
+  const guardians = useGuardians(username);
+  useGateLoading(guardians.isLoading);
   const [picked, setPicked] = useState<PlatformUser | null>(null);
   const [createGroup, createState] = useCreateWatchedGroupMutation();
   const [addWatcher, addState] = useAddWatcherMutation();
   const [removeWatcher, removeState] = useRemoveWatcherMutation();
-  const mine = (groups.data?.results ?? []).filter((g) =>
-    g.watched_users.some((u) => u.username === username),
-  );
-  const watchers = mine.flatMap((g) => g.watchers.map((w) => ({ ...w, groupId: g.id })));
+  const group = guardians.group;
+  const watchers = group ? group.watchers.map((w) => ({ ...w, groupId: group.id })) : [];
   const busy = createState.isLoading || addState.isLoading;
 
   const add = async () => {
     if (!picked) return;
     try {
-      if (mine[0]) {
+      if (group) {
         await addWatcher({
           platformKey: tenantKey,
-          groupId: mine[0].id,
+          groupId: group.id,
           watcher_id: picked.user_id,
         }).unwrap();
       } else {
@@ -105,8 +103,8 @@ export function GuardiansTab({ username, userId }: { username: string; userId?: 
         </div>
       ) : null}
       <div className="overflow-hidden rounded-xl border border-[var(--border-color,#e5e7eb)] bg-white">
-        {groups.error ? (
-          <LoadError error={groups.error} />
+        {guardians.error ? (
+          <LoadError error={guardians.error} />
         ) : watchers.length === 0 ? (
           <EmptyState
             icon={<UsersRound strokeWidth={1.75} />}
