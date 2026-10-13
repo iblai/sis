@@ -152,6 +152,7 @@ All app config is `NEXT_PUBLIC_*` and optional against hosted `iblai.app`. Defau
 | `NEXT_PUBLIC_AUTH_URL`             | `https://login.iblai.app`      | The hosted Auth SPA                                                       |
 | `NEXT_PUBLIC_PLATFORM_BASE_DOMAIN` | `iblai.app`                    | Base domain; with no API base, services resolve to their own subdomains   |
 | `NEXT_PUBLIC_MFE_URL`              | `https://apps.learn.iblai.app` | The Open edX micro-frontends (the embedded gradebook)                     |
+| `NEXT_PUBLIC_LMS_APP_URL`          | `https://lms.ibl.ai`           | The learner app, where "Open in the Learning Platform" lands              |
 | `NEXT_PUBLIC_MAIN_TENANT_KEY`      | `main`                         | The community platform — the one platform the app never works in          |
 | `NEXT_PUBLIC_IBL_PLATFORM`         | `mentor`                       | `app=` sent to the Auth SPA (the OS's value, so every platform signs in)  |
 | `NEXT_PUBLIC_ENABLE_RBAC`          | `false`                        | Gate SDK admin surfaces on RBAC policies as well as the admin flag        |

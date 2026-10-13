@@ -30,6 +30,7 @@ const env = {
   NEXT_PUBLIC_HELP_CENTER_URL: process.env.NEXT_PUBLIC_HELP_CENTER_URL,
   NEXT_PUBLIC_DOCUMENTATION_URL: process.env.NEXT_PUBLIC_DOCUMENTATION_URL,
   NEXT_PUBLIC_OS_URL: process.env.NEXT_PUBLIC_OS_URL,
+  NEXT_PUBLIC_LMS_APP_URL: process.env.NEXT_PUBLIC_LMS_APP_URL,
   NEXT_PUBLIC_ENABLE_RBAC: process.env.NEXT_PUBLIC_ENABLE_RBAC,
   NEXT_PUBLIC_ENABLE_GRAVATAR_ON_PROFILE_PIC:
     process.env.NEXT_PUBLIC_ENABLE_GRAVATAR_ON_PROFILE_PIC,
@@ -115,6 +116,8 @@ const config = {
   documentationUrl: () => getEnv("NEXT_PUBLIC_DOCUMENTATION_URL", "https://ibl.ai/docs"),
   /** The Agentic OS — where agents, billing and platform admin live. */
   osUrl: () => getEnv("NEXT_PUBLIC_OS_URL", "https://os.ibl.ai"),
+  /** The learner app — where a course opens for its students. */
+  lmsAppUrl: () => getEnv("NEXT_PUBLIC_LMS_APP_URL", "https://lms.ibl.ai"),
 
   enableRBAC: () => getEnv("NEXT_PUBLIC_ENABLE_RBAC", "false") === "true",
   enableGravatarOnProfilePic: () =>

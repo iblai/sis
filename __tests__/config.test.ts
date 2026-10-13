@@ -73,6 +73,7 @@ describe("hosted iblai.app defaults", () => {
     expect(config.documentationUrl()).toBe("https://ibl.ai/docs");
     expect(config.helpCenterUrl()).toBe("https://ibl.ai/support");
     expect(config.osUrl()).toBe("https://os.ibl.ai");
+    expect(config.lmsAppUrl()).toBe("https://lms.ibl.ai");
     expect(config.enableRBAC()).toBe(false);
     expect(config.enableGravatarOnProfilePic()).toBe(true);
   });
@@ -98,10 +99,12 @@ describe("build-time env overrides", () => {
     process.env.NEXT_PUBLIC_MAIN_TENANT_KEY = "community";
     process.env.NEXT_PUBLIC_IBL_PLATFORM = "sis";
     process.env.NEXT_PUBLIC_MFE_URL = "https://apps.example.org";
+    process.env.NEXT_PUBLIC_LMS_APP_URL = "https://lms.example.org";
     const config = await loadConfig();
     expect(config.mainTenantKey()).toBe("community");
     expect(config.iblPlatform()).toBe("sis");
     expect(config.mfeUrl()).toBe("https://apps.example.org");
+    expect(config.lmsAppUrl()).toBe("https://lms.example.org");
   });
 
   it("reads the boolean flags", async () => {

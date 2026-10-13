@@ -8,3 +8,13 @@ export function isAuthSpaUrl(target: string, authUrl: string = config.authUrl())
     return false;
   }
 }
+
+/** The Auth SPA's sign-in URL that lands, already signed in, on `redirectTo` in another ibl.ai app. */
+export function authSpaLoginUrl(
+  app: string,
+  redirectTo: string,
+  tenant: string,
+  authUrl: string = config.authUrl(),
+): string {
+  return `${authUrl}/login?${new URLSearchParams({ app, "redirect-to": redirectTo, tenant })}`;
+}

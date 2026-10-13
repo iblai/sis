@@ -4,6 +4,7 @@ import { Suspense, useCallback, useMemo } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { BookOpen, ExternalLink, GraduationCap, Settings, Users } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PageHeader } from "@/components/sis/page-header";
@@ -19,6 +20,7 @@ import { useSections } from "@/hooks/use-sections";
 import { useSession } from "@/hooks/use-session";
 import { useCourseMetadataQuery, useProgressQuery } from "@/lib/sis/lms-api";
 import { courseRunParts } from "@/lib/sis/sections";
+import { authSpaLoginUrl } from "@/lib/iblai/auth-redirect";
 import config from "@/lib/iblai/config";
 import { formatDate, formatPercent } from "@/lib/sis/format";
 
@@ -41,7 +43,7 @@ function CourseView() {
   const courseId = decodeURIComponent(params.courseId);
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { isAdmin, href } = useSession();
+  const { isAdmin, href, org, tenantKey } = useSession();
   const sections = useSections({ skip: !isAdmin });
   const row = sections.byCourseId.get(courseId);
   const meta = useCourseMetadataQuery(courseId, { skip: !!row });
@@ -82,14 +84,25 @@ function CourseView() {
         }
         actions={
           <>
-            <a
-              href={`${config.legacyLmsUrl()}/courses/${courseId}/course/`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-muted-foreground inline-flex items-center gap-1 text-xs hover:text-gray-900"
+            <Button
+              size="sm"
+              className="ibl-button-primary"
+              render={
+                <a
+                  // Through the Auth SPA, so the learner app ("skills" to it) opens signed in.
+                  href={authSpaLoginUrl(
+                    "skills",
+                    `${config.lmsAppUrl()}/platform/${encodeURIComponent(org)}/courses/${courseId}`,
+                    tenantKey,
+                  )}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={t("openInLms")}
+                />
+              }
             >
-              {t("openInLms")} <ExternalLink className="size-3" />
-            </a>
+              {t("openInLms")} <ExternalLink data-icon="inline-end" />
+            </Button>
             {isAdmin ? (
               <a
                 href={`${config.legacyLmsUrl()}/courses/${courseId}/instructor`}
