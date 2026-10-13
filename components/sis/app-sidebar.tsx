@@ -55,7 +55,7 @@ export function AppSidebar() {
     if (isMobile) setOpenMobile(false);
   };
 
-  const rows = isAdmin
+  const rows = isLiveAdmin
     ? [
         { id: "home", label: t("home"), path: "", icon: Home, exact: true },
         { id: "students", label: t("students"), path: "/students", icon: Users },

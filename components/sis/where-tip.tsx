@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { InfoTip } from "@/components/sis/info-tip";
-import { useSession } from "@/hooks/use-session";
+import { useIsLiveAdmin } from "@/components/sis/admin-mode";
 
 /** A hint of the `where` catalog: one per place data is added. */
 export type WhereKey = Exclude<keyof (typeof import("@/messages/en.json"))["where"], "label">;
@@ -18,8 +18,7 @@ export function WhereTip({
   className?: string;
 }) {
   const t = useTranslations("where");
-  const { isAdmin } = useSession();
-  if (!isAdmin) return null;
+  if (!useIsLiveAdmin()) return null;
   return (
     <InfoTip label={t("label")} side={side} className={className}>
       {t(k)}

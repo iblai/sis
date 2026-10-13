@@ -80,14 +80,14 @@ function CommandPalette({
   const tn = useTranslations("nav");
   const tc = useTranslations("common");
   const router = useRouter();
-  const { tenantKey, isAdmin, href, username } = useSession();
+  const { tenantKey, href, username } = useSession();
   const isLiveAdmin = useIsLiveAdmin();
   const [query, setQuery] = useState("");
 
   const q = useDebounced(query.trim(), 250);
   const { data, error } = usePlatformUsersQuery(
     { platformKey: tenantKey, query: q, page_size: 8 },
-    { skip: !open || !q || !isAdmin },
+    { skip: !open || !q || !isLiveAdmin },
   );
   const sections = useSections({ skip: !open });
   const people = q ? (data?.results ?? []) : [];
@@ -107,7 +107,7 @@ function CommandPalette({
     router.push(href(path));
   };
 
-  const rows = isAdmin
+  const rows = isLiveAdmin
     ? ([
         ["home", "", Home],
         ["students", "/students", Users],
@@ -193,7 +193,7 @@ function CommandPalette({
             </CommandGroup>
           ) : null}
           <CommandSeparator />
-          {isAdmin ? (
+          {isLiveAdmin ? (
             <CommandGroup heading={tc("create")}>
               <CommandItem value="invite student" onSelect={() => go("/students?invite=1")}>
                 <Plus className="size-4" /> {t("inviteStudent")}

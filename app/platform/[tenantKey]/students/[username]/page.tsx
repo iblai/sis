@@ -70,11 +70,11 @@ function StudentView() {
   const member = directory.data?.results.find((u) => u.username === username);
   const demographics = useDemographicsQuery({ platformKey: tenantKey, username });
   const [setLink, linkState] = useSetUserLinkMutation();
-  const tabs = isAdmin ? ADMIN_TABS : SELF_TABS;
+  const tabs = isLiveAdmin ? ADMIN_TABS : SELF_TABS;
   const base = href(`/students/${encodeURIComponent(username)}`);
   const name = isAdmin ? displayName(member ?? link ?? { username }) : ownName || username;
   useBreadcrumbs(
-    isAdmin
+    isLiveAdmin
       ? [
           { label: tn("students"), href: href("/students") },
           { label: name, href: base },
@@ -195,7 +195,7 @@ function StudentView() {
               <CredentialsTab username={username} />
             </PageGate>
           </TabsContent>
-          {isAdmin ? (
+          {isLiveAdmin ? (
             <TabsContent value="guardians">
               <PageGate inline>
                 <GuardiansTab username={username} userId={link?.user_id} />

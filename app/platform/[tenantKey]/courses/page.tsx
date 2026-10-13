@@ -47,10 +47,10 @@ function CoursesView() {
   const locale = useLocale();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { isAdmin, username, href } = useSession();
+  const { username, href } = useSession();
   const isLiveAdmin = useIsLiveAdmin();
   const [allPlatforms, setAllPlatforms] = useState(false);
-  const sections = useSections({ skip: !isAdmin, allPlatforms });
+  const sections = useSections({ skip: !isLiveAdmin, allPlatforms });
   const [query, setQuery] = useState("");
   const [termId, setTermId] = useState("");
   const [subjectId, setSubjectId] = useState("");
@@ -59,7 +59,7 @@ function CoursesView() {
   const newOpen = searchParams.get("new") === "1";
   const closeNew = () => router.replace(href("/courses"));
 
-  if (!isAdmin) {
+  if (!isLiveAdmin) {
     return (
       <PageGate>
         <PageHeader icon={<BookOpen />} title={tn("courses")} description={t("mine")} />

@@ -7,6 +7,7 @@ import { BookOpen, ExternalLink, GraduationCap, Settings, Users } from "lucide-r
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useIsLiveAdmin } from "@/components/sis/admin-mode";
 import { PageHeader } from "@/components/sis/page-header";
 import { LoadingScreen } from "@/components/loading-screen";
 import { LoadError } from "@/components/sis/load-error";
@@ -43,8 +44,9 @@ function CourseView() {
   const courseId = decodeURIComponent(params.courseId);
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { isAdmin, href, org, tenantKey } = useSession();
-  const sections = useSections({ skip: !isAdmin });
+  const { href, org, tenantKey } = useSession();
+  const isLiveAdmin = useIsLiveAdmin();
+  const sections = useSections({ skip: !isLiveAdmin });
   const row = sections.byCourseId.get(courseId);
   const meta = useCourseMetadataQuery(courseId, { skip: !!row });
   const parts = courseRunParts(courseId);
@@ -103,7 +105,7 @@ function CourseView() {
             >
               {t("openInLms")} <ExternalLink data-icon="inline-end" />
             </Button>
-            {isAdmin ? (
+            {isLiveAdmin ? (
               <a
                 href={`${config.legacyLmsUrl()}/courses/${courseId}/instructor`}
                 target="_blank"
@@ -117,7 +119,7 @@ function CourseView() {
         }
       />
       <div className="flex-1 overflow-auto p-4 md:p-6">
-        {!isAdmin ? (
+        {!isLiveAdmin ? (
           <StudentCourseView courseId={courseId} />
         ) : (
           <Tabs value={tab} onValueChange={(v) => setTab(v as Tab)} className="gap-4">

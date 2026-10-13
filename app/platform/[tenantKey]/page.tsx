@@ -15,6 +15,7 @@ import { OverTimeChart } from "@/components/sis/dashboard/over-time-chart";
 import { EntityAvatar } from "@/components/sis/entity-avatar";
 import { MyCredentials } from "@/components/sis/students/my-credentials";
 import { MySections } from "@/components/sis/students/my-sections";
+import { useIsLiveAdmin } from "@/components/sis/admin-mode";
 import { PageGate, useGateLoading } from "@/components/sis/page-gate";
 import { useSession } from "@/hooks/use-session";
 import { useSections } from "@/hooks/use-sections";
@@ -41,7 +42,8 @@ const rec = (v: unknown): Record<string, unknown> =>
 export default function HomePage() {
   const t = useTranslations("dashboard");
   const tn = useTranslations("nav");
-  const { displayName, isAdmin } = useSession();
+  const { displayName } = useSession();
+  const isLiveAdmin = useIsLiveAdmin();
   return (
     <PageGate>
       <PageHeader
@@ -50,7 +52,7 @@ export default function HomePage() {
         title={tn("home")}
         description={displayName ? t("welcomeNamed", { name: displayName }) : t("welcome")}
       />
-      {isAdmin ? <AdminDashboard /> : <StudentHome />}
+      {isLiveAdmin ? <AdminDashboard /> : <StudentHome />}
     </PageGate>
   );
 }
