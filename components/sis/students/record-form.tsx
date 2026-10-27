@@ -20,6 +20,7 @@ import {
   useDemographicsQuery,
   useFieldDefinitionsQuery,
   usePutDemographicsMutation,
+  useUpdateFieldMutation,
   useUpdateUserGroupMutation,
   sisApi,
 } from "@/lib/sis/api";
@@ -96,6 +97,7 @@ function RecordFormFields({
   useGateLoading(metaLoading);
   const [save, saveState] = usePutDemographicsMutation();
   const [createField, createState] = useCreateFieldMutation();
+  const [updateField, updateState] = useUpdateFieldMutation();
   const [updateGroup] = useUpdateUserGroupMutation();
   const [base, setBase] = useState<Record<BaseField, string>>({
     date_of_birth: previous.date_of_birth ?? "",
@@ -107,7 +109,7 @@ function RecordFormFields({
   const setBaseField = (key: BaseField) => (value: string) =>
     setBase((b) => ({ ...b, [key]: value }));
   const residence = custom[RESIDENCE];
-  const busy = saveState.isLoading || createState.isLoading;
+  const busy = saveState.isLoading || createState.isLoading || updateState.isLoading;
 
   const lists = useMemo(
     () => ({
@@ -183,6 +185,18 @@ function RecordFormFields({
     try {
       if (noResidenceField && residence) {
         await createField({ platformKey: tenantKey, body: RESIDENCE_FIELD }).unwrap();
+      }
+      // The DM checks a select against its definition's choices; Setup's levels are the choices.
+      const levelField = definitions.find((f) => f.slug === "grade_level");
+      const level = custom.grade_level;
+      if (levelField && typeof level === "string" && level && meta?.gradeLevels.length) {
+        if (!(levelField.choices ?? []).includes(level)) {
+          await updateField({
+            platformKey: tenantKey,
+            slug: levelField.slug,
+            body: { choices: meta.gradeLevels.map((g) => g.name) },
+          }).unwrap();
+        }
       }
       await save({ platformKey: tenantKey, username, body }).unwrap();
       await moveCohort(

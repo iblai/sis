@@ -107,7 +107,10 @@ Three backends carry the data, all through existing endpoints:
     student; M* run as the student); never read or print `e2e/.env.development`;
     `/iblai-vibe-connect` runs from an empty directory, its `iblai.env` moved here.
     The `mobile` Playwright project (S6) opens every admin page at a phone width
-    and fails on sideways overflow: phones are a gate.
+    and fails on sideways overflow: phones are a gate. `e2e/coverage.json` is the
+    checkpoint ledger `pnpm test` checks against the test titles; the setup
+    project seeds the school and the student once (`playwright/.auth/seed.json`);
+    `pnpm test:e2e` runs Chromium and the phone project, `test:e2e:all` every browser.
 14. **Commits:** conventional messages; never `--no-verify`.
 
 ## Where things are

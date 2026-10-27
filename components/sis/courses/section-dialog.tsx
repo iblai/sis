@@ -80,9 +80,10 @@ export function SectionDialog({
         start: term ? `${term.start}T00:00:00Z` : undefined,
         source_course_key: sourceRow.course.id,
       }).unwrap();
+      const courseKey = created.destination_course_key ?? created.course_key;
       if (term) {
         await updateDetails({
-          courseId: created.course_key,
+          courseId: courseKey,
           body: { start_date: `${term.start}T00:00:00Z`, end_date: `${term.end}T23:59:59Z` },
         })
           .unwrap()
@@ -92,7 +93,7 @@ export function SectionDialog({
         await saveList(
           "sections",
           upsertSection(meta.sections, {
-            courseId: created.course_key,
+            courseId: courseKey,
             termId: termId || undefined,
             subjectId: subjectId || undefined,
             gradeLevelId: gradeLevelId || undefined,
@@ -102,7 +103,7 @@ export function SectionDialog({
       }
       toast.success(t("done", { name: displayName }));
       onOpenChange(false);
-      router.push(href(`/courses/${encodeURIComponent(created.course_key)}`));
+      router.push(href(`/courses/${encodeURIComponent(courseKey)}`));
     } catch (err) {
       toastError(err);
     }
@@ -128,8 +129,9 @@ export function SectionDialog({
             />
           </div>
           <div className="space-y-1.5">
-            <Label>{t("term")}</Label>
+            <Label htmlFor="section-term">{t("term")}</Label>
             <SimpleSelect
+              id="section-term"
               value={termId}
               onChange={setTermId}
               options={(meta?.terms ?? []).map((x) => ({ value: x.id, label: x.name }))}
@@ -150,8 +152,9 @@ export function SectionDialog({
             />
           </div>
           <div className="space-y-1.5">
-            <Label>{t("subject")}</Label>
+            <Label htmlFor="section-subject">{t("subject")}</Label>
             <SimpleSelect
+              id="section-subject"
               value={subjectId}
               onChange={setSubjectId}
               options={(meta?.subjects ?? []).map((x) => ({ value: x.id, label: x.name }))}
@@ -159,8 +162,9 @@ export function SectionDialog({
             />
           </div>
           <div className="space-y-1.5">
-            <Label>{t("gradeLevel")}</Label>
+            <Label htmlFor="section-level">{t("gradeLevel")}</Label>
             <SimpleSelect
+              id="section-level"
               value={gradeLevelId}
               onChange={setGradeLevelId}
               options={(meta?.gradeLevels ?? []).map((x) => ({ value: x.id, label: x.name }))}

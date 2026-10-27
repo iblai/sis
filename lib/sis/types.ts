@@ -652,6 +652,8 @@ export interface CourseGrading {
 
 export interface ManagedCourse {
   course_key: string;
+  /** A rerun answers with this instead of `course_key`. */
+  destination_course_key?: string;
   org: string;
   number: string;
   run: string;

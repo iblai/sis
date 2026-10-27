@@ -36,6 +36,16 @@ export function errorMessage(err: unknown, fallback: string): string {
   return fallback;
 }
 
+/** How long a throttled (429) call should wait before its one retry, from `Retry-After` or DRF's "Expected available in N seconds". */
+export function throttleWaitMs(retryAfter: string | null | undefined, detail: string): number {
+  const header = Number(retryAfter);
+  const seconds =
+    Number.isFinite(header) && header > 0
+      ? header
+      : Number(detail.match(/available in (\d+) second/)?.[1] ?? 1);
+  return Math.min(seconds, 10) * 1000;
+}
+
 export function errorStatus(err: unknown): number | string | undefined {
   if (!err || typeof err !== "object") return undefined;
   return (err as Partial<SisApiError>).status;

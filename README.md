@@ -103,7 +103,8 @@ Node.js 22+ and pnpm 12 (`corepack enable` picks the pinned version up from `pac
 | `pnpm format`       | oxfmt (`pnpm format:check` in CI)                                                                                      |
 | `pnpm i18n:check`   | Same keys in the four catalogs; no “tenant”, “pupil” or “class period”; no ASCII apostrophe; English labels Title Case |
 | `pnpm test`         | Vitest unit tests (`pnpm test:coverage` in CI: 95 % lines on `lib/`)                                                   |
-| `pnpm test:e2e`     | Playwright journeys on a throwaway platform (needs `e2e/.env.development`)                                             |
+| `pnpm test:e2e`     | Playwright journeys on a throwaway platform, Chromium and the phone project (needs `e2e/.env.development`)             |
+| `pnpm test:e2e:all` | The same journeys in every browser (their builds installed with `pnpm exec playwright install`)                        |
 | `pnpm e2e:accounts` | Creates the two Playwright test accounts (a platform admin and a student) in the throwaway platform `iblai.env` names  |
 | `pnpm probe:lms`    | Which learning-platform capabilities this platform really exposes ([docs](docs/development.md#the-lms-probe))          |
 | `pnpm release`      | release-it: version from the commits, CHANGELOG, tag, GitHub Release (CI runs it on every push to main)                |
@@ -234,16 +235,17 @@ ibl.ai/sis writes no endpoint of its own. The features that wait for a change in
 ## Testing
 
 ```bash
-pnpm test            # Vitest — metadata parsing, grades and GPA, CSV, course runs, permissions, platform resolution, SSO landing, config
+pnpm test            # Vitest — metadata parsing, grades and GPA, CSV, course runs, permissions, platform resolution, SSO landing, config, the e2e ledger
 pnpm i18n:check      # en / es / fr / zh catalogs carry the same keys and the house vocabulary
 pnpm test:coverage   # the unit tests with the coverage gate CI runs
 pnpm e2e:accounts    # once: creates the two test accounts (a platform admin and a student) in the throwaway platform iblai.env names
-pnpm test:e2e        # Playwright journeys on that platform, signed in as the test accounts
-pnpm test:e2e --project=mobile   # the phone journey (S6) on a Pixel 7 viewport
+pnpm test:e2e        # Playwright journeys on that platform in Chromium and on a Pixel 7 viewport, signed in as the test accounts
+pnpm test:e2e --project=chromium --no-deps e2e/journeys/groups.journey.spec.ts   # one journey on the saved session and seed
+pnpm test:e2e:all    # every browser (their builds installed with pnpm exec playwright install)
 pnpm test:e2e:ui     # interactive UI mode
 ```
 
-The Playwright suite signs in through the real Auth SPA (`e2e/auth.setup.ts`, which finds the login page by its structure, not its copy) as two test accounts that `pnpm e2e:accounts` creates once — a platform admin and a student in the throwaway platform `iblai.env` names (`PLATFORM`), made with its Platform API Token (`TOKEN`) once the platform confirms the two belong together — and saves in the gitignored `e2e/.env.development`. The member journey (M1–M3) runs as the student and skips until that pair exists; the SIS journey writes terms, groups and a record field, so it runs on a throwaway platform only. `/iblai-vibe-connect` writes `iblai.env`; run it from an empty directory and move the file here — from this root it would make the picked platform the community one (`NEXT_PUBLIC_MAIN_TENANT_KEY`).
+The Playwright suite signs in through the real Auth SPA (`e2e/auth.setup.ts`, which finds the login page by its structure, not its copy) as two test accounts that `pnpm e2e:accounts` creates once — a platform admin and a student in the throwaway platform `iblai.env` names (`PLATFORM`), made with its Platform API Token (`TOKEN`) once the platform confirms the two belong together — and saves in the gitignored `e2e/.env.development`. The setup project then seeds the school once — a 2099 year and term, a grade level with its cohort group, the default student fields, the student's required record values and one enrollment — and writes the ids to `playwright/.auth/seed.json`. The journeys write to that platform and undo what they can; an invitation, an imported account, a course run and the learning platform's tasks stay behind, so they never run against a real school. The member journeys (M\*) run as the student and skip until that pair exists. `e2e/coverage.json` lists every checkpoint, and `pnpm test` refuses an id without its titled test, a titled test outside the ledger, a platform page no journey names, or a summary that does not add up; `a11y.journey.spec.ts` runs axe-core at WCAG 2.1 AA. `/iblai-vibe-connect` writes `iblai.env`; run it from an empty directory and move the file here — from this root it would make the picked platform the community one (`NEXT_PUBLIC_MAIN_TENANT_KEY`).
 
 ---
 

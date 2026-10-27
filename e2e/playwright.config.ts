@@ -28,10 +28,13 @@ export default defineConfig({
   fullyParallel: false,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 2 : 1,
+  // One worker always: the journeys share one platform and seed it in auth.setup.ts.
+  workers: 1,
   reporter: [["list"]],
   use: {
     baseURL: APP_HOST,
+    // A stuck click names itself instead of eating the test's budget.
+    actionTimeout: 30_000,
     trace: "on-first-retry",
     screenshot: "only-on-failure",
   },

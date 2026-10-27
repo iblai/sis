@@ -1,7 +1,7 @@
 import { fetchBaseQuery, type BaseQueryFn, type FetchArgs } from "@reduxjs/toolkit/query/react";
 import { redirectToAuthSpa } from "@/lib/iblai/auth-utils";
 import { readCurrentTenantKey, tenantMismatch } from "@/lib/iblai/tenant";
-import { detailFromBody, type SisApiError } from "./errors";
+import { detailFromBody, throttleWaitMs, type SisApiError } from "./errors";
 
 /**
  * The base query the three slices share. `credentials: "omit"` always — the
@@ -9,7 +9,8 @@ import { detailFromBody, type SisApiError } from "./errors";
  * and the bearer token comes from localStorage under `tokenKey` with the
  * backend's own scheme (`Token` for the DM, `JWT` for the LMS and Studio).
  * A stale tab whose URL names another platform than the session is sent
- * home before anything is sent; a 401 signs the user in again.
+ * home before anything is sent; a 401 signs the user in again; a 429 is
+ * retried twice after the wait the backend names.
  */
 export function makeBaseQuery(
   baseUrl: string,
@@ -34,7 +35,16 @@ export function makeBaseQuery(
       // No detail: the caller's translated fallback shows while the navigation lands.
       return { error: { status: "CUSTOM_ERROR", detail: "" } };
     }
-    const result = await raw(args, api, extra);
+    let result = await raw(args, api, extra);
+    // A throttled call is retried twice: the wait the backend names, then twice that.
+    for (let attempt = 1; attempt <= 2 && result.error?.status === 429; attempt++) {
+      const wait = throttleWaitMs(
+        result.meta?.response?.headers.get("Retry-After"),
+        detailFromBody(result.error.data),
+      );
+      await new Promise((resolve) => setTimeout(resolve, wait * attempt));
+      result = await raw(args, api, extra);
+    }
     if (result.error) {
       const { status, data } = result.error;
       if (status === 401 && typeof window !== "undefined") {

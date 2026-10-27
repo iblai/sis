@@ -1,37 +1,40 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, type Browser } from "@playwright/test";
+import { appHost, open, platformOf } from "../helpers";
 
 /**
  * Auth journey — the multi-platform sign-in round trip. Requires
  * auth.setup.ts (pre-authenticated storage state) and a throwaway platform;
  * the community platform (`main`) never works here.
  */
-const appHost = process.env.APP_HOST || "http://localhost:3000";
+const stamp = Date.now().toString(36);
+
+/** The login request a signed-out visitor to `path` is sent to. */
+async function loginRequestFor(browser: Browser, path = "") {
+  const context = await browser.newContext({ storageState: undefined });
+  const page = await context.newPage();
+  const [request] = await Promise.all([
+    page.waitForRequest(
+      (req) => req.url().includes("/login") && req.url().includes("redirect-to="),
+      { timeout: 60_000 },
+    ),
+    page.goto(`${appHost}${path}`),
+  ]);
+  await context.close();
+  return new URL(request.url());
+}
 
 test.describe("auth journey", () => {
   test("A1 · a fresh profile is sent to the Auth SPA with no platform and lands on one, never main", async ({
     browser,
   }) => {
-    const context = await browser.newContext({ storageState: undefined });
-    const page = await context.newPage();
-    const [loginRequest] = await Promise.all([
-      page.waitForRequest(
-        (req) => req.url().includes("/login") && req.url().includes("redirect-to="),
-        {
-          timeout: 60_000,
-        },
-      ),
-      page.goto(appHost),
-    ]);
-    expect(new URL(loginRequest.url()).searchParams.get("tenant")).toBeNull();
-    await context.close();
+    const login = await loginRequestFor(browser);
+    expect(login.searchParams.get("tenant")).toBeNull();
   });
 
   test("A1b · an authenticated user lands on their platform's home, not main", async ({ page }) => {
-    await page.goto(appHost);
-    await page.waitForURL((url) => /\/platform\/[^/]+/.test(url.pathname), { timeout: 30_000 });
-    expect(page.url()).not.toMatch(/\/platform\/main(\/|$|\?)/);
     // The admin home waits for the DM overview reads, ~25 s on a busy platform.
-    await expect(page.getByRole("heading", { name: "Home" })).toBeVisible({ timeout: 60_000 });
+    await open(page, "", /^Home\b/);
+    expect(page.url()).not.toMatch(/\/platform\/main(\/|$|\?)/);
   });
 
   test("A2 · auth tokens and the platform list are stored in localStorage", async ({ page }) => {
@@ -84,5 +87,64 @@ test.describe("auth journey", () => {
       await expect(notice).toBeVisible();
       await expect(page.getByRole("button", { name: "Students", exact: true })).toHaveCount(0);
     }
+  });
+
+  test("A5 · a platform the user does not belong to sends them to sign in for it, never into the shell", async ({
+    page,
+  }) => {
+    const key = `zz-no-such-platform-${stamp}`;
+    const [login] = await Promise.all([
+      page.waitForRequest((req) => req.url().includes("/login") && req.url().includes("tenant="), {
+        timeout: 90_000,
+      }),
+      page.goto(`${appHost}/platform/${key}`),
+    ]);
+    expect(new URL(login.url()).searchParams.get("tenant")).toBe(key);
+    await expect(page.getByRole("button", { name: "Students", exact: true })).toHaveCount(0);
+  });
+
+  test("A6 · an unknown page under the platform ends on the 404 page and Go Home lands on the platform", async ({
+    page,
+  }) => {
+    await open(page, "/groups", /^Groups\b/);
+    const key = platformOf(page);
+    await page.goto(`${appHost}/platform/${encodeURIComponent(key)}/nope-${stamp}`);
+    await page.waitForURL((url) => url.pathname === "/error/404", { timeout: 30_000 });
+    await expect(page.getByRole("heading", { name: "Not found" })).toBeVisible();
+    await page.getByRole("link", { name: "Go Home" }).click();
+    await page.waitForURL(
+      (url) => url.pathname.replace(/\/$/, "") === `/platform/${encodeURIComponent(key)}`,
+      { timeout: 30_000 },
+    );
+  });
+
+  test("A7 · a fresh profile opening a platform page is sent to sign in for that platform and page", async ({
+    page,
+    browser,
+  }) => {
+    await open(page, "/groups", /^Groups\b/);
+    const key = platformOf(page);
+    const login = await loginRequestFor(browser, `/platform/${encodeURIComponent(key)}/groups`);
+    expect(login.searchParams.get("tenant")).toBe(key);
+    expect(login.searchParams.get("redirect-to") ?? "").toMatch(new RegExp(`^${appHost}`));
+  });
+
+  test("A8 · the auth-redirect proxy hops only to the Auth SPA's own origin", async ({
+    browser,
+    request,
+  }) => {
+    const login = await loginRequestFor(browser);
+    const refused = await request.get(
+      `${appHost}/api/auth-redirect?to=${encodeURIComponent("https://evil.example.com/login")}`,
+      { maxRedirects: 0 },
+    );
+    expect(refused.status()).toBe(400);
+    expect(await refused.json()).toEqual({ error: "Invalid redirect URL" });
+    const allowed = await request.get(
+      `${appHost}/api/auth-redirect?to=${encodeURIComponent(`${login.origin}/login`)}`,
+      { maxRedirects: 0 },
+    );
+    expect([301, 302, 307, 308]).toContain(allowed.status());
+    expect(allowed.headers()["location"]).toMatch(new RegExp(`^${login.origin}/login`));
   });
 });

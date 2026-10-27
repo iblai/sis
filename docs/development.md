@@ -97,7 +97,7 @@ feature on a platform:
 
 ```bash
 pnpm e2e:accounts   # once, creates the admin and the student test accounts in the platform iblai.env names
-pnpm exec playwright test --config e2e/playwright.config.ts --project=setup-chromium   # once, saves the session
+pnpm exec playwright test --config e2e/playwright.config.ts --project=setup-chromium   # once, saves the session and seeds the school
 pnpm probe:lms --org <the platform's edX org> [--course <course-v1:…>]
 ```
 
@@ -109,10 +109,12 @@ the gradebook API (**403 = `grades.writable_gradebook` is off** → the grid is
 unavailable, the embedded gradebook MFE still works), grading info, a student's
 progress, `students_update_enrollment` (401/403 = session-only → Drop stays a
 link-out), enrollments, the caller's roles, tasks, email schedules, Studio course
-details and grading, the ibl manage view, the course home header. Writes are proven by hand in the UI: one course invitation, one
-`modify_access` allow/revoke, one import CSV (`ALLOW_AUTOMATED_SIGNUPS`), one
-gradebook override, one `send_email` to "myself" (`BulkEmailFlag`), one Studio
-rerun, one `course_details` PUT.
+details and grading, the ibl manage view, the course home header. Writes are proven by the journeys where the platform allows them: a course
+invitation (the seed, C2), a `modify_access` allow/revoke (CO8), a gradebook
+override (C5), a Studio rerun (CO11); the import CSV (ST4, `ALLOW_AUTOMATED_SIGNUPS`)
+and the `send_email` to "myself" (C8, `BulkEmailFlag`) skip with the learning
+platform's refusal when those are off; the `course_details` PUT is proven by hand
+(it rewrites the run's times).
 
 **Results on the throwaway platform:** not yet recorded — run the probe and paste
 the summary here, then write the facts to the knowledge base.

@@ -240,8 +240,9 @@ function BulkIssueDialog({ credential, onClose }: { credential: Credential; onCl
             />
           </div>
           <div className="space-y-1.5">
-            <Label>{t("to")}</Label>
+            <Label htmlFor="issue-to">{t("to")}</Label>
             <SimpleSelect
+              id="issue-to"
               value={target}
               onChange={(v) => setTarget(v as "student" | "group")}
               options={[
@@ -254,6 +255,8 @@ function BulkIssueDialog({ credential, onClose }: { credential: Credential; onCl
             <UserPicker value={student} onChange={setStudent} placeholder={t("pickStudent")} />
           ) : (
             <SimpleSelect
+              id="issue-group"
+              aria-label={t("pickGroup")}
               value={groupId}
               onChange={setGroupId}
               options={(groups.data?.results ?? []).map((g) => ({

@@ -199,8 +199,9 @@ function SectionCard({ courseId, row }: { courseId: string; row?: SectionRow }) 
     );
   const pick = (key: keyof Section, label: string, rows: { id: string; name: string }[]) => (
     <div className="space-y-1">
-      <Label>{label}</Label>
+      <Label htmlFor={`section-${key}`}>{label}</Label>
       <SimpleSelect
+        id={`section-${key}`}
         value={(form[key] as string | undefined) ?? ""}
         onChange={(v) => setForm((f) => ({ ...f, [key]: v || undefined }))}
         options={rows.map((x) => ({ value: x.id, label: x.name }))}

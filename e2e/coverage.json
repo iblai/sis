@@ -1,119 +1,697 @@
 {
-  "version": 1,
-  "checkpoints": [
+  "version": 2,
+  "summary": {
+    "totalCheckpoints": 124,
+    "totalJourneys": 15
+  },
+  "journeys": [
     {
-      "id": "A1",
-      "journey": "auth",
-      "name": "a fresh profile is sent to the Auth SPA with no tenant= and lands on a platform, never main",
-      "spec": "journeys/auth.journey.spec.ts"
+      "id": "auth",
+      "spec": "journeys/auth.journey.spec.ts",
+      "sourceFiles": [
+        "app/page.tsx",
+        "app/[...legacy]/page.tsx",
+        "app/error/[code]/page.tsx",
+        "app/api/auth-redirect/route.ts",
+        "app/platform/[tenantKey]/layout.tsx",
+        "components/tenant-redirect.tsx",
+        "lib/iblai/tenant.ts",
+        "lib/iblai/auth-utils.ts",
+        "lib/iblai/auth-redirect.ts"
+      ],
+      "checkpoints": [
+        {
+          "id": "A1",
+          "name": "a fresh profile is sent to the Auth SPA with no platform and lands on one, never main"
+        },
+        {
+          "id": "A1b",
+          "name": "an authenticated user lands on their platform"
+        },
+        {
+          "id": "A2",
+          "name": "auth tokens and the platform list are stored in localStorage"
+        },
+        {
+          "id": "A3",
+          "name": "a path without a platform is prefixed with the platform and keeps its query"
+        },
+        {
+          "id": "A4",
+          "name": "/platform/main never shows the shell: the notice, or a move to the user"
+        },
+        {
+          "id": "A5",
+          "name": "a platform the user does not belong to sends them to sign in for it, never into the shell"
+        },
+        {
+          "id": "A6",
+          "name": "an unknown page under the platform ends on the 404 page and Go Home lands on the platform"
+        },
+        {
+          "id": "A7",
+          "name": "a fresh profile opening a platform page is sent to sign in for that platform and page"
+        },
+        {
+          "id": "A8",
+          "name": "the auth-redirect proxy hops only to the Auth SPA"
+        }
+      ]
     },
     {
-      "id": "A2",
-      "journey": "auth",
-      "name": "tokens and the platform list are stored; the URL platform equals the session platform",
-      "spec": "journeys/auth.journey.spec.ts"
+      "id": "shell",
+      "spec": "journeys/shell.journey.spec.ts",
+      "sourceFiles": [
+        "app/platform/[tenantKey]/page.tsx",
+        "app/platform/[tenantKey]/layout.tsx",
+        "components/sis/app-sidebar.tsx",
+        "components/sis/nav-row.tsx",
+        "components/sis/top-bar.tsx",
+        "components/sis/breadcrumbs.tsx",
+        "components/sis/command-palette.tsx",
+        "components/sis/admin-mode-switch.tsx",
+        "components/sis/admin-mode.tsx",
+        "components/sis/language-menu.tsx",
+        "components/sis/user-menu.tsx",
+        "components/sis/account-sheet.tsx"
+      ],
+      "checkpoints": [
+        {
+          "id": "S1",
+          "name": "the sidebar reaches every admin row"
+        },
+        {
+          "id": "S2",
+          "name": "⌘K lists the groups and the create actions"
+        },
+        {
+          "id": "S3",
+          "name": "the shell names the current platform and the profile menu opens"
+        },
+        {
+          "id": "S4",
+          "name": "Setup is hidden outside Admin mode and /setup redirects home"
+        },
+        {
+          "id": "S5",
+          "name": "the home period select asks the overview for that window"
+        },
+        {
+          "id": "S7",
+          "name": "the footer"
+        },
+        {
+          "id": "S8",
+          "name": "⌘B collapses the sidebar to its rail, the state survives a reload, ⌘B expands it"
+        },
+        {
+          "id": "S9",
+          "name": "the logo goes to the platform home"
+        },
+        {
+          "id": "S10",
+          "name": "a student record"
+        },
+        {
+          "id": "S11",
+          "name": "the top bar holds its six controls and never overflows the viewport"
+        },
+        {
+          "id": "S12",
+          "name": "⌘K navigates from Go To, Escape closes it, and the sidebar Search reopens it"
+        },
+        {
+          "id": "S13",
+          "name": "⌘K Create opens the New Group dialog and a typed course name lists the course"
+        },
+        {
+          "id": "S14",
+          "name": "User mode shows the member"
+        },
+        {
+          "id": "S15",
+          "name": "the profile menu lists Profile, Account, Help and Log Out, with no platform switcher"
+        },
+        {
+          "id": "S16",
+          "name": "Profile opens the SDK profile dialog with its tabs, the prefilled identity and tab ARIA"
+        },
+        {
+          "id": "S17",
+          "name": "the profile"
+        },
+        {
+          "id": "S18",
+          "name": "Help opens the help center in a new tab"
+        },
+        {
+          "id": "S19",
+          "name": "the footer"
+        },
+        {
+          "id": "S20",
+          "name": "the profile menu"
+        },
+        {
+          "id": "S21",
+          "name": "Management finds the e2e student and View profile opens their profile"
+        },
+        {
+          "id": "S22",
+          "name": "the language select switches the app to Spanish and back"
+        },
+        {
+          "id": "S23",
+          "name": "the home and every admin list render without console errors"
+        },
+        {
+          "id": "S24",
+          "name": "Log Out clears the session and leaves for the Auth SPA with the platform and a way back"
+        }
+      ]
     },
     {
-      "id": "A3",
-      "journey": "auth",
-      "name": "/students without a platform redirects to /platform/<t>/students with the query kept",
-      "spec": "journeys/auth.journey.spec.ts"
+      "id": "mobile",
+      "spec": "journeys/mobile.journey.spec.ts",
+      "sourceFiles": [
+        "components/sis/app-sidebar.tsx",
+        "components/sis/top-bar.tsx",
+        "app/platform/[tenantKey]/setup/page.tsx"
+      ],
+      "checkpoints": [
+        {
+          "id": "S6",
+          "name": "a phone shows every admin page without sideways overflow"
+        },
+        {
+          "id": "S25",
+          "name": "a phone keeps the Admin switch and the language select in the sheet, out of the top bar"
+        },
+        {
+          "id": "S26",
+          "name": "the student"
+        },
+        {
+          "id": "S27",
+          "name": "the student"
+        }
+      ]
     },
     {
-      "id": "A4",
-      "journey": "auth",
-      "name": "/platform/main never shows the shell: the notice, or a move to the user's own platform",
-      "spec": "journeys/auth.journey.spec.ts"
+      "id": "member",
+      "spec": "journeys/member.journey.spec.ts",
+      "sourceFiles": [
+        "app/platform/[tenantKey]/page.tsx",
+        "app/platform/[tenantKey]/courses/page.tsx",
+        "app/platform/[tenantKey]/courses/[courseId]/page.tsx",
+        "app/platform/[tenantKey]/notifications/[[...id]]/page.tsx",
+        "components/sis/students/my-sections.tsx",
+        "components/sis/students/my-credentials.tsx",
+        "components/sis/students/record-form.tsx",
+        "lib/sis/permissions.ts"
+      ],
+      "checkpoints": [
+        {
+          "id": "M1",
+          "name": "a student"
+        },
+        {
+          "id": "M2",
+          "name": "Details opens the student"
+        },
+        {
+          "id": "M3",
+          "name": "the admin lists and Setup send a student home"
+        },
+        {
+          "id": "M4",
+          "name": "Courses lists the seeded course with its term, grade and progress, and opens it"
+        },
+        {
+          "id": "M5",
+          "name": "the student"
+        },
+        {
+          "id": "M6",
+          "name": "the student"
+        },
+        {
+          "id": "M7",
+          "name": "the profile menu has no Account item and ⌘K offers only the member"
+        },
+        {
+          "id": "M8",
+          "name": "every admin list and another member"
+        },
+        {
+          "id": "M9",
+          "name": "the student"
+        }
+      ]
     },
     {
-      "id": "S1",
-      "journey": "shell",
-      "name": "sidebar reaches every admin row",
-      "spec": "journeys/shell.journey.spec.ts"
+      "id": "a11y",
+      "spec": "journeys/a11y.journey.spec.ts",
+      "sourceFiles": [
+        "app/platform/[tenantKey]/page.tsx",
+        "app/platform/[tenantKey]/students/page.tsx",
+        "app/platform/[tenantKey]/students/[username]/page.tsx",
+        "app/platform/[tenantKey]/setup/page.tsx",
+        "components/sis/students/record-form.tsx"
+      ],
+      "checkpoints": [
+        {
+          "id": "AX1",
+          "name": "the admin home has no WCAG 2.1 AA violation beyond the muted text"
+        },
+        {
+          "id": "AX2",
+          "name": "the Students list has no WCAG 2.1 AA violation beyond the muted text"
+        },
+        {
+          "id": "AX3",
+          "name": "the e2e student"
+        },
+        {
+          "id": "AX4",
+          "name": "Setup"
+        },
+        {
+          "id": "AX5",
+          "name": "the invite dialog has no WCAG 2.1 AA violation beyond the muted text"
+        },
+        {
+          "id": "AX6",
+          "name": "the student"
+        }
+      ]
     },
     {
-      "id": "S2",
-      "journey": "shell",
-      "name": "⌘K lists Students/Staff/Courses and Invite Student",
-      "spec": "journeys/shell.journey.spec.ts"
+      "id": "students",
+      "spec": "journeys/students.journey.spec.ts",
+      "sourceFiles": [
+        "app/platform/[tenantKey]/students/page.tsx",
+        "app/platform/[tenantKey]/students/[username]/page.tsx",
+        "components/sis/students/record-form.tsx",
+        "components/sis/students/enrollment-tab.tsx",
+        "components/sis/students/enroll-dialog.tsx",
+        "components/sis/students/overview-tab.tsx",
+        "components/sis/students/grades-tab.tsx",
+        "components/sis/students/guardians-tab.tsx",
+        "components/sis/students/credentials-tab.tsx",
+        "components/sis/students/import-dialog.tsx",
+        "components/sis/pagination-bar.tsx"
+      ],
+      "checkpoints": [
+        {
+          "id": "ST1",
+          "name": "search finds the e2e student, the row opens the record, nonsense finds nothing"
+        },
+        {
+          "id": "ST2",
+          "name": "Invite Student opens the invite dialog on ?invite=1 and closing returns to the list"
+        },
+        {
+          "id": "C2",
+          "name": "an invitation is sent and the pending banner lists it"
+        },
+        {
+          "id": "ST3",
+          "name": "Import CSV previews the rows it can read and the ones it cannot"
+        },
+        {
+          "id": "ST4",
+          "name": "one CSV row is imported into the seeded course"
+        },
+        {
+          "id": "ST5",
+          "name": "the record page has six tabs, ?tab= follows them, and the breadcrumbs lead back"
+        },
+        {
+          "id": "ST6",
+          "name": "Overview shows the membership status and the two summary cards"
+        },
+        {
+          "id": "ST7",
+          "name": "a school record field saves, survives a reload and is restored"
+        },
+        {
+          "id": "C9",
+          "name": "a personal field saves through its select"
+        },
+        {
+          "id": "ST8",
+          "name": "Enrollment lists the seeded course as Enrolled and Drop is a link-out"
+        },
+        {
+          "id": "ST9",
+          "name": "Grades shows the term GPA and the course row across all terms"
+        },
+        {
+          "id": "ST10",
+          "name": "a guardian is added from the directory and removed again"
+        },
+        {
+          "id": "ST11",
+          "name": "the Issue Credential dialog opens with its three fields and cancels"
+        },
+        {
+          "id": "ST12",
+          "name": "Deactivate confirms, deactivates the membership, and Reactivate undoes it"
+        },
+        {
+          "id": "ST13",
+          "name": "the pagination bar counts the first page and cannot go back from it"
+        }
+      ]
     },
     {
-      "id": "S3",
-      "journey": "shell",
-      "name": "the shell names the current platform and the profile menu opens",
-      "spec": "journeys/shell.journey.spec.ts"
+      "id": "staff",
+      "spec": "journeys/staff.journey.spec.ts",
+      "sourceFiles": [
+        "app/platform/[tenantKey]/staff/page.tsx",
+        "app/platform/[tenantKey]/staff/[username]/page.tsx"
+      ],
+      "checkpoints": [
+        {
+          "id": "SF1",
+          "name": "the list shows the e2e admin as Admin, searches, and nonsense finds nothing"
+        },
+        {
+          "id": "SF2",
+          "name": "Invite Staff opens the invite dialog on ?invite=1 and closing returns to the list"
+        },
+        {
+          "id": "SF3",
+          "name": "the admin"
+        }
+      ]
     },
     {
-      "id": "S4",
-      "journey": "shell",
-      "name": "Setup hidden outside Admin Mode and /setup redirects home",
-      "spec": "journeys/shell.journey.spec.ts"
+      "id": "courses",
+      "spec": "journeys/courses.journey.spec.ts",
+      "sourceFiles": [
+        "app/platform/[tenantKey]/courses/page.tsx",
+        "app/platform/[tenantKey]/courses/[courseId]/page.tsx",
+        "components/sis/courses/roster-tab.tsx",
+        "components/sis/courses/gradebook-tab.tsx",
+        "components/sis/courses/settings-tab.tsx",
+        "components/sis/courses/section-dialog.tsx",
+        "components/sis/section-picker.tsx",
+        "components/sis/user-picker.tsx"
+      ],
+      "checkpoints": [
+        {
+          "id": "C3",
+          "name": "the Courses list shows the platform"
+        },
+        {
+          "id": "CO1",
+          "name": "search narrows the list to the seeded course and nonsense finds nothing"
+        },
+        {
+          "id": "CO2",
+          "name": "the term and grade-level filters narrow the list and All Platforms toggles"
+        },
+        {
+          "id": "C4",
+          "name": "the course page opens on the roster and Settings names the teachers"
+        },
+        {
+          "id": "CO3",
+          "name": "the header links to the learning platform signed in and to the instructor dashboard"
+        },
+        {
+          "id": "CO4",
+          "name": "the roster lists the e2e student, searches, exports a CSV and links to the course email"
+        },
+        {
+          "id": "CO5",
+          "name": "the gradebook grid lists the learner, filters, and opens the embedded gradebook"
+        },
+        {
+          "id": "C5",
+          "name": "a score is overridden with a reason, History gains the entry, and the score is set back"
+        },
+        {
+          "id": "CO6",
+          "name": "Term and Dates fills the dates from a term and a reload discards the unsaved change"
+        },
+        {
+          "id": "CO7",
+          "name": "the Course card saves credits, the list shows them, and they are set back"
+        },
+        {
+          "id": "CO8",
+          "name": "a teacher is added from the directory and removed again"
+        },
+        {
+          "id": "CO9",
+          "name": "the Grading Policy card renders the types, the weight total and the cutoffs; Add Type is undone by a reload"
+        },
+        {
+          "id": "CO10",
+          "name": "New Course derives the run id and the name from the source and the term before Create Course enables"
+        },
+        {
+          "id": "CO11",
+          "name": "New Course reruns the seeded course into the seeded term and lands on the new run"
+        }
+      ]
     },
     {
-      "id": "S5",
-      "journey": "shell",
-      "name": "the home period select calls the overview endpoints",
-      "spec": "journeys/shell.journey.spec.ts"
+      "id": "groups",
+      "spec": "journeys/groups.journey.spec.ts",
+      "sourceFiles": [
+        "app/platform/[tenantKey]/groups/page.tsx",
+        "app/platform/[tenantKey]/groups/[id]/page.tsx",
+        "components/sis/groups/group-dialog.tsx"
+      ],
+      "checkpoints": [
+        {
+          "id": "G1",
+          "name": "search finds the seeded cohort group and a nonsense query finds nothing"
+        },
+        {
+          "id": "G7",
+          "name": "the New Group dialog refuses an empty name and Cancel returns to the list"
+        },
+        {
+          "id": "C6",
+          "name": "a group is created and the app lands on it"
+        },
+        {
+          "id": "G2",
+          "name": "Edit renames the group"
+        },
+        {
+          "id": "G3",
+          "name": "a member is added from the picker and removed again"
+        },
+        {
+          "id": "G4",
+          "name": "Add Many adds the usernames it knows and names the ones it does not"
+        },
+        {
+          "id": "G5",
+          "name": "Announce opens Messages with the group preselected"
+        },
+        {
+          "id": "G6",
+          "name": "Delete removes the group and the list no longer finds it"
+        }
+      ]
     },
     {
-      "id": "S7",
-      "journey": "shell",
-      "name": "footer Management opens the Management dialog, not a page",
-      "spec": "journeys/shell.journey.spec.ts"
+      "id": "grades",
+      "spec": "journeys/grades.journey.spec.ts",
+      "sourceFiles": ["app/platform/[tenantKey]/grades/page.tsx", "lib/sis/grades.ts"],
+      "checkpoints": [
+        {
+          "id": "GR1",
+          "name": "the Courses table links each course to its gradebook across all terms"
+        },
+        {
+          "id": "GR2",
+          "name": "the seeded grade level shows its term report with the e2e student"
+        },
+        {
+          "id": "GR3",
+          "name": "Course Grade Report starts the report and points at Reports"
+        },
+        {
+          "id": "GR4",
+          "name": "the All Platforms switch toggles and the table still renders"
+        }
+      ]
     },
     {
-      "id": "S6",
-      "journey": "mobile",
-      "name": "a phone shows every admin page without sideways overflow",
-      "spec": "journeys/mobile.journey.spec.ts"
+      "id": "credentials",
+      "spec": "journeys/credentials.journey.spec.ts",
+      "sourceFiles": [
+        "app/platform/[tenantKey]/credentials/page.tsx",
+        "components/sis/students/credentials-tab.tsx",
+        "components/sis/students/my-credentials.tsx"
+      ],
+      "checkpoints": [
+        {
+          "id": "CR1",
+          "name": "the page lists the credentials to issue, or says none are defined, with the certificate controls"
+        },
+        {
+          "id": "CR2",
+          "name": "a credential is issued to the e2e student for the seeded course, or is already"
+        },
+        {
+          "id": "CR3",
+          "name": "the student"
+        },
+        {
+          "id": "CR5",
+          "name": "Generate Certificates starts the learning platform"
+        }
+      ]
     },
     {
-      "id": "C1",
-      "journey": "sis",
-      "name": "Setup adds a term and keeps it",
-      "spec": "journeys/sis.journey.spec.ts"
+      "id": "reports",
+      "spec": "journeys/reports.journey.spec.ts",
+      "sourceFiles": ["app/platform/[tenantKey]/reports/page.tsx"],
+      "checkpoints": [
+        {
+          "id": "R1",
+          "name": "the page lists the report cards with a status pill each, or says none are available"
+        },
+        {
+          "id": "R2",
+          "name": "Run starts a report: the toast names it and its card keeps a status pill"
+        },
+        {
+          "id": "C7",
+          "name": "Download CSV of a completed report fires a download"
+        },
+        {
+          "id": "R3",
+          "name": "Course Reports requests the roster CSV for the seeded course"
+        }
+      ]
     },
     {
-      "id": "C3",
-      "journey": "sis",
-      "name": "the Courses list shows the platform's runs",
-      "spec": "journeys/sis.journey.spec.ts"
+      "id": "messages",
+      "spec": "journeys/messages.journey.spec.ts",
+      "sourceFiles": [
+        "app/platform/[tenantKey]/messages/page.tsx",
+        "app/platform/[tenantKey]/notifications/[[...id]]/page.tsx"
+      ],
+      "checkpoints": [
+        {
+          "id": "MS1",
+          "name": "?course= preselects the course and Learners is the default audience"
+        },
+        {
+          "id": "C8",
+          "name": "a course email to Myself only is sent"
+        },
+        {
+          "id": "MS2",
+          "name": "a schedule time turns Send into Schedule and the email lands in the Scheduled list"
+        },
+        {
+          "id": "MS3",
+          "name": "an in-app announcement to the named e2e student reaches their inbox"
+        },
+        {
+          "id": "MS4",
+          "name": "?group= preselects the group audience and Send waits for a preview"
+        }
+      ]
     },
     {
-      "id": "C4",
-      "journey": "sis",
-      "name": "a section's roster and its teachers",
-      "spec": "journeys/sis.journey.spec.ts"
+      "id": "setup",
+      "spec": "journeys/setup.journey.spec.ts",
+      "sourceFiles": [
+        "app/platform/[tenantKey]/setup/page.tsx",
+        "components/sis/setup/list-editor.tsx",
+        "components/sis/setup/fields-tab.tsx",
+        "hooks/use-sis-metadata.ts",
+        "lib/sis/metadata.ts"
+      ],
+      "checkpoints": [
+        {
+          "id": "C1",
+          "name": "Setup adds a school year, keeps it, and removes it again"
+        },
+        {
+          "id": "SU1",
+          "name": "the seven tabs open from ?tab= and the tab list never widens the page"
+        },
+        {
+          "id": "SU2",
+          "name": "School saves the address, phone and time zone, keeps them, and gets them back"
+        },
+        {
+          "id": "SU3",
+          "name": "a term under the seeded year saves, survives a reload and is removed again"
+        },
+        {
+          "id": "SU4",
+          "name": "a grade level gets a cohort group, saves linked, and both are removed again"
+        },
+        {
+          "id": "SU5",
+          "name": "a period saves, survives a reload and is removed again"
+        },
+        {
+          "id": "SU6",
+          "name": "a room saves, survives a reload and is removed again"
+        },
+        {
+          "id": "SU7",
+          "name": "a subject saves, survives a reload and is removed again"
+        },
+        {
+          "id": "SU8",
+          "name": "Seed Defaults is idempotent after the seed and Student ID is listed"
+        },
+        {
+          "id": "SU9",
+          "name": "a select field with choices is added, listed, and deleted again"
+        },
+        {
+          "id": "SU10",
+          "name": "Export downloads the field definitions as student-fields.csv"
+        },
+        {
+          "id": "SU11",
+          "name": "Save stays disabled until a list is dirty and every required cell is filled"
+        },
+        {
+          "id": "SU12",
+          "name": "a list changed meanwhile refuses the stale save and shows the other change"
+        }
+      ]
     },
     {
-      "id": "C6",
-      "journey": "sis",
-      "name": "a group is created",
-      "spec": "journeys/sis.journey.spec.ts"
-    },
-    {
-      "id": "C9",
-      "journey": "sis",
-      "name": "a student's record saves a field",
-      "spec": "journeys/sis.journey.spec.ts"
-    },
-    {
-      "id": "M1",
-      "journey": "member",
-      "name": "a student's home shows My Courses and My Credentials, never an admin row or the Admin mode switch",
-      "spec": "journeys/member.journey.spec.ts"
-    },
-    {
-      "id": "M2",
-      "journey": "member",
-      "name": "Details opens the student's own record",
-      "spec": "journeys/member.journey.spec.ts"
-    },
-    {
-      "id": "M3",
-      "journey": "member",
-      "name": "the admin lists and Setup send a student home",
-      "spec": "journeys/member.journey.spec.ts"
+      "id": "notifications",
+      "spec": "journeys/notifications.journey.spec.ts",
+      "sourceFiles": [
+        "app/platform/[tenantKey]/notifications/[[...id]]/page.tsx",
+        "components/sis/top-bar.tsx",
+        "components/sis/app-sidebar.tsx"
+      ],
+      "checkpoints": [
+        {
+          "id": "N1",
+          "name": "the bell opens the notification dropdown and View all goes to the inbox"
+        },
+        {
+          "id": "N2",
+          "name": "the inbox page renders the SDK inbox and alerts tabs"
+        },
+        {
+          "id": "N3",
+          "name": "an admin"
+        }
+      ]
     }
   ]
 }

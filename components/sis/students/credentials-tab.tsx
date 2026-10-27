@@ -232,11 +232,12 @@ export function IssueDialog({
         </DialogHeader>
         <div className="space-y-4">
           <div className="space-y-1.5">
-            <Label>{t("credential")}</Label>
+            <Label htmlFor="issue-credential">{t("credential")}</Label>
             {credentials.error ? (
               <LoadError error={credentials.error} />
             ) : (
               <SimpleSelect
+                id="issue-credential"
                 value={entityId}
                 onChange={setEntityId}
                 options={(credentials.data?.data ?? []).map((c) => ({

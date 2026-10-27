@@ -1,11 +1,12 @@
 import { test, expect, type Page } from "@playwright/test";
+import { STUDENT, open, ready, seeded } from "../helpers";
 
 /**
- * Mobile journey — home and every admin page on a phone-sized viewport (the
+ * Mobile journey — home and every page on a phone-sized viewport (the
  * `mobile` project). Requires auth.setup.ts and a platform admin on a
- * throwaway platform.
+ * throwaway platform; S27 runs as the student.
  */
-const appHost = process.env.APP_HOST || "http://localhost:3000";
+const seed = seeded();
 
 const PAGES = [
   ["", "Home"],
@@ -54,16 +55,11 @@ async function expectNoSidewaysOverflow(page: Page) {
 test.describe("mobile journey", () => {
   test("S6 · a phone shows every admin page without sideways overflow", async ({ page }) => {
     test.setTimeout(300_000);
-    await page.goto(appHost);
-    await page.waitForURL((url) => /\/platform\/[^/]+/.test(url.pathname), { timeout: 30_000 });
+    await open(page, "/groups", /^Groups\b/);
     const base = page.url().match(/^.*\/platform\/[^/?#]+/)![0];
     for (const [path, heading] of PAGES) {
       await page.goto(`${base}${path}`);
-      await expect(
-        page.getByRole("heading", { level: 1, name: new RegExp(`^${heading}\\b`) }),
-      ).toBeVisible({
-        timeout: 60_000,
-      });
+      await ready(page, new RegExp(`^${heading}\\b`));
       await expectNoSidewaysOverflow(page);
     }
     // Setup needs Admin mode; on a phone the switch and the rows sit in the sidebar sheet.
@@ -73,14 +69,66 @@ test.describe("mobile journey", () => {
     if (!(await adminSwitch.isChecked())) await adminSwitch.click();
     await page.getByRole("button", { name: "Setup", exact: true }).first().click();
     await page.waitForURL((url) => url.pathname.endsWith("/setup"), { timeout: 15_000 });
-    await expect(page.getByRole("heading", { level: 1, name: /^Setup\b/ })).toBeVisible({
-      timeout: 15_000,
-    });
+    await ready(page, /^Setup\b/);
     await expectNoSidewaysOverflow(page);
     // The sheet reaches the lists too.
     await openSheet(page);
     await page.getByRole("button", { name: "Students", exact: true }).first().click();
     await page.waitForURL((url) => url.pathname.endsWith("/students"), { timeout: 15_000 });
     await expectNoSidewaysOverflow(page);
+  });
+
+  test("S25 · a phone keeps the Admin switch and the language select in the sheet, out of the top bar", async ({
+    page,
+  }) => {
+    await open(page, "/groups", /^Groups\b/);
+    const header = page.locator("header");
+    await expect(header.getByRole("switch", { name: "Admin Mode" })).toBeHidden();
+    await expect(header.getByRole("combobox", { name: "Language" })).toBeHidden();
+    const [scroll, client] = await header.evaluate((el) => [el.scrollWidth, el.clientWidth]);
+    expect(scroll).toBeLessThanOrEqual(client);
+    await openSheet(page);
+    const sheet = page.locator(SHEET);
+    await expect(sheet.getByRole("switch", { name: "Admin Mode" })).toBeVisible();
+    await expect(sheet.getByRole("combobox", { name: "Language" })).toBeVisible();
+  });
+
+  test("S26 · the student's record and the seeded course fit a phone with their tab rows", async ({
+    page,
+  }) => {
+    test.skip(!STUDENT || !seed, "needs the student account and the seed");
+    test.setTimeout(180_000);
+    await open(page, `/students/${encodeURIComponent(STUDENT)}`);
+    await expect(page.getByRole("tab")).toHaveCount(6);
+    await expectNoSidewaysOverflow(page);
+    await open(page, `/courses/${encodeURIComponent(seed!.courseId)}`);
+    await expect(page.getByRole("tab")).toHaveCount(3);
+    await expectNoSidewaysOverflow(page);
+  });
+
+  test.describe("as the student", () => {
+    test.skip(
+      !process.env.PLAYWRIGHT_MEMBER_USERNAME || !process.env.PLAYWRIGHT_MEMBER_PASSWORD,
+      "no student account in e2e/.env.development (PLAYWRIGHT_MEMBER_*)",
+    );
+    test.use({ storageState: "playwright/.auth/member-chromium.json" });
+
+    test("S27 · the student's home, Courses and Details fit a phone and the sheet lists their three rows", async ({
+      page,
+    }) => {
+      test.setTimeout(180_000);
+      await open(page, "", /^Home\b/);
+      await expectNoSidewaysOverflow(page);
+      await open(page, "/courses", /^Courses\b/);
+      await expectNoSidewaysOverflow(page);
+      await open(page, `/students/${encodeURIComponent(STUDENT)}`);
+      await expectNoSidewaysOverflow(page);
+      await openSheet(page);
+      const sheet = page.locator(SHEET);
+      for (const label of ["Home", "Courses", "Details"] as const) {
+        await expect(sheet.getByRole("button", { name: label, exact: true })).toBeVisible();
+      }
+      await expect(sheet.getByRole("button", { name: "Students", exact: true })).toHaveCount(0);
+    });
   });
 });

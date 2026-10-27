@@ -282,8 +282,9 @@ function Announcement({ initialGroupId }: { initialGroupId: string }) {
         <p className="text-muted-foreground text-xs">{t("hint")}</p>
       </div>
       <div className="space-y-1.5">
-        <Label>{t("audience")}</Label>
+        <Label htmlFor="announce-audience">{t("audience")}</Label>
         <SimpleSelect
+          id="announce-audience"
           value={audience}
           onChange={(v) => {
             setAudience(v as typeof audience);
@@ -298,6 +299,8 @@ function Announcement({ initialGroupId }: { initialGroupId: string }) {
       </div>
       {audience === "usergroup" ? (
         <SimpleSelect
+          id="announce-group"
+          aria-label={t("pickGroup")}
           value={groupId}
           onChange={(v) => {
             setGroupId(v);

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { detailFromBody, errorMessage, errorStatus } from "../lib/sis/errors";
+import { detailFromBody, errorMessage, errorStatus, throttleWaitMs } from "../lib/sis/errors";
 
 describe("detailFromBody", () => {
   it("reads DRF's detail, as a string or a list", () => {
@@ -39,5 +39,21 @@ describe("errorMessage / errorStatus", () => {
     expect(errorStatus({ status: 403, detail: "" })).toBe(403);
     expect(errorStatus({ status: "FETCH_ERROR" })).toBe("FETCH_ERROR");
     expect(errorStatus(undefined)).toBeUndefined();
+  });
+});
+
+describe("throttleWaitMs", () => {
+  it("takes the Retry-After header first, then DRF's wording, then one second, capped at ten", () => {
+    expect(throttleWaitMs("3", "Request was throttled. Expected available in 7 seconds.")).toBe(
+      3000,
+    );
+    expect(throttleWaitMs(null, "Request was throttled. Expected available in 7 seconds.")).toBe(
+      7000,
+    );
+    expect(
+      throttleWaitMs(undefined, "Request was throttled. Expected available in 1 second."),
+    ).toBe(1000);
+    expect(throttleWaitMs("", "")).toBe(1000);
+    expect(throttleWaitMs("60", "")).toBe(10_000);
   });
 });
