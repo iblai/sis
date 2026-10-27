@@ -30,7 +30,8 @@ test.describe("auth journey", () => {
     await page.goto(appHost);
     await page.waitForURL((url) => /\/platform\/[^/]+/.test(url.pathname), { timeout: 30_000 });
     expect(page.url()).not.toMatch(/\/platform\/main(\/|$|\?)/);
-    await expect(page.getByRole("heading", { name: "Home" })).toBeVisible({ timeout: 30_000 });
+    // The admin home waits for the DM overview reads, ~25 s on a busy platform.
+    await expect(page.getByRole("heading", { name: "Home" })).toBeVisible({ timeout: 60_000 });
   });
 
   test("A2 · auth tokens and the platform list are stored in localStorage", async ({ page }) => {
@@ -67,13 +68,21 @@ test.describe("auth journey", () => {
     expect(new URL(page.url()).searchParams.get("invite")).toBe("1");
   });
 
-  test("A4 · /platform/main shows the notice, not the shell", async ({ page }) => {
+  test("A4 · /platform/main never shows the shell: the notice, or a move to the user's own platform", async ({
+    page,
+  }) => {
     await page.goto(`${appHost}/platform/main`);
-    await expect(
-      page.getByRole("heading", { name: /works inside a school platform/i }),
-    ).toBeVisible({
-      timeout: 30_000,
-    });
-    await expect(page.getByRole("button", { name: "Students", exact: true })).toHaveCount(0);
+    const onMain = () => /\/platform\/main(\/|$)/.test(new URL(page.url()).pathname);
+    const notice = page.getByRole("heading", { name: /works inside a school platform/i });
+    // A member of main sees the notice; anyone else is moved to their own platform by the SDK.
+    await expect
+      .poll(async () => (!onMain() ? "moved" : (await notice.isVisible()) ? "notice" : "pending"), {
+        timeout: 60_000,
+      })
+      .not.toBe("pending");
+    if (onMain()) {
+      await expect(notice).toBeVisible();
+      await expect(page.getByRole("button", { name: "Students", exact: true })).toHaveCount(0);
+    }
   });
 });

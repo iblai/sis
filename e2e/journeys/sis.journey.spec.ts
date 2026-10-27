@@ -18,8 +18,9 @@ test.describe("sis journey", () => {
   test("C1 · Setup adds a term and keeps it", async ({ page }) => {
     const platform = await gotoHome(page);
     await page.goto(`${appHost}/platform/${encodeURIComponent(platform)}/setup?tab=terms`);
-    const sections = page.locator("section");
-    const years = sections.first();
+    const years = page
+      .locator("section")
+      .filter({ has: page.getByRole("heading", { name: "School Years" }) });
     await years.getByRole("button", { name: "Add row" }).click();
     await years.getByLabel("Year").last().fill(`Year ${stamp}`);
     await years.getByLabel("Start", { exact: true }).last().fill("2026-09-01");
@@ -33,7 +34,7 @@ test.describe("sis journey", () => {
   test("C3 · the Courses list shows the platform's runs", async ({ page }) => {
     const platform = await gotoHome(page);
     await page.goto(`${appHost}/platform/${encodeURIComponent(platform)}/courses`);
-    await expect(page.getByRole("heading", { name: "Courses", exact: true })).toBeVisible({
+    await expect(page.getByRole("heading", { level: 1, name: /^Courses\b/ })).toBeVisible({
       timeout: 15_000,
     });
     await expect(page.getByRole("row").nth(1)).toBeVisible({ timeout: 30_000 });
@@ -71,7 +72,7 @@ test.describe("sis journey", () => {
     await page.waitForURL((url) => /\/students\/[^/]+/.test(url.pathname), { timeout: 30_000 });
     await page.getByRole("tab", { name: /record/i }).click();
     await page.getByLabel("Primary language").click();
-    await page.getByRole("option", { name: "English", exact: true }).click();
+    await page.getByRole("listbox").getByRole("option", { name: "English", exact: true }).click();
     await page.getByRole("button", { name: "Save", exact: true }).click();
     await expect(page.getByText("Record saved")).toBeVisible({ timeout: 15_000 });
   });

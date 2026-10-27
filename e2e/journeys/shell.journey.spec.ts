@@ -33,7 +33,9 @@ test.describe("shell journey", () => {
           timeout: 15_000,
         },
       );
-      await expect(page.getByRole("heading", { name: label, exact: true })).toBeVisible({
+      await expect(
+        page.getByRole("heading", { level: 1, name: new RegExp(`^${label}\\b`) }),
+      ).toBeVisible({
         timeout: 15_000,
       });
     }
@@ -45,18 +47,29 @@ test.describe("shell journey", () => {
     await expect(page.getByPlaceholder(/search students, staff and courses/i)).toBeVisible({
       timeout: 10_000,
     });
-    await expect(page.getByText("Invite student")).toBeVisible();
+    await expect(
+      page.getByRole("dialog").getByRole("option", { name: "Invite Student" }),
+    ).toBeVisible();
     await page.keyboard.press("Escape");
   });
 
-  test("S3 · the profile menu names the current platform", async ({ page }) => {
+  test("S3 · the shell names the current platform and the profile menu opens", async ({ page }) => {
     const platform = await gotoHome(page);
+    // The breadcrumb root is the platform's name; the SDK menu names it only in a switcher that needs several platforms.
+    const expected: string = await page.evaluate((key) => {
+      const t = JSON.parse(localStorage.getItem("tenants") ?? "[]").find(
+        (x: { key: string }) => x.key === key,
+      );
+      return t?.platform_name || t?.name || t?.org || "";
+    }, platform);
+    const crumbs = page.getByRole("navigation", { name: "Breadcrumb" });
+    await expect(crumbs).toBeVisible({ timeout: 10_000 });
+    if (expected) await expect(crumbs).toContainText(expected);
     // The SDK profile dropdown is the last control in the top bar.
     await page.locator("header").getByRole("button").last().click();
-    const menu = page.locator('[role="menu"], [role="dialog"], [data-state="open"]').last();
-    await expect(menu.getByText(new RegExp(platform, "i")).first()).toBeVisible({
-      timeout: 10_000,
-    });
+    await expect(
+      page.getByRole("menu").getByRole("menuitem", { name: /log ?out|sign out/i }),
+    ).toBeVisible({ timeout: 10_000 });
     await page.keyboard.press("Escape");
   });
 

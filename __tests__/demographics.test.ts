@@ -33,19 +33,19 @@ describe("withEveryField", () => {
     { slug: "medical_notes", required: false },
   ];
 
-  it("adds a null for every optional field the form holds nothing for", () => {
+  it("adds an empty value for every optional field the form holds nothing for", () => {
     expect(withEveryField({ student_id: "abc", homeroom: "" }, definitions)).toEqual({
       student_id: "abc",
       homeroom: "",
-      guardian_name: null,
-      medical_notes: null,
+      guardian_name: "",
+      medical_notes: "",
     });
   });
 
   it("leaves an empty required field out and never overrides a value", () => {
     expect(withEveryField({ guardian_name: "Jane" }, definitions)).toEqual({
       guardian_name: "Jane",
-      medical_notes: null,
+      medical_notes: "",
     });
   });
 });

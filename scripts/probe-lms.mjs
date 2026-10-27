@@ -5,6 +5,7 @@
  * (`e2e/auth.setup.ts` writes it; it holds `edx_jwt_token` and `dm_token`)
  * and reports status + first bytes per call — never a token.
  *
+ *   pnpm e2e:accounts   # once, the test accounts
  *   pnpm exec playwright test --config e2e/playwright.config.ts --project=setup-chromium
  *   pnpm probe:lms --org <edx org> [--course <course-v1:…>] [--student-id <numeric id>]
  *         [--state playwright/.auth/user-setup-chromium.json] [--api https://api.iblai.app]

@@ -93,19 +93,20 @@ Node.js 22+ and pnpm 12 (`corepack enable` picks the pinned version up from `pac
 
 ### Scripts
 
-| Command           | What it does                                                                                                           |
-| ----------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `pnpm dev`        | Dev server on port 3000                                                                                                |
-| `pnpm build`      | Production build (standalone output)                                                                                   |
-| `pnpm start`      | Serve the production build                                                                                             |
-| `pnpm typecheck`  | TypeScript 7                                                                                                           |
-| `pnpm lint`       | oxlint, zero warnings                                                                                                  |
-| `pnpm format`     | oxfmt (`pnpm format:check` in CI)                                                                                      |
-| `pnpm i18n:check` | Same keys in the four catalogs; no “tenant”, “pupil” or “class period”; no ASCII apostrophe; English labels Title Case |
-| `pnpm test`       | Vitest unit tests (`pnpm test:coverage` in CI: 95 % lines on `lib/`)                                                   |
-| `pnpm test:e2e`   | Playwright journeys on a throwaway platform (needs `e2e/.env.development`)                                             |
-| `pnpm probe:lms`  | Which learning-platform capabilities this platform really exposes ([docs](docs/development.md#the-lms-probe))          |
-| `pnpm release`    | release-it: version from the commits, CHANGELOG, tag, GitHub Release (CI runs it on every push to main)                |
+| Command             | What it does                                                                                                           |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `pnpm dev`          | Dev server on port 3000                                                                                                |
+| `pnpm build`        | Production build (standalone output)                                                                                   |
+| `pnpm start`        | Serve the production build                                                                                             |
+| `pnpm typecheck`    | TypeScript 7                                                                                                           |
+| `pnpm lint`         | oxlint, zero warnings                                                                                                  |
+| `pnpm format`       | oxfmt (`pnpm format:check` in CI)                                                                                      |
+| `pnpm i18n:check`   | Same keys in the four catalogs; no “tenant”, “pupil” or “class period”; no ASCII apostrophe; English labels Title Case |
+| `pnpm test`         | Vitest unit tests (`pnpm test:coverage` in CI: 95 % lines on `lib/`)                                                   |
+| `pnpm test:e2e`     | Playwright journeys on a throwaway platform (needs `e2e/.env.development`)                                             |
+| `pnpm e2e:accounts` | Creates the two Playwright test accounts (a platform admin and a student) in the throwaway platform `iblai.env` names  |
+| `pnpm probe:lms`    | Which learning-platform capabilities this platform really exposes ([docs](docs/development.md#the-lms-probe))          |
+| `pnpm release`      | release-it: version from the commits, CHANGELOG, tag, GitHub Release (CI runs it on every push to main)                |
 
 ---
 
@@ -236,12 +237,13 @@ ibl.ai/sis writes no endpoint of its own. The features that wait for a change in
 pnpm test            # Vitest — metadata parsing, grades and GPA, CSV, course runs, permissions, platform resolution, SSO landing, config
 pnpm i18n:check      # en / es / fr / zh catalogs carry the same keys and the house vocabulary
 pnpm test:coverage   # the unit tests with the coverage gate CI runs
-pnpm test:e2e        # Playwright journeys on a throwaway platform (copy e2e/.env.development.example first)
+pnpm e2e:accounts    # once: creates the two test accounts (a platform admin and a student) in the throwaway platform iblai.env names
+pnpm test:e2e        # Playwright journeys on that platform, signed in as the test accounts
 pnpm test:e2e --project=mobile   # the phone journey (S6) on a Pixel 7 viewport
 pnpm test:e2e:ui     # interactive UI mode
 ```
 
-The Playwright suite signs in once through the real Auth SPA (`e2e/auth.setup.ts`) and reuses the session across the journeys in `e2e/journeys/`; the SIS journey writes terms, groups and a record field, so it runs on a throwaway platform only.
+The Playwright suite signs in through the real Auth SPA (`e2e/auth.setup.ts`, which finds the login page by its structure, not its copy) as two test accounts that `pnpm e2e:accounts` creates once — a platform admin and a student in the throwaway platform `iblai.env` names (`PLATFORM`), made with its Platform API Token (`TOKEN`) once the platform confirms the two belong together — and saves in the gitignored `e2e/.env.development`. The member journey (M1–M3) runs as the student and skips until that pair exists; the SIS journey writes terms, groups and a record field, so it runs on a throwaway platform only. `/iblai-vibe-connect` writes `iblai.env`; run it from an empty directory and move the file here — from this root it would make the picked platform the community one (`NEXT_PUBLIC_MAIN_TENANT_KEY`).
 
 ---
 

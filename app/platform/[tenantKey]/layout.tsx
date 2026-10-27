@@ -41,7 +41,7 @@ export default function TenantLayout({ children }: { children: ReactNode }) {
   if (tenantKey === config.mainTenantKey()) return <NoSchoolNotice />;
 
   return (
-    <AdminModeProvider isAdmin={isAdmin}>
+    <AdminModeProvider isAdmin={isAdmin} tenantKey={tenantKey}>
       <LanguagePreferenceSync />
       <TooltipProvider>
         <AccountSheetProvider>

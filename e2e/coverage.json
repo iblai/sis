@@ -22,7 +22,7 @@
     {
       "id": "A4",
       "journey": "auth",
-      "name": "/platform/main shows the notice, not the shell",
+      "name": "/platform/main never shows the shell: the notice, or a move to the user's own platform",
       "spec": "journeys/auth.journey.spec.ts"
     },
     {
@@ -40,7 +40,7 @@
     {
       "id": "S3",
       "journey": "shell",
-      "name": "profile menu names the platform",
+      "name": "the shell names the current platform and the profile menu opens",
       "spec": "journeys/shell.journey.spec.ts"
     },
     {
@@ -96,6 +96,24 @@
       "journey": "sis",
       "name": "a student's record saves a field",
       "spec": "journeys/sis.journey.spec.ts"
+    },
+    {
+      "id": "M1",
+      "journey": "member",
+      "name": "a student's home shows My Courses and My Credentials, never an admin row or the Admin mode switch",
+      "spec": "journeys/member.journey.spec.ts"
+    },
+    {
+      "id": "M2",
+      "journey": "member",
+      "name": "Details opens the student's own record",
+      "spec": "journeys/member.journey.spec.ts"
+    },
+    {
+      "id": "M3",
+      "journey": "member",
+      "name": "the admin lists and Setup send a student home",
+      "spec": "journeys/member.journey.spec.ts"
     }
   ]
 }

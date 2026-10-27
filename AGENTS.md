@@ -89,7 +89,7 @@ Three backends carry the data, all through existing endpoints:
     status dot is grey unless it means good or bad. No dark mode work unless asked.
 11. **Pages** are client components: `<PageHeader/>` then
     `<div className="flex-1 overflow-auto">` inside the platform layout.
-    Admin writes render only when `useIsLiveAdmin()` (admin AND Admin Mode);
+    Admin writes render only when `useIsLiveAdmin()` (admin AND Admin Mode; the User choice is kept per platform in localStorage);
     `lib/sis/permissions.ts#canOpen` is the route gate. A page renders inside
     `PageGate` and stays behind the loading screen until every query it and its
     children issue on mount has answered (`useGateLoading` in each fetching
@@ -102,9 +102,12 @@ Three backends carry the data, all through existing endpoints:
 13. **Verify before you say it works:** `pnpm typecheck && pnpm lint && pnpm
     format:check && pnpm i18n:check && pnpm test:coverage && pnpm build`; open
     the page on a **throwaway platform** (never `main`); screenshot it. E2E
-    journeys live in `e2e/journeys/` and sign in through the real Auth SPA. The
-    `mobile` Playwright project (S6) opens every admin page at a phone width and
-    fails on sideways overflow: phones are a gate.
+    journeys live in `e2e/journeys/` and sign in through the real Auth SPA as
+    the two test accounts `pnpm e2e:accounts` creates there (an admin and a
+    student; M* run as the student); never read or print `e2e/.env.development`;
+    `/iblai-vibe-connect` runs from an empty directory, its `iblai.env` moved here.
+    The `mobile` Playwright project (S6) opens every admin page at a phone width
+    and fails on sideways overflow: phones are a gate.
 14. **Commits:** conventional messages; never `--no-verify`.
 
 ## Where things are

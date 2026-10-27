@@ -24,7 +24,9 @@ Nothing is required against hosted `iblai.app`. Copy `.env.example` to
 `.env.local` to override the service URLs (self-hosting) or the micro-frontend
 host (`NEXT_PUBLIC_MFE_URL`, the embedded gradebook). `iblai.env` holds the
 platform shorthand used by the vibe skills (`DOMAIN`, `PLATFORM`, `TOKEN`) — it is
-gitignored.
+gitignored. `/iblai-vibe-connect` writes it: run that from an empty directory and move the
+file here, never from this root (it would set `NEXT_PUBLIC_MAIN_TENANT_KEY` to the picked
+platform).
 
 ## How sign-in and platforms work
 
@@ -94,6 +96,7 @@ is an operator question, not something the code can assume. Before trusting a
 feature on a platform:
 
 ```bash
+pnpm e2e:accounts   # once, creates the admin and the student test accounts in the platform iblai.env names
 pnpm exec playwright test --config e2e/playwright.config.ts --project=setup-chromium   # once, saves the session
 pnpm probe:lms --org <the platform's edX org> [--course <course-v1:…>]
 ```

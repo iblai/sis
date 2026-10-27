@@ -15,16 +15,17 @@ export function customFieldsBySlug(raw: unknown): Record<string, unknown> {
 }
 
 /**
- * The PUT body's custom fields with a `null` for every optional field the form
- * never touched: the DM stores a row for it, and only stored rows reach the
- * student's own read. A required field stays out until it holds a value.
+ * The PUT body's custom fields with `""` for every optional field the form
+ * never touched: the DM refuses `null` but stores an empty row for `""`, and
+ * only stored rows reach the student's own read. A required field stays out
+ * until it holds a value.
  */
 export function withEveryField(
   custom: Record<string, unknown>,
   definitions: readonly { slug: string; required?: boolean }[],
 ): Record<string, unknown> {
   const untouched = Object.fromEntries(
-    definitions.filter((f) => !f.required && !(f.slug in custom)).map((f) => [f.slug, null]),
+    definitions.filter((f) => !f.required && !(f.slug in custom)).map((f) => [f.slug, ""]),
   );
   return { ...untouched, ...custom };
 }

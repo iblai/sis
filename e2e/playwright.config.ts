@@ -23,6 +23,8 @@ const APP_HOST = process.env.APP_HOST || "http://localhost:3000";
  */
 export default defineConfig({
   testDir: ".",
+  // The admin home waits ~25 s for the DM overview reads on a busy platform.
+  timeout: 90_000,
   fullyParallel: false,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,

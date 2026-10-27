@@ -2,7 +2,7 @@
 /**
  * Capture the README screenshots (docs/images/*.png) from a signed-in session.
  *
- * 1. Put your credentials in e2e/.env.development (copy the example).
+ * 1. pnpm e2e:accounts (or copy e2e/.env.development.example and fill in an admin of the platform).
  * 2. Run the auth setup once:  pnpm exec playwright test --config e2e/playwright.config.ts --project=setup-chromium
  * 3. pnpm screenshots --org <demo-platform-key> [--host http://localhost:3000]
  *

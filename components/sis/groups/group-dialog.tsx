@@ -51,6 +51,7 @@ export function GroupDialog({
           body: { name: name.trim(), description: description.trim() },
         }).unwrap();
         toast.success(t("updated"));
+        onOpenChange(false);
       } else {
         const created = await create({
           platform_key: tenantKey,
@@ -58,9 +59,10 @@ export function GroupDialog({
           description: description.trim(),
         }).unwrap();
         toast.success(t("created", { name: created.name }));
+        // Close first: the list answers a close with router.replace, which would cancel a push already pending.
+        onOpenChange(false);
         router.push(href(`/groups/${created.id}`));
       }
-      onOpenChange(false);
     } catch (err) {
       toastError(err);
     }
