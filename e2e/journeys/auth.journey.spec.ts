@@ -71,36 +71,37 @@ test.describe("auth journey", () => {
     expect(new URL(page.url()).searchParams.get("invite")).toBe("1");
   });
 
-  test("A4 · /platform/main never shows the shell: the notice, or a move to the user's own platform", async ({
+  test("A4 · /platform/main never shows a school's rows: main's own shell, its preview, or the SDK's move to the user's platform", async ({
     page,
   }) => {
     await page.goto(`${appHost}/platform/main`);
-    const onMain = () => /\/platform\/main(\/|$)/.test(new URL(page.url()).pathname);
-    const notice = page.getByRole("heading", { name: /works inside a school platform/i });
-    // A member of main sees the notice; anyone else is moved to their own platform by the SDK.
-    await expect
-      .poll(async () => (!onMain() ? "moved" : (await notice.isVisible()) ? "notice" : "pending"), {
-        timeout: 60_000,
-      })
-      .not.toBe("pending");
+    const onMain = () => /\/platform\/main(\/|$|\?)/.test(new URL(page.url()).pathname);
+    const home = page.getByRole("heading", { level: 1, name: /^Home\b/ });
+    const preview = page.getByTestId("organization-preview");
+    // A main-only member gets main's trial-gated shell (H1), a non-member its preview; a member
+    // whose session has a school is moved there by the SDK's tenant switch.
+    await expect(home.or(preview).first()).toBeVisible({ timeout: 60_000 });
     if (onMain()) {
-      await expect(notice).toBeVisible();
       await expect(page.getByRole("button", { name: "Students", exact: true })).toHaveCount(0);
+      await expect(page.getByRole("button", { name: "Setup", exact: true })).toHaveCount(0);
+    } else {
+      await expect(page).toHaveURL(/\/platform\/(?!main(\/|$|\?))[^/?#]+/);
     }
   });
 
-  test("A5 · a platform the user does not belong to sends them to sign in for it, never into the shell", async ({
+  test("A5 · a platform the user does not belong to is previewed, never entered or joined from the link", async ({
     page,
   }) => {
     const key = `zz-no-such-platform-${stamp}`;
-    const [login] = await Promise.all([
-      page.waitForRequest((req) => req.url().includes("/login") && req.url().includes("tenant="), {
-        timeout: 90_000,
-      }),
-      page.goto(`${appHost}/platform/${key}`),
-    ]);
-    expect(new URL(login.url()).searchParams.get("tenant")).toBe(key);
+    const logins: string[] = [];
+    page.on("request", (req) => {
+      if (req.url().includes("/login") && req.url().includes(`tenant=${key}`))
+        logins.push(req.url());
+    });
+    await page.goto(`${appHost}/platform/${key}`);
+    await expect(page.getByTestId("organization-preview")).toBeVisible({ timeout: 60_000 });
     await expect(page.getByRole("button", { name: "Students", exact: true })).toHaveCount(0);
+    expect(logins).toEqual([]);
   });
 
   test("A6 · an unknown page under the platform ends on the 404 page and Go Home lands on the platform", async ({

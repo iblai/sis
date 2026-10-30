@@ -9,7 +9,18 @@ ibl.ai/sis is a **multi-platform** student information system on the ibl.ai
 platform (the os.ibl.ai model). A platform is a school; its users are students
 and staff; the platform's Open edX course runs are its courses. The platform
 is in the URL: `/platform/[tenantKey]/…`. Users sign in with ibl.ai SSO and
-switch between every platform they belong to — never the community platform.
+switch between every platform they belong to. House journeys
+(`/iblai-vibe-house-journeys`): a `main`-only user gets the trial-gated shell
+and the upgrade dialog; a visitor on another platform gets the preview (Join,
+Create Your Own); an admin's first run is the SDK setup flow at
+`/platform/<key>/onboarding?flow=admin`, a member's the platform's form. The setup
+flow asks only what is missing — the name when the platform's key is a random
+string, the sector when the platform metadata records none — and writes the
+platform's name, its `sector` and the admin's own completion record. On the
+community platform the app runs on a local sample school, Northbridge Academy
+(`lib/sis/sample/`): every SIS read answers from it at the data seam, the
+visitor browses the admin pages read-only, and every write opens the upgrade
+dialog. Because this is an ibl.ai official app.
 
 Three backends carry the data, all through existing endpoints:
 
@@ -25,8 +36,12 @@ Three backends carry the data, all through existing endpoints:
 
 1. **Platform from the URL.** Never hard-code one. Read it with
    `useSession().tenantKey`; build links with `useSession().href(path)`; the
-   LMS org is `useSession().org`. Nothing resolves to, defaults to or signs in
-   to `main` (`lib/iblai/tenant.ts#pickLandingTenant`, `app/page.tsx`).
+   LMS org is `useSession().org`. A user whose only platform is the community
+   one gets its trial-gated shell with the sample school
+   (`lib/iblai/house-journeys.ts#isSampleOrg`, served by `lib/sis/base-query.ts`;
+   this app's pages treat that visitor as an admin through `AdminModeProvider`,
+   the SDK keeps the session's role); nothing else resolves or defaults to
+   `main` (`lib/iblai/tenant.ts#pickLandingTenant`, `app/page.tsx`).
 2. **SDK components first.** The shell is the SDK's `SidebarProvider →
    PlatformSidebar + SidebarInset` (`components/sis/app-sidebar.tsx`), loading
    is the SDK `Spinner`; profile dropdown, notifications, Account /
@@ -108,26 +123,30 @@ Three backends carry the data, all through existing endpoints:
     `/iblai-vibe-connect` runs from an empty directory, its `iblai.env` moved here.
     The `mobile` Playwright project (S6) opens every admin page at a phone width
     and fails on sideways overflow: phones are a gate. `e2e/coverage.json` is the
-    checkpoint ledger `pnpm test` checks against the test titles; the setup
-    project seeds the school and the student once (`playwright/.auth/seed.json`);
-    `pnpm test:e2e` runs Chromium and the phone project, `test:e2e:all` every browser.
+    checkpoint ledger and `pnpm e2e:coverage` its gate (ids ↔ titles, every page
+    visited, ≥ 95 % of app lines reached, ≥ 6 checkpoints per 1,000; `pnpm test`
+    runs it too); the setup project walks the admin's setup flow once and seeds
+    the school and the student (`playwright/.auth/seed.json`); `pnpm test:e2e`
+    runs Chromium and the phone project, `test:e2e:all` every browser.
 14. **Commits:** conventional messages; never `--no-verify`.
 
 ## Where things are
 
-| Concern                          | File                                                                                     |
-| -------------------------------- | ---------------------------------------------------------------------------------------- |
-| Config & service URLs            | `lib/iblai/config.ts` (`dmUrl`, `lmsUrl`, `studioUrl`, `mfeUrl`)                         |
-| Platform resolution, admin check | `lib/iblai/tenant.ts`, `components/tenant-redirect.tsx`                                  |
-| Auth redirect, logout, switch    | `lib/iblai/auth-utils.ts`                                                                |
-| Provider chain                   | `providers/iblai-providers.tsx`                                                          |
-| SSO landing                      | `app/sso-login-complete/page.tsx`, `lib/iblai/sso-redirect.ts`                           |
-| DM · LMS · Studio slices         | `lib/sis/api.ts`, `lib/sis/lms-api.ts`, `lib/sis/studio-api.ts`, `lib/sis/base-query.ts` |
-| Types                            | `lib/sis/types.ts`, `lib/sis/metadata.ts`                                                |
-| School data                      | `hooks/use-sis-metadata.ts`, `hooks/use-sections.ts`, `lib/sis/sections.ts`              |
-| Grades, CSV, over-time series    | `lib/sis/grades.ts`, `lib/sis/csv.ts`, `lib/sis/over-time.ts`                            |
-| Translations                     | `i18n/`, `messages/{en,es,fr,zh}.json`, `scripts/validate-i18n.mjs`                      |
-| Shell                            | `app/platform/[tenantKey]/layout.tsx`, `components/sis/app-sidebar.tsx`, `top-bar.tsx`   |
-| Areas                            | `components/sis/{students,courses,groups,setup,dashboard}/`                              |
-| Page load gate                   | `components/sis/page-gate.tsx`, `lib/sis/gate.ts`                                        |
-| The LMS probe                    | `scripts/probe-lms.mjs`                                                                  |
+| Concern                            | File                                                                                          |
+| ---------------------------------- | --------------------------------------------------------------------------------------------- |
+| Config & service URLs              | `lib/iblai/config.ts` (`dmUrl`, `lmsUrl`, `studioUrl`, `mfeUrl`)                              |
+| Platform resolution, admin check   | `lib/iblai/tenant.ts`, `components/tenant-redirect.tsx`                                       |
+| First run (house journeys)         | `lib/iblai/house-journeys.ts`, `components/house/`                                            |
+| Sample school (community platform) | `lib/sis/sample/school.ts`, `lib/sis/sample/respond.ts`, `components/house/sample-notice.tsx` |
+| Auth redirect, logout, switch      | `lib/iblai/auth-utils.ts`                                                                     |
+| Provider chain                     | `providers/iblai-providers.tsx`                                                               |
+| SSO landing                        | `app/sso-login-complete/page.tsx`, `lib/iblai/sso-redirect.ts`                                |
+| DM · LMS · Studio slices           | `lib/sis/api.ts`, `lib/sis/lms-api.ts`, `lib/sis/studio-api.ts`, `lib/sis/base-query.ts`      |
+| Types                              | `lib/sis/types.ts`, `lib/sis/metadata.ts`                                                     |
+| School data                        | `hooks/use-sis-metadata.ts`, `hooks/use-sections.ts`, `lib/sis/sections.ts`                   |
+| Grades, CSV, over-time series      | `lib/sis/grades.ts`, `lib/sis/csv.ts`, `lib/sis/over-time.ts`                                 |
+| Translations                       | `i18n/`, `messages/{en,es,fr,zh}.json`, `scripts/validate-i18n.mjs`                           |
+| Shell                              | `app/platform/[tenantKey]/layout.tsx`, `components/sis/app-sidebar.tsx`, `top-bar.tsx`        |
+| Areas                              | `components/sis/{students,courses,groups,setup,dashboard}/`                                   |
+| Page load gate                     | `components/sis/page-gate.tsx`, `lib/sis/gate.ts`                                             |
+| The LMS probe                      | `scripts/probe-lms.mjs`                                                                       |

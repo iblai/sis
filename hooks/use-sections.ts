@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
+import { useAdminMode } from "@/components/sis/admin-mode";
 import { useSession } from "@/hooks/use-session";
 import { useSisMetadata } from "@/hooks/use-sis-metadata";
 import { useUserEnrollmentsQuery } from "@/lib/sis/lms-api";
@@ -20,7 +21,8 @@ import {
  * `allPlatforms` keeps the other orgs an admin can author.
  */
 export function useSections(options?: { skip?: boolean; allPlatforms?: boolean }) {
-  const { org, isAdmin, username } = useSession();
+  const { org, username } = useSession();
+  const { isAdmin } = useAdminMode();
   const skip = options?.skip;
   const allPlatforms = options?.allPlatforms ?? false;
   const courses = useHomeCoursesQuery({ org }, { skip: skip || !org || !isAdmin });

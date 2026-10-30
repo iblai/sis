@@ -1,5 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
-import { STUDENT, open, ready, seeded } from "../helpers";
+import { STUDENT, appHost, open, ready, seeded } from "../helpers";
 
 /**
  * Mobile journey — home and every page on a phone-sized viewport (the
@@ -7,6 +7,7 @@ import { STUDENT, open, ready, seeded } from "../helpers";
  * throwaway platform; S27 runs as the student.
  */
 const seed = seeded();
+const stamp = Date.now().toString(36);
 
 const PAGES = [
   ["", "Home"],
@@ -91,6 +92,20 @@ test.describe("mobile journey", () => {
     const sheet = page.locator(SHEET);
     await expect(sheet.getByRole("switch", { name: "Admin Mode" })).toBeVisible();
     await expect(sheet.getByRole("combobox", { name: "Language" })).toBeVisible();
+  });
+
+  test("S28 · the setup flow and the platform preview fit a phone without sideways overflow", async ({
+    page,
+  }) => {
+    test.setTimeout(180_000);
+    await open(page, "/groups", /^Groups\b/);
+    const base = page.url().match(/^.*\/platform\/[^/?#]+/)![0];
+    await page.goto(`${base}/onboarding?flow=admin`);
+    await expect(page.getByRole("progressbar")).toBeVisible({ timeout: 60_000 });
+    await expectNoSidewaysOverflow(page);
+    await page.goto(`${appHost}/platform/e2e-nowhere-${stamp}`);
+    await expect(page.getByTestId("organization-preview")).toBeVisible({ timeout: 60_000 });
+    await expectNoSidewaysOverflow(page);
   });
 
   test("S26 · the student's record and the seeded course fit a phone with their tab rows", async ({

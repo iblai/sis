@@ -74,10 +74,6 @@
       "title": "No access to this platform"
     },
     "goHome": "Go Home",
-    "noPlatform": {
-      "body": "ibl.ai/sis works inside a school platform. Your account belongs to none yet — ask your school to invite you, or switch to one of the platforms below.",
-      "title": "ibl.ai/sis works inside a school platform"
-    },
     "notFound": {
       "body": "We could not find what you were looking for.",
       "title": "Not found"
@@ -876,5 +872,28 @@
     "taught": "Course roles on the learning platform, set per course in Course › Settings › Teachers.",
     "teachers": "Teachers are course roles on the learning platform; set them here.",
     "termReport": "Needs a grade level with a cohort group (Setup › Grade Levels) and progress from the learning platform."
+  },
+  "houseJourneys": {
+    "preview": {
+      "body": "You’re not a member of {name} yet. Join it, or create a platform of your own.",
+      "join": "Join {name}",
+      "create": "Create Your Own Platform",
+      "back": "Back to My Platform"
+    },
+    "onboarding": {
+      "meetTitle": "Meet {name}",
+      "meetBody": "Your platform’s agent is ready whenever you are.",
+      "allSetTitle": "You’re All Set",
+      "allSetBody": "{workspace} is ready. Head in.",
+      "allSetMember": "Thanks — your platform has what it needs. Head in.",
+      "workspace": "Your Platform",
+      "continue": "Continue",
+      "complete": "Complete",
+      "back": "Back"
+    },
+    "sample": {
+      "body": "You’re looking at {name}, a sample school. Your own platform starts empty and is yours to run.",
+      "create": "Create Your Platform"
+    }
   }
 }

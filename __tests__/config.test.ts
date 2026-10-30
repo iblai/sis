@@ -15,6 +15,7 @@ const PUBLIC_KEYS = [
   "NEXT_PUBLIC_IBL_PLATFORM",
   "NEXT_PUBLIC_MFE_URL",
   "NEXT_PUBLIC_APP_NAME",
+  "NEXT_PUBLIC_APP_URL",
   "NEXT_PUBLIC_SUPPORT_EMAIL",
   "NEXT_PUBLIC_HELP_CENTER_URL",
   "NEXT_PUBLIC_DOCUMENTATION_URL",
@@ -69,6 +70,7 @@ describe("hosted iblai.app defaults", () => {
     expect(config.baseWsUrl()).toBe("wss://asgi.data.iblai.app");
     expect(config.legacyLmsUrl()).toBe("https://learn.iblai.app");
     expect(config.appName()).toBe("ibl.ai/sis");
+    expect(config.appUrl()).toBe("https://sis.iblai.me");
     expect(config.supportEmail()).toBe("support@ibl.ai");
     expect(config.documentationUrl()).toBe("https://ibl.ai/docs");
     expect(config.helpCenterUrl()).toBe("https://ibl.ai/support");
@@ -80,6 +82,12 @@ describe("hosted iblai.app defaults", () => {
 });
 
 describe("build-time env overrides", () => {
+  it("honors an explicit app URL, without its trailing slash", async () => {
+    process.env.NEXT_PUBLIC_APP_URL = "https://sis.example.edu/";
+    const config = await loadConfig();
+    expect(config.appUrl()).toBe("https://sis.example.edu");
+  });
+
   it("honors an explicit auth URL", async () => {
     process.env.NEXT_PUBLIC_AUTH_URL = "https://auth.example.org";
     const config = await loadConfig();

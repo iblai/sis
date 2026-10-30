@@ -74,10 +74,6 @@
       "title": "Sin acceso a esta plataforma"
     },
     "goHome": "Ir al inicio",
-    "noPlatform": {
-      "body": "ibl.ai/sis funciona dentro de la plataforma de una escuela. Tu cuenta aún no pertenece a ninguna: pide a tu escuela que te invite, o cambia a una de las plataformas de abajo.",
-      "title": "ibl.ai/sis funciona dentro de la plataforma de una escuela"
-    },
     "notFound": {
       "body": "No encontramos lo que buscabas.",
       "title": "No encontrado"
@@ -876,5 +872,28 @@
     "taught": "Roles de curso en la plataforma de aprendizaje, asignados por curso en Curso › Ajustes › Docentes.",
     "teachers": "Los docentes son roles de curso en la plataforma de aprendizaje; asígnalos aquí.",
     "termReport": "Necesita un nivel con grupo de cohorte (Configuración › Niveles) y el avance de la plataforma de aprendizaje."
+  },
+  "houseJourneys": {
+    "preview": {
+      "body": "Todavía no eres miembro de {name}. Únete, o crea una plataforma propia.",
+      "join": "Unirse a {name}",
+      "create": "Crear tu propia plataforma",
+      "back": "Volver a mi plataforma"
+    },
+    "onboarding": {
+      "meetTitle": "Conoce a {name}",
+      "meetBody": "El agente de tu plataforma está listo cuando tú lo estés.",
+      "allSetTitle": "Todo listo",
+      "allSetBody": "{workspace} está lista. Adelante.",
+      "allSetMember": "Gracias: tu plataforma ya tiene lo que necesita. Adelante.",
+      "workspace": "Tu plataforma",
+      "continue": "Continuar",
+      "complete": "Completar",
+      "back": "Atrás"
+    },
+    "sample": {
+      "body": "Estás viendo {name}, una escuela de muestra. Tu propia plataforma empieza vacía y es tuya para dirigirla.",
+      "create": "Crear tu plataforma"
+    }
   }
 }

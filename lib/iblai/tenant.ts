@@ -11,7 +11,8 @@
  *   - `tenant`          the platform key the SDK last authenticated into
  *   - `userData`        the signed-in user (`user_nicename`, `user_email`, …)
  *
- * Nothing here ever resolves to the community platform (`main`).
+ * The community platform (`main`) is the landing only for a user who belongs
+ * to nothing else — the trial-gated shell (/iblai-vibe-house-journeys).
  *
  * Relative import (not @/): vitest resolves no alias for lib files.
  */
@@ -136,7 +137,8 @@ export function isTenantMember(tenantKey: string): boolean {
 /**
  * Where to land when the URL names no platform: the remembered platform unless
  * it is the community one, else the first platform the user belongs to that is
- * not the community one, else null — the app never lands on `main`.
+ * not the community one, else the community one itself (the trial-gated
+ * shell); null only when signed out.
  */
 export function pickLandingTenant(
   stored: string,
@@ -144,7 +146,7 @@ export function pickLandingTenant(
   main: string = config.mainTenantKey(),
 ): string | null {
   if (stored && stored !== main) return stored;
-  return tenants.find((t) => t.key && t.key !== main)?.key ?? null;
+  return tenants.find((t) => t.key && t.key !== main)?.key ?? (tenants.length ? main : null);
 }
 
 /** Path of a page inside a platform: `/platform/<key>/<path>`. */

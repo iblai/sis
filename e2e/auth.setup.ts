@@ -133,7 +133,8 @@ const section = (page: Page, heading: string) =>
  * The school baseline every journey relies on, created once and never removed:
  * a 2099 year and term (never "current", so the Grades pages keep their
  * default), a grade level with its cohort group, the default student fields,
- * the e2e student's required record values and their enrollment in one course.
+ * the e2e student's required record values and their enrollment in one course;
+ * before that, the admin's own first run (the SDK setup flow) walked once.
  * Idempotent: a second run changes nothing. Writes playwright/.auth/seed.json.
  */
 setup("seed the school", async ({ browser }) => {
@@ -157,6 +158,32 @@ setup("seed the school", async ({ browser }) => {
   });
   page.on("requestfailed", (req) => failures.push(`failed ${req.method()} ${req.url()}`));
   try {
+    // 0. The admin's first run is the SDK setup flow (/iblai-vibe-house-journeys):
+    // walk it once, so Setup opens instead of the wizard from here on.
+    await page.goto(`${APP_HOST}/`);
+    await page.waitForURL(/\/platform\/[^/?#]+/, { timeout: 60_000 });
+    // The flow asks only what is missing: each step is taken when it shows.
+    const orgName = page.getByLabel("Organization name");
+    const sector = page.getByRole("radio", { name: "Higher Education" });
+    const invite = page.getByText("Invite your team");
+    const homeH1 = page.getByRole("heading", { level: 1, name: /^Home\b/ });
+    await expect(orgName.or(sector).or(invite).or(homeH1).first()).toBeVisible({ timeout: 60_000 });
+    if (!(await homeH1.isVisible())) {
+      if (await orgName.isVisible()) {
+        await orgName.fill("E2E School");
+        await page.getByRole("button", { name: "Continue" }).click();
+      }
+      await expect(sector.or(invite).first()).toBeVisible({ timeout: 30_000 });
+      if (await sector.isVisible()) {
+        await sector.click();
+        await page.getByRole("button", { name: "Continue" }).click();
+      }
+      await expect(invite).toBeVisible({ timeout: 30_000 });
+      await page.getByRole("button", { name: /^(Continue|Skip for now)$/ }).click();
+      await page.getByRole("button", { name: "Complete" }).click();
+      await page.waitForURL((u) => !u.pathname.includes("/onboarding"), { timeout: 60_000 });
+    }
+
     // 1. Year and term.
     await open(page, "/setup?tab=terms", /^Setup\b/);
     const years = section(page, "School Years");

@@ -1,6 +1,6 @@
 import { test, expect, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
-import { STUDENT, open } from "../helpers";
+import { STUDENT, appHost, open } from "../helpers";
 
 /**
  * Accessibility journey — axe-core at WCAG 2.1 AA over the pages the SIS
@@ -18,6 +18,8 @@ async function expectNoViolations(page: Page, include?: string) {
     violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(" ")).join(", ")}`),
   ).toEqual([]);
 }
+
+const stamp = Date.now().toString(36);
 
 test.describe("accessibility journey", () => {
   test("AX1 · the admin home has no WCAG 2.1 AA violation beyond the muted text's contrast", async ({
@@ -73,5 +75,22 @@ test.describe("accessibility journey", () => {
       await open(page, "", /^Home\b/);
       await expectNoViolations(page);
     });
+  });
+
+  test("AX7 · the setup flow has no WCAG 2.1 AA violation beyond the muted text's contrast", async ({
+    page,
+  }) => {
+    await open(page, "/groups", /^Groups\b/);
+    await page.goto(`${page.url().match(/^.*\/platform\/[^/?#]+/)![0]}/onboarding?flow=admin`);
+    await expect(page.getByRole("progressbar")).toBeVisible({ timeout: 60_000 });
+    await expectNoViolations(page);
+  });
+
+  test("AX8 · the platform preview has no WCAG 2.1 AA violation beyond the muted text's contrast", async ({
+    page,
+  }) => {
+    await page.goto(`${appHost}/platform/e2e-nowhere-${stamp}`);
+    await expect(page.getByTestId("organization-preview")).toBeVisible({ timeout: 60_000 });
+    await expectNoViolations(page);
   });
 });

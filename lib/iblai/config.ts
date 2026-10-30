@@ -9,9 +9,9 @@
  * Priority: runtime window.__ENV__ → build-time process.env → fallback.
  *
  * This is a MULTI-PLATFORM app (the os.ibl.ai model): the platform — the
- * school — comes from the URL (`/platform/[tenantKey]/…`). Nothing resolves
- * to `NEXT_PUBLIC_MAIN_TENANT_KEY`; it only names the community platform the
- * app refuses to work in.
+ * school — comes from the URL (`/platform/[tenantKey]/…`).
+ * `NEXT_PUBLIC_MAIN_TENANT_KEY` names the community platform: the trial-gated
+ * shell for a user who belongs to nothing else, never a default for anyone else.
  */
 
 // Static env declarations — Next.js inlines NEXT_PUBLIC_* values at build
@@ -26,6 +26,7 @@ const env = {
   NEXT_PUBLIC_MAIN_TENANT_KEY: process.env.NEXT_PUBLIC_MAIN_TENANT_KEY,
   NEXT_PUBLIC_IBL_PLATFORM: process.env.NEXT_PUBLIC_IBL_PLATFORM,
   NEXT_PUBLIC_APP_NAME: process.env.NEXT_PUBLIC_APP_NAME,
+  NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
   NEXT_PUBLIC_SUPPORT_EMAIL: process.env.NEXT_PUBLIC_SUPPORT_EMAIL,
   NEXT_PUBLIC_HELP_CENTER_URL: process.env.NEXT_PUBLIC_HELP_CENTER_URL,
   NEXT_PUBLIC_DOCUMENTATION_URL: process.env.NEXT_PUBLIC_DOCUMENTATION_URL,
@@ -102,7 +103,7 @@ const config = {
 
   baseWsUrl: () => getEnv("NEXT_PUBLIC_BASE_WS_URL", `wss://asgi.data.${domain()}`),
 
-  /** The community platform — the one place the app never works in. */
+  /** The community platform — the trial-gated shell for a user who belongs to nothing else. */
   mainTenantKey: () => getEnv("NEXT_PUBLIC_MAIN_TENANT_KEY", "main"),
 
   /** `app=` sent to the Auth SPA — same as the OS so every platform signs in. */
@@ -111,6 +112,8 @@ const config = {
   platformBaseDomain: () => domain(),
 
   appName: () => getEnv("NEXT_PUBLIC_APP_NAME", "ibl.ai/sis"),
+  /** This app's public URL: where ibl.ai's $0 checkout returns a new platform's admin. */
+  appUrl: () => getEnv("NEXT_PUBLIC_APP_URL", "https://sis.iblai.me").replace(/\/+$/, ""),
   supportEmail: () => getEnv("NEXT_PUBLIC_SUPPORT_EMAIL", "support@ibl.ai"),
   helpCenterUrl: () => getEnv("NEXT_PUBLIC_HELP_CENTER_URL", "https://ibl.ai/support"),
   documentationUrl: () => getEnv("NEXT_PUBLIC_DOCUMENTATION_URL", "https://ibl.ai/docs"),

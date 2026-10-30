@@ -74,10 +74,6 @@
       "title": "Pas d’accès à cette plateforme"
     },
     "goHome": "Retour à l’accueil",
-    "noPlatform": {
-      "body": "ibl.ai/sis fonctionne dans la plateforme d’une école. Votre compte n’en a encore aucune : demandez une invitation à votre école, ou passez à l’une des plateformes ci-dessous.",
-      "title": "ibl.ai/sis fonctionne dans la plateforme d’une école"
-    },
     "notFound": {
       "body": "Nous n’avons pas trouvé ce que vous cherchiez.",
       "title": "Introuvable"
@@ -876,5 +872,28 @@
     "taught": "Rôles de cours sur la plateforme d’apprentissage, attribués par cours dans Cours › Réglages › Enseignants.",
     "teachers": "Les enseignants sont des rôles de cours sur la plateforme d’apprentissage ; attribuez-les ici.",
     "termReport": "Nécessite un niveau avec un groupe de cohorte (Configuration › Niveaux) et l’avancement venant de la plateforme d’apprentissage."
+  },
+  "houseJourneys": {
+    "preview": {
+      "body": "Vous n’êtes pas encore membre de {name}. Rejoignez-la, ou créez votre propre plateforme.",
+      "join": "Rejoindre {name}",
+      "create": "Créer votre propre plateforme",
+      "back": "Retour à ma plateforme"
+    },
+    "onboarding": {
+      "meetTitle": "Rencontrez {name}",
+      "meetBody": "L’agent de votre plateforme est prêt quand vous l’êtes.",
+      "allSetTitle": "Tout est prêt",
+      "allSetBody": "{workspace} est prête. Entrez.",
+      "allSetMember": "Merci : votre plateforme a ce qu’il lui faut. Entrez.",
+      "workspace": "Votre plateforme",
+      "continue": "Continuer",
+      "complete": "Terminer",
+      "back": "Retour"
+    },
+    "sample": {
+      "body": "Vous consultez {name}, une école fictive. Votre propre plateforme démarre vide et vous appartient.",
+      "create": "Créer votre plateforme"
+    }
   }
 }

@@ -1,74 +1,107 @@
-import { describe, expect, it } from "vitest";
+import { afterAll, describe, expect, it } from "vitest";
 import fs from "node:fs";
+import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { check, MIN_PER_KLOC, THRESHOLD } from "../e2e/coverage.mjs";
 
 /**
- * e2e/coverage.json is the checkpoint ledger: every id in it is one Playwright
- * test titled "<ID> · …" in its spec, every titled test is in it, every
- * platform page is a source file of some journey, and the summary is what the
- * journeys add up to — lowering it is a deliberate, reviewable edit.
+ * e2e/coverage.mjs (`pnpm e2e:coverage`) is the checkpoint ledger's gate: every
+ * id in e2e/coverage.json is one Playwright test titled "<ID> · …" in its spec
+ * and back, every page and route is visited by some journey, the summary adds
+ * up, and the journeys reach the threshold — so a removed checkpoint is a
+ * visible edit to the ledger. The SIS passes its own gate, and the gate names
+ * what a thin suite or an unvisited page would miss.
  */
 const root = fileURLToPath(new URL("..", import.meta.url));
-const ledger = JSON.parse(fs.readFileSync(path.join(root, "e2e/coverage.json"), "utf8")) as {
-  version: number;
-  summary: { totalCheckpoints: number; totalJourneys: number };
-  journeys: {
-    id: string;
-    spec: string;
-    sourceFiles: string[];
-    checkpoints: { id: string; name: string; status?: "covered" | "fixme" }[];
-  }[];
-};
-// A test's title, as test(), test.fixme() or test.skip() write it, wrapped or not.
-const TITLE = /\btest(?:\.fixme|\.skip)?\(\s*["'`]([A-Z]+\d+[a-z]?) · /g;
-const read = (file: string) => fs.readFileSync(path.join(root, file), "utf8");
-const titledIds = (file: string) => [...read(file).matchAll(TITLE)].map((m) => m[1]);
+const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "e2e-coverage-"));
+afterAll(() => fs.rmSync(tmp, { recursive: true, force: true }));
 
-function pagesUnder(dir: string): string[] {
-  return fs.readdirSync(path.join(root, dir), { withFileTypes: true }).flatMap((entry) => {
-    const rel = `${dir}/${entry.name}`;
-    if (entry.isDirectory()) return pagesUnder(rel);
-    return entry.name === "page.tsx" ? [rel] : [];
-  });
+function write(file: string, text: string) {
+  fs.mkdirSync(path.dirname(path.join(tmp, file)), { recursive: true });
+  fs.writeFileSync(path.join(tmp, file), text);
 }
 
-describe("e2e/coverage.json", () => {
-  it("names every journey spec once and each exists", () => {
-    const specs = ledger.journeys.map((j) => j.spec);
-    expect(new Set(specs).size).toBe(specs.length);
-    expect(specs.filter((spec) => !fs.existsSync(path.join(root, "e2e", spec)))).toEqual([]);
-    const onDisk = fs
-      .readdirSync(path.join(root, "e2e/journeys"))
-      .filter((f) => f.endsWith(".spec.ts"))
-      .map((f) => `journeys/${f}`);
-    expect(onDisk.sort()).toEqual([...specs].sort());
+describe("pnpm e2e:coverage", () => {
+  it("passes on the SIS: no ledger error, every page visited, above the threshold", () => {
+    const r = check(root);
+    expect(r.errors).toEqual([]);
+    expect(r.pagesVisited).toBe(r.pages);
+    expect(r.percent).toBeGreaterThanOrEqual(THRESHOLD);
+    expect(r.perKloc).toBeGreaterThanOrEqual(MIN_PER_KLOC);
   });
 
-  it("maps every checkpoint id to one titled test in its spec, and back", () => {
-    const seen = new Set<string>();
-    for (const journey of ledger.journeys) {
-      const titled = titledIds(`e2e/${journey.spec}`);
-      const listed = journey.checkpoints.map((c) => c.id);
-      expect(listed.filter((id) => seen.has(id))).toEqual([]);
-      for (const id of listed) seen.add(id);
-      expect({ spec: journey.spec, ids: titled.sort() }).toEqual({
-        spec: journey.spec,
-        ids: [...listed].sort(),
-      });
-    }
+  it("refuses a thin suite: one checkpoint for a thousand app lines", () => {
+    const thin = fs.mkdtempSync(path.join(os.tmpdir(), "e2e-thin-"));
+    const put = (file: string, text: string) => {
+      fs.mkdirSync(path.dirname(path.join(thin, file)), { recursive: true });
+      fs.writeFileSync(path.join(thin, file), text);
+    };
+    put(
+      "app/page.tsx",
+      "export default function Page() { return null; }\n" + "// filler\n".repeat(999),
+    );
+    put(
+      "e2e/journeys/home.journey.spec.ts",
+      "test('H1 · home renders', async ({ page }) => { await page.goto('/'); });\n",
+    );
+    put("e2e/COVERAGE.md", "| H1 | home renders |\n");
+    put(
+      "e2e/coverage.json",
+      JSON.stringify({
+        version: 2,
+        summary: { totalCheckpoints: 1, totalJourneys: 1 },
+        journeys: [
+          {
+            id: "home",
+            spec: "journeys/home.journey.spec.ts",
+            sourceFiles: ["app/page.tsx"],
+            checkpoints: [{ id: "H1", name: "home renders" }],
+          },
+        ],
+      }),
+    );
+    const r = check(thin);
+    fs.rmSync(thin, { recursive: true, force: true });
+    expect(r.percent).toBe(100);
+    expect(r.errors).toEqual([
+      expect.stringMatching(
+        /^checkpoints per 1,000 app lines: 1\.0 \(1 for 100[01] lines; floor 6\)/,
+      ),
+    ]);
   });
 
-  it("covers every platform page in some journey's source files", () => {
-    const covered = new Set(ledger.journeys.flatMap((j) => j.sourceFiles));
-    const missing = pagesUnder("app/platform").filter((page) => !covered.has(page));
-    expect(missing).toEqual([]);
-  });
-
-  it("keeps the summary equal to what the journeys add up to", () => {
-    expect(ledger.summary).toEqual({
-      totalCheckpoints: ledger.journeys.reduce((n, j) => n + j.checkpoints.length, 0),
-      totalJourneys: ledger.journeys.length,
-    });
+  it("names the page no journey visits and the file only it reaches", () => {
+    write("app/a/page.tsx", 'import { A } from "@/components/a";\nexport default A;\n');
+    write("app/b/page.tsx", 'import { B } from "@/components/b";\nexport default B;\n');
+    write("components/a.tsx", "export const A = () => null;\n");
+    write("components/b.tsx", "export const B = () => null;\n");
+    write(
+      "e2e/journeys/a.journey.spec.ts",
+      "test('X1 · a renders', async ({ page }) => { await page.goto('/a'); });\n",
+    );
+    write("e2e/COVERAGE.md", "| X1 | a renders |\n");
+    write(
+      "e2e/coverage.json",
+      JSON.stringify({
+        version: 2,
+        summary: { totalCheckpoints: 1, totalJourneys: 1 },
+        journeys: [
+          {
+            id: "a",
+            spec: "journeys/a.journey.spec.ts",
+            sourceFiles: ["app/a/page.tsx"],
+            checkpoints: [{ id: "X1", name: "a renders" }],
+          },
+        ],
+      }),
+    );
+    const r = check(tmp);
+    expect(r.errors).toEqual(["app/b/page.tsx (/b) is visited by no journey"]);
+    expect(r.unreached.map((u) => u.file).sort()).toEqual(["app/b/page.tsx", "components/b.tsx"]);
+    expect(r.unreached.find((u) => u.file === "components/b.tsx")?.why).toBe(
+      "imported by app/b/page.tsx — no journey visits /b",
+    );
+    expect(r.percent).toBe(50);
   });
 });

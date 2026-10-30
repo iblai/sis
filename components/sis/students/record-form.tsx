@@ -12,6 +12,7 @@ import { LoadError } from "@/components/sis/load-error";
 import { SimpleSelect, type SelectOption } from "@/components/sis/simple-select";
 import { WhereTip } from "@/components/sis/where-tip";
 import { useGateLoading } from "@/components/sis/page-gate";
+import { useAdminMode } from "@/components/sis/admin-mode";
 import { useSession } from "@/hooks/use-session";
 import { useSisMetadata } from "@/hooks/use-sis-metadata";
 import { useToastError } from "@/hooks/use-toast-error";
@@ -49,7 +50,8 @@ export function RecordForm({
   /** Every control inert and no Save: a student reading their own record, an admin outside Admin mode. */
   readOnly?: boolean;
 }) {
-  const { tenantKey, isAdmin } = useSession();
+  const { tenantKey } = useSession();
+  const { isAdmin } = useAdminMode();
   const record = useDemographicsQuery({ platformKey: tenantKey, username });
   // The field list is an admin read; a student sees the values their own record holds.
   const fields = useFieldDefinitionsQuery(tenantKey, { skip: !isAdmin });

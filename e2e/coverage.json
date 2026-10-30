@@ -1,10 +1,16 @@
 {
   "version": 2,
   "summary": {
-    "totalCheckpoints": 124,
-    "totalJourneys": 15
+    "totalCheckpoints": 145,
+    "totalJourneys": 18
   },
   "journeys": [
+    {
+      "id": "sign-in",
+      "spec": "auth.setup.ts",
+      "sourceFiles": ["app/sso-login-complete/page.tsx"],
+      "checkpoints": []
+    },
     {
       "id": "auth",
       "spec": "journeys/auth.journey.spec.ts",
@@ -12,12 +18,7 @@
         "app/page.tsx",
         "app/[...legacy]/page.tsx",
         "app/error/[code]/page.tsx",
-        "app/api/auth-redirect/route.ts",
-        "app/platform/[tenantKey]/layout.tsx",
-        "components/tenant-redirect.tsx",
-        "lib/iblai/tenant.ts",
-        "lib/iblai/auth-utils.ts",
-        "lib/iblai/auth-redirect.ts"
+        "app/api/auth-redirect/route.ts"
       ],
       "checkpoints": [
         {
@@ -38,11 +39,11 @@
         },
         {
           "id": "A4",
-          "name": "/platform/main never shows the shell: the notice, or a move to the user"
+          "name": "/platform/main never shows a school"
         },
         {
           "id": "A5",
-          "name": "a platform the user does not belong to sends them to sign in for it, never into the shell"
+          "name": "a platform the user does not belong to is previewed, never entered or joined from the link"
         },
         {
           "id": "A6",
@@ -61,20 +62,7 @@
     {
       "id": "shell",
       "spec": "journeys/shell.journey.spec.ts",
-      "sourceFiles": [
-        "app/platform/[tenantKey]/page.tsx",
-        "app/platform/[tenantKey]/layout.tsx",
-        "components/sis/app-sidebar.tsx",
-        "components/sis/nav-row.tsx",
-        "components/sis/top-bar.tsx",
-        "components/sis/breadcrumbs.tsx",
-        "components/sis/command-palette.tsx",
-        "components/sis/admin-mode-switch.tsx",
-        "components/sis/admin-mode.tsx",
-        "components/sis/language-menu.tsx",
-        "components/sis/user-menu.tsx",
-        "components/sis/account-sheet.tsx"
-      ],
+      "sourceFiles": ["app/platform/[tenantKey]/page.tsx"],
       "checkpoints": [
         {
           "id": "S1",
@@ -167,6 +155,14 @@
         {
           "id": "S24",
           "name": "Log Out clears the session and leaves for the Auth SPA with the platform and a way back"
+        },
+        {
+          "id": "S29",
+          "name": "the language select reaches French and Chinese too, and English is restored"
+        },
+        {
+          "id": "S30",
+          "name": "Profile opens for a user whose stored metadata has no social links"
         }
       ]
     },
@@ -174,9 +170,8 @@
       "id": "mobile",
       "spec": "journeys/mobile.journey.spec.ts",
       "sourceFiles": [
-        "components/sis/app-sidebar.tsx",
-        "components/sis/top-bar.tsx",
-        "app/platform/[tenantKey]/setup/page.tsx"
+        "app/platform/[tenantKey]/setup/page.tsx",
+        "app/platform/[tenantKey]/onboarding/[[...agentId]]/page.tsx"
       ],
       "checkpoints": [
         {
@@ -194,6 +189,10 @@
         {
           "id": "S27",
           "name": "the student"
+        },
+        {
+          "id": "S28",
+          "name": "the setup flow and the platform preview fit a phone without sideways overflow"
         }
       ]
     },
@@ -204,11 +203,7 @@
         "app/platform/[tenantKey]/page.tsx",
         "app/platform/[tenantKey]/courses/page.tsx",
         "app/platform/[tenantKey]/courses/[courseId]/page.tsx",
-        "app/platform/[tenantKey]/notifications/[[...id]]/page.tsx",
-        "components/sis/students/my-sections.tsx",
-        "components/sis/students/my-credentials.tsx",
-        "components/sis/students/record-form.tsx",
-        "lib/sis/permissions.ts"
+        "app/platform/[tenantKey]/notifications/[[...id]]/page.tsx"
       ],
       "checkpoints": [
         {
@@ -257,7 +252,7 @@
         "app/platform/[tenantKey]/students/page.tsx",
         "app/platform/[tenantKey]/students/[username]/page.tsx",
         "app/platform/[tenantKey]/setup/page.tsx",
-        "components/sis/students/record-form.tsx"
+        "app/platform/[tenantKey]/onboarding/[[...agentId]]/page.tsx"
       ],
       "checkpoints": [
         {
@@ -283,6 +278,14 @@
         {
           "id": "AX6",
           "name": "the student"
+        },
+        {
+          "id": "AX7",
+          "name": "the setup flow has no WCAG 2.1 AA violation beyond the muted text"
+        },
+        {
+          "id": "AX8",
+          "name": "the platform preview has no WCAG 2.1 AA violation beyond the muted text"
         }
       ]
     },
@@ -291,16 +294,7 @@
       "spec": "journeys/students.journey.spec.ts",
       "sourceFiles": [
         "app/platform/[tenantKey]/students/page.tsx",
-        "app/platform/[tenantKey]/students/[username]/page.tsx",
-        "components/sis/students/record-form.tsx",
-        "components/sis/students/enrollment-tab.tsx",
-        "components/sis/students/enroll-dialog.tsx",
-        "components/sis/students/overview-tab.tsx",
-        "components/sis/students/grades-tab.tsx",
-        "components/sis/students/guardians-tab.tsx",
-        "components/sis/students/credentials-tab.tsx",
-        "components/sis/students/import-dialog.tsx",
-        "components/sis/pagination-bar.tsx"
+        "app/platform/[tenantKey]/students/[username]/page.tsx"
       ],
       "checkpoints": [
         {
@@ -392,13 +386,7 @@
       "spec": "journeys/courses.journey.spec.ts",
       "sourceFiles": [
         "app/platform/[tenantKey]/courses/page.tsx",
-        "app/platform/[tenantKey]/courses/[courseId]/page.tsx",
-        "components/sis/courses/roster-tab.tsx",
-        "components/sis/courses/gradebook-tab.tsx",
-        "components/sis/courses/settings-tab.tsx",
-        "components/sis/courses/section-dialog.tsx",
-        "components/sis/section-picker.tsx",
-        "components/sis/user-picker.tsx"
+        "app/platform/[tenantKey]/courses/[courseId]/page.tsx"
       ],
       "checkpoints": [
         {
@@ -464,8 +452,7 @@
       "spec": "journeys/groups.journey.spec.ts",
       "sourceFiles": [
         "app/platform/[tenantKey]/groups/page.tsx",
-        "app/platform/[tenantKey]/groups/[id]/page.tsx",
-        "components/sis/groups/group-dialog.tsx"
+        "app/platform/[tenantKey]/groups/[id]/page.tsx"
       ],
       "checkpoints": [
         {
@@ -505,7 +492,7 @@
     {
       "id": "grades",
       "spec": "journeys/grades.journey.spec.ts",
-      "sourceFiles": ["app/platform/[tenantKey]/grades/page.tsx", "lib/sis/grades.ts"],
+      "sourceFiles": ["app/platform/[tenantKey]/grades/page.tsx"],
       "checkpoints": [
         {
           "id": "GR1",
@@ -528,11 +515,7 @@
     {
       "id": "credentials",
       "spec": "journeys/credentials.journey.spec.ts",
-      "sourceFiles": [
-        "app/platform/[tenantKey]/credentials/page.tsx",
-        "components/sis/students/credentials-tab.tsx",
-        "components/sis/students/my-credentials.tsx"
-      ],
+      "sourceFiles": ["app/platform/[tenantKey]/credentials/page.tsx"],
       "checkpoints": [
         {
           "id": "CR1",
@@ -608,13 +591,7 @@
     {
       "id": "setup",
       "spec": "journeys/setup.journey.spec.ts",
-      "sourceFiles": [
-        "app/platform/[tenantKey]/setup/page.tsx",
-        "components/sis/setup/list-editor.tsx",
-        "components/sis/setup/fields-tab.tsx",
-        "hooks/use-sis-metadata.ts",
-        "lib/sis/metadata.ts"
-      ],
+      "sourceFiles": ["app/platform/[tenantKey]/setup/page.tsx"],
       "checkpoints": [
         {
           "id": "C1",
@@ -673,11 +650,7 @@
     {
       "id": "notifications",
       "spec": "journeys/notifications.journey.spec.ts",
-      "sourceFiles": [
-        "app/platform/[tenantKey]/notifications/[[...id]]/page.tsx",
-        "components/sis/top-bar.tsx",
-        "components/sis/app-sidebar.tsx"
-      ],
+      "sourceFiles": ["app/platform/[tenantKey]/notifications/[[...id]]/page.tsx"],
       "checkpoints": [
         {
           "id": "N1",
@@ -690,6 +663,87 @@
         {
           "id": "N3",
           "name": "an admin"
+        }
+      ]
+    },
+    {
+      "id": "house",
+      "spec": "journeys/house.journey.spec.ts",
+      "sourceFiles": [
+        "app/platform/[tenantKey]/page.tsx",
+        "app/platform/[tenantKey]/onboarding/[[...agentId]]/page.tsx"
+      ],
+      "checkpoints": [
+        {
+          "id": "H1",
+          "name": "lands on the community platform inside the shell, with the admin cluster shown"
+        },
+        {
+          "id": "H12",
+          "name": "the community platform shows the sample school: the admin rows, a filled Students list and the notice"
+        },
+        {
+          "id": "H13",
+          "name": "a write on the sample school opens the upgrade dialog"
+        },
+        {
+          "id": "H14",
+          "name": "the upgrade dialog's Upgrade for free opens this app's $0 checkout"
+        },
+        {
+          "id": "H2",
+          "name": "a trial-gated click opens the SDK upgrade dialog, and Escape closes it"
+        },
+        {
+          "id": "H3",
+          "name": "the platform is previewed, and Join goes to the auth page"
+        },
+        {
+          "id": "H4",
+          "name": "Create Your Own Platform is ibl.ai"
+        },
+        {
+          "id": "H9",
+          "name": "Back to My Platform leaves the preview for the user"
+        },
+        {
+          "id": "H5",
+          "name": "a readably keyed platform is not asked its name: the first run is sector, team, done, and the home holds afterwards"
+        },
+        {
+          "id": "H6",
+          "name": "an admin who finished it stays home"
+        },
+        {
+          "id": "H10",
+          "name": "Management › Onboarding opens for the admin, its agent links based on this app"
+        },
+        {
+          "id": "H7",
+          "name": "a member is sent to the platform"
+        },
+        {
+          "id": "H8",
+          "name": "with nothing configured, /onboarding says so and Continue goes home"
+        },
+        {
+          "id": "H11",
+          "name": "a named platform whose sector is set gets only the team step and the finish"
+        }
+      ]
+    },
+    {
+      "id": "errors",
+      "spec": "journeys/errors.journey.spec.ts",
+      "sourceFiles": ["app/platform/[tenantKey]/page.tsx"],
+      "checkpoints": [
+        {
+          "id": "E1",
+          "name": "a platform read answered 500 shows the load error with its reason, never an empty state"
+        },
+        {
+          "id": "E2",
+          "name": "a throttled platform read is retried until the page paints"
         }
       ]
     }

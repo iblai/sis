@@ -74,10 +74,6 @@
       "title": "无权访问此平台"
     },
     "goHome": "回到首页",
-    "noPlatform": {
-      "body": "ibl.ai/sis 在学校平台内运行。你的账号尚不属于任何学校平台——请让学校邀请你，或切换到下面的平台之一。",
-      "title": "ibl.ai/sis 在学校平台内运行"
-    },
     "notFound": {
       "body": "找不到你要找的内容。",
       "title": "未找到"
@@ -876,5 +872,28 @@
     "taught": "学习平台上的课程角色，按课程在课程 › 设置 › 教师中设置。",
     "teachers": "教师是学习平台上的课程角色；在此处设置。",
     "termReport": "需要一个带有年级分组的年级（设置 › 年级）以及来自学习平台的进度。"
+  },
+  "houseJourneys": {
+    "preview": {
+      "body": "你还不是 {name} 的成员。加入它，或创建你自己的平台。",
+      "join": "加入 {name}",
+      "create": "创建你自己的平台",
+      "back": "返回我的平台"
+    },
+    "onboarding": {
+      "meetTitle": "认识 {name}",
+      "meetBody": "你的平台的智能体随时为你服务。",
+      "allSetTitle": "一切就绪",
+      "allSetBody": "{workspace} 已准备好。进入吧。",
+      "allSetMember": "谢谢，你的平台已获得所需信息。进入吧。",
+      "workspace": "你的平台",
+      "continue": "继续",
+      "complete": "完成",
+      "back": "返回"
+    },
+    "sample": {
+      "body": "您正在查看示例学校 {name}。您自己的平台从空白开始，由您管理。",
+      "create": "创建您的平台"
+    }
   }
 }

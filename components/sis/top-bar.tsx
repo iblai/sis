@@ -10,6 +10,8 @@ import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { UserMenu } from "@/components/sis/user-menu";
 import { AdminModeSwitch } from "@/components/sis/admin-mode-switch";
+import { useAdminMode } from "@/components/sis/admin-mode";
+import { CreditBadge } from "@/components/house/credit-badge";
 import { LanguageMenu } from "@/components/sis/language-menu";
 import { Breadcrumbs } from "@/components/sis/breadcrumbs";
 import { useSession } from "@/hooks/use-session";
@@ -17,13 +19,14 @@ import { useSession } from "@/hooks/use-session";
 /**
  * The top bar — the OS's navbar shape and type (h-16, white, `#D0E0FF` hairline,
  * the system font at 14 px medium `#646464`):
- * sidebar toggle + breadcrumbs on the left; Admin switch, the SDK
- * notification bell and the SDK profile dropdown on the right.
+ * sidebar toggle + breadcrumbs on the left; the credit badge, Admin switch,
+ * the SDK notification bell and the SDK profile dropdown on the right.
  */
 export function TopBar() {
   const t = useTranslations("shell");
   const router = useRouter();
   const { tenantKey, username, isAdmin, href } = useSession();
+  const { adminMode } = useAdminMode();
   const { toggleSidebar, isMobile } = useSidebar();
 
   const handleViewNotifications = useCallback(
@@ -55,6 +58,11 @@ export function TopBar() {
         <Breadcrumbs />
       </div>
       <div className="flex items-center gap-3 lg:gap-5">
+        <CreditBadge
+          org={tenantKey}
+          isLiveAdmin={isAdmin && adminMode}
+          className="hidden md:flex"
+        />
         <AdminModeSwitch className="hidden md:flex" />
         <LanguageMenu className="hidden items-center gap-1 md:flex" />
         {tenantKey && username ? (

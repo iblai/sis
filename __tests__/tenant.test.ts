@@ -144,9 +144,9 @@ describe("pickLandingTenant", () => {
     ).toBe("initech");
   });
 
-  it("is null when the user's only platform is the community one, or none at all", async () => {
+  it("lands a user whose only platform is the community one on it, and is null when signed out", async () => {
     const { pickLandingTenant } = await loadTenant();
-    expect(pickLandingTenant("", [{ key: "main" }], "main")).toBeNull();
+    expect(pickLandingTenant("", [{ key: "main" }], "main")).toBe("main");
     expect(pickLandingTenant("main", [], "main")).toBeNull();
     expect(pickLandingTenant("", [], "main")).toBeNull();
   });

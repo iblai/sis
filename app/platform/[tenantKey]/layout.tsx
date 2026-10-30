@@ -2,7 +2,6 @@
 
 import { useEffect, useState, type ReactNode } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
 import { SidebarInset, SidebarProvider } from "@iblai/iblai-js/web-containers/next";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AccountSheetProvider } from "@/components/sis/account-sheet";
@@ -13,11 +12,14 @@ import { CommandPaletteProvider } from "@/components/sis/command-palette";
 import { AdminModeProvider, useAdminMode } from "@/components/sis/admin-mode";
 import { LanguagePreferenceSync } from "@/components/language-preference-sync";
 import { LoadingScreen } from "@/components/loading-screen";
-import { NOTICE_PRIMARY, NOTICE_SECONDARY, NoticeCard } from "@/components/notice-card";
+import { FirstRunGate } from "@/components/house/first-run-gate";
+import { OrganizationPreview } from "@/components/house/organization-preview";
+import { SampleNotice } from "@/components/house/sample-notice";
+import { UpgradeModal } from "@/components/house/upgrade-modal";
 import { useSession } from "@/hooks/use-session";
 import config from "@/lib/iblai/config";
-import { handleLogout, handleTenantSwitch } from "@/lib/iblai/auth-utils";
-import { tenantDisplayName } from "@/lib/iblai/tenant";
+import { readStoredTenantKey } from "@/lib/iblai/tenant";
+import { decideEntry, isSampleOrg } from "@/lib/iblai/house-journeys";
 import { canOpen } from "@/lib/sis/permissions";
 
 // The SDK sidebar remembers its desktop state in this cookie.
@@ -31,18 +33,26 @@ function readSidebarOpen(): boolean {
  * Everything under `/platform/[tenantKey]` — the authenticated, platform-scoped
  * shell: the SDK sidebar and inset around the top bar and the page. The
  * providers above us have already verified the session and the membership.
- * The community platform gets a notice, never a working app.
+ * A platform the user does not belong to is previewed (/iblai-vibe-house-journeys).
  */
 export default function TenantLayout({ children }: { children: ReactNode }) {
-  const { isAdmin, tenantKey } = useSession();
+  const { isAdmin, tenantKey, tenants } = useSession();
   const [sidebarOpen] = useState(readSidebarOpen);
 
   if (!tenantKey) return <LoadingScreen />;
-  if (tenantKey === config.mainTenantKey()) return <NoSchoolNotice />;
+  const entry = decideEntry({ routeOrg: tenantKey, stored: readStoredTenantKey(), tenants });
+  if (entry.kind === "preview" && entry.preview) {
+    return <OrganizationPreview org={entry.preview} app={config.iblPlatform()} />;
+  }
+
+  // The community platform shows the sample school to everyone as its admin; the SDK
+  // (sidebar footer, profile menu, first run) still sees the session's own role.
+  const sample = isSampleOrg(tenantKey);
 
   return (
-    <AdminModeProvider isAdmin={isAdmin} tenantKey={tenantKey}>
+    <AdminModeProvider isAdmin={isAdmin || sample} tenantKey={tenantKey}>
       <LanguagePreferenceSync />
+      <UpgradeModal org={tenantKey} app={config.iblPlatform()} />
       <TooltipProvider>
         <AccountSheetProvider>
           <CommandPaletteProvider>
@@ -56,12 +66,15 @@ export default function TenantLayout({ children }: { children: ReactNode }) {
                   >
                     <div>
                       <TopBar />
+                      {sample ? <SampleNotice /> : null}
                       <AccessGate>
                         <main
                           id="main-content"
                           className="flex min-h-0 flex-1 flex-col md:overflow-hidden"
                         >
-                          {children}
+                          <FirstRunGate org={tenantKey} isAdmin={isAdmin}>
+                            {children}
+                          </FirstRunGate>
                         </main>
                       </AccessGate>
                     </div>
@@ -90,28 +103,4 @@ function AccessGate({ children }: { children: ReactNode }) {
 
   if (!allowed) return null;
   return <>{children}</>;
-}
-
-/** `/platform/main`: the app works inside a school platform, not the community one. */
-function NoSchoolNotice() {
-  const t = useTranslations("errors");
-  const { tenants } = useSession();
-  const others = tenants.filter((x) => x.key !== config.mainTenantKey());
-  return (
-    <NoticeCard title={t("noPlatform.title")} body={t("noPlatform.body")}>
-      {others.slice(0, 3).map((x) => (
-        <button
-          key={x.key}
-          type="button"
-          onClick={() => void handleTenantSwitch(x.key)}
-          className={NOTICE_SECONDARY}
-        >
-          {tenantDisplayName(x)}
-        </button>
-      ))}
-      <button type="button" onClick={() => handleLogout()} className={NOTICE_PRIMARY}>
-        {t("signInAgain")}
-      </button>
-    </NoticeCard>
-  );
 }

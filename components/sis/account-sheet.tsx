@@ -17,7 +17,7 @@ export function useAccountSheet() {
 }
 
 export function AccountSheetProvider({ children }: { children: ReactNode }) {
-  const { tenantKey, username, email } = useSession();
+  const { tenantKey, username, email, href } = useSession();
   const [tab, setTab] = useState<PlatformAccountTab | null>(null);
   const [inviteOpen, setInviteOpen] = useState(false);
   const openInvite = useCallback(() => setInviteOpen(true), []);
@@ -37,6 +37,7 @@ export function AccountSheetProvider({ children }: { children: ReactNode }) {
         authUrl={config.authUrl()}
         currentSpa="sis"
         platformBaseDomain={config.platformBaseDomain()}
+        onboardingBasePath={`${window.location.origin}${href()}`}
       />
       <InviteUserDialog
         tenant={tenantKey}

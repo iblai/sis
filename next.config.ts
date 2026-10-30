@@ -47,6 +47,10 @@ const nextConfig: NextConfig = {
   agentRules: false,
   images: { remotePatterns },
   poweredByHeader: false,
+  // Next 16.4 blocks its dev resources for any origin but the server's; the app is also opened at 127.0.0.1.
+  allowedDevOrigins: ["127.0.0.1"],
+  // Set by the Next security upgrade (16.4.0 → 16.4.3) so later advisories reach the agent.
+  experimental: { agentUpgrade: "security" },
   async headers() {
     // Transport security (HSTS) is the host's; microphone stays open for voice chat.
     return [

@@ -12,7 +12,7 @@ import { ConfirmDialog } from "@/components/sis/confirm-dialog";
 import { LoadingScreen } from "@/components/loading-screen";
 import { LoadError } from "@/components/sis/load-error";
 import { useBreadcrumbs } from "@/components/sis/breadcrumbs";
-import { useIsLiveAdmin } from "@/components/sis/admin-mode";
+import { useAdminMode, useIsLiveAdmin } from "@/components/sis/admin-mode";
 import { OverviewTab } from "@/components/sis/students/overview-tab";
 import { RecordForm } from "@/components/sis/students/record-form";
 import { EnrollmentTab } from "@/components/sis/students/enrollment-tab";
@@ -57,7 +57,8 @@ function StudentView() {
   const username = decodeURIComponent(params.username);
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { tenantKey, isAdmin, href, displayName: ownName } = useSession();
+  const { tenantKey, href, displayName: ownName } = useSession();
+  const { isAdmin } = useAdminMode();
   const isLiveAdmin = useIsLiveAdmin();
   const toastError = useToastError();
   const links = useUserLinksQuery({ platformKey: tenantKey, username });

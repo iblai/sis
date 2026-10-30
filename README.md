@@ -83,7 +83,7 @@ pnpm install --ignore-scripts
 pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000). You are sent to [login.iblai.app](https://login.iblai.app) to sign in and come back to `/platform/<your platform>` — the school your account administers. The app never works in the community platform.
+Open [http://localhost:3000](http://localhost:3000). You are sent to [login.iblai.app](https://login.iblai.app) to sign in and come back to `/platform/<your platform>` — the school your account administers. A user whose only platform is the community one gets its trial-gated shell there; an admin's first visit opens the setup flow.
 
 No configuration is required against hosted `iblai.app`: the service URLs default in [`lib/iblai/config.ts`](lib/iblai/config.ts). Copy `.env.example` to `.env.local` only to point at a self-hosted platform.
 
@@ -93,21 +93,22 @@ Node.js 22+ and pnpm 12 (`corepack enable` picks the pinned version up from `pac
 
 ### Scripts
 
-| Command             | What it does                                                                                                           |
-| ------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `pnpm dev`          | Dev server on port 3000                                                                                                |
-| `pnpm build`        | Production build (standalone output)                                                                                   |
-| `pnpm start`        | Serve the production build                                                                                             |
-| `pnpm typecheck`    | TypeScript 7                                                                                                           |
-| `pnpm lint`         | oxlint, zero warnings                                                                                                  |
-| `pnpm format`       | oxfmt (`pnpm format:check` in CI)                                                                                      |
-| `pnpm i18n:check`   | Same keys in the four catalogs; no “tenant”, “pupil” or “class period”; no ASCII apostrophe; English labels Title Case |
-| `pnpm test`         | Vitest unit tests (`pnpm test:coverage` in CI: 95 % lines on `lib/`)                                                   |
-| `pnpm test:e2e`     | Playwright journeys on a throwaway platform, Chromium and the phone project (needs `e2e/.env.development`)             |
-| `pnpm test:e2e:all` | The same journeys in every browser (their builds installed with `pnpm exec playwright install`)                        |
-| `pnpm e2e:accounts` | Creates the two Playwright test accounts (a platform admin and a student) in the throwaway platform `iblai.env` names  |
-| `pnpm probe:lms`    | Which learning-platform capabilities this platform really exposes ([docs](docs/development.md#the-lms-probe))          |
-| `pnpm release`      | release-it: version from the commits, CHANGELOG, tag, GitHub Release (CI runs it on every push to main)                |
+| Command             | What it does                                                                                                                            |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `pnpm dev`          | Dev server on port 3000                                                                                                                 |
+| `pnpm build`        | Production build (standalone output)                                                                                                    |
+| `pnpm start`        | Serve the production build                                                                                                              |
+| `pnpm typecheck`    | TypeScript 7                                                                                                                            |
+| `pnpm lint`         | oxlint, zero warnings                                                                                                                   |
+| `pnpm format`       | oxfmt (`pnpm format:check` in CI)                                                                                                       |
+| `pnpm i18n:check`   | Same keys in the four catalogs; no “tenant”, “pupil” or “class period”; no ASCII apostrophe; English labels Title Case                  |
+| `pnpm test`         | Vitest unit tests (`pnpm test:coverage` in CI: 95 % lines on `lib/`)                                                                    |
+| `pnpm test:e2e`     | Playwright journeys on a throwaway platform, Chromium and the phone project (needs `e2e/.env.development`)                              |
+| `pnpm test:e2e:all` | The same journeys in every browser (their builds installed with `pnpm exec playwright install`)                                         |
+| `pnpm e2e:accounts` | Creates the two Playwright test accounts (a platform admin and a student) in the throwaway platform `iblai.env` names                   |
+| `pnpm e2e:coverage` | The checkpoint ledger's gate: ids ↔ titles, every page visited, the journeys reaching 95 % of the app's lines (`pnpm test` runs it too) |
+| `pnpm probe:lms`    | Which learning-platform capabilities this platform really exposes ([docs](docs/development.md#the-lms-probe))                           |
+| `pnpm release`      | release-it: version from the commits, CHANGELOG, tag, GitHub Release (CI runs it on every push to main)                                 |
 
 ---
 
@@ -148,16 +149,16 @@ Set the service URLs in `.env.local` for `pnpm dev` and `pnpm build`, or as Dock
 
 All app config is `NEXT_PUBLIC_*` and optional against hosted `iblai.app`. Defaults live in [`lib/iblai/config.ts`](lib/iblai/config.ts).
 
-| Variable                           | Default                        | Description                                                               |
-| ---------------------------------- | ------------------------------ | ------------------------------------------------------------------------- |
-| `NEXT_PUBLIC_API_BASE_URL`         | `https://api.iblai.app`        | Consolidated API; `/dm`, `/lms`, `/studio` and `/axd` are derived from it |
-| `NEXT_PUBLIC_AUTH_URL`             | `https://login.iblai.app`      | The hosted Auth SPA                                                       |
-| `NEXT_PUBLIC_PLATFORM_BASE_DOMAIN` | `iblai.app`                    | Base domain; with no API base, services resolve to their own subdomains   |
-| `NEXT_PUBLIC_MFE_URL`              | `https://apps.learn.iblai.app` | The Open edX micro-frontends (the embedded gradebook)                     |
-| `NEXT_PUBLIC_LMS_APP_URL`          | `https://lms.ibl.ai`           | The learner app, where "Open in the Learning Platform" lands              |
-| `NEXT_PUBLIC_MAIN_TENANT_KEY`      | `main`                         | The community platform — the one platform the app never works in          |
-| `NEXT_PUBLIC_IBL_PLATFORM`         | `mentor`                       | `app=` sent to the Auth SPA (the OS's value, so every platform signs in)  |
-| `NEXT_PUBLIC_ENABLE_RBAC`          | `false`                        | Gate SDK admin surfaces on RBAC policies as well as the admin flag        |
+| Variable                           | Default                        | Description                                                                           |
+| ---------------------------------- | ------------------------------ | ------------------------------------------------------------------------------------- |
+| `NEXT_PUBLIC_API_BASE_URL`         | `https://api.iblai.app`        | Consolidated API; `/dm`, `/lms`, `/studio` and `/axd` are derived from it             |
+| `NEXT_PUBLIC_AUTH_URL`             | `https://login.iblai.app`      | The hosted Auth SPA                                                                   |
+| `NEXT_PUBLIC_PLATFORM_BASE_DOMAIN` | `iblai.app`                    | Base domain; with no API base, services resolve to their own subdomains               |
+| `NEXT_PUBLIC_MFE_URL`              | `https://apps.learn.iblai.app` | The Open edX micro-frontends (the embedded gradebook)                                 |
+| `NEXT_PUBLIC_LMS_APP_URL`          | `https://lms.ibl.ai`           | The learner app, where "Open in the Learning Platform" lands                          |
+| `NEXT_PUBLIC_MAIN_TENANT_KEY`      | `main`                         | The community platform — the trial-gated shell for a user who belongs to nothing else |
+| `NEXT_PUBLIC_IBL_PLATFORM`         | `mentor`                       | `app=` sent to the Auth SPA (the OS's value, so every platform signs in)              |
+| `NEXT_PUBLIC_ENABLE_RBAC`          | `false`                        | Gate SDK admin surfaces on RBAC policies as well as the admin flag                    |
 
 ---
 
@@ -243,9 +244,10 @@ pnpm test:e2e        # Playwright journeys on that platform in Chromium and on a
 pnpm test:e2e --project=chromium --no-deps e2e/journeys/groups.journey.spec.ts   # one journey on the saved session and seed
 pnpm test:e2e:all    # every browser (their builds installed with pnpm exec playwright install)
 pnpm test:e2e:ui     # interactive UI mode
+pnpm e2e:coverage    # the ledger gate and the approximate reach of the journeys (pnpm test runs it too)
 ```
 
-The Playwright suite signs in through the real Auth SPA (`e2e/auth.setup.ts`, which finds the login page by its structure, not its copy) as two test accounts that `pnpm e2e:accounts` creates once — a platform admin and a student in the throwaway platform `iblai.env` names (`PLATFORM`), made with its Platform API Token (`TOKEN`) once the platform confirms the two belong together — and saves in the gitignored `e2e/.env.development`. The setup project then seeds the school once — a 2099 year and term, a grade level with its cohort group, the default student fields, the student's required record values and one enrollment — and writes the ids to `playwright/.auth/seed.json`. The journeys write to that platform and undo what they can; an invitation, an imported account, a course run and the learning platform's tasks stay behind, so they never run against a real school. The member journeys (M\*) run as the student and skip until that pair exists. `e2e/coverage.json` lists every checkpoint, and `pnpm test` refuses an id without its titled test, a titled test outside the ledger, a platform page no journey names, or a summary that does not add up; `a11y.journey.spec.ts` runs axe-core at WCAG 2.1 AA. `/iblai-vibe-connect` writes `iblai.env`; run it from an empty directory and move the file here — from this root it would make the picked platform the community one (`NEXT_PUBLIC_MAIN_TENANT_KEY`).
+The Playwright suite signs in through the real Auth SPA (`e2e/auth.setup.ts`, which finds the login page by its structure, not its copy) as two test accounts that `pnpm e2e:accounts` creates once — a platform admin and a student in the throwaway platform `iblai.env` names (`PLATFORM`), made with its Platform API Token (`TOKEN`) once the platform confirms the two belong together — and saves in the gitignored `e2e/.env.development`. The setup project then walks the admin's first run (the SDK setup flow) once and seeds the school once — a 2099 year and term, a grade level with its cohort group, the default student fields, the student's required record values and one enrollment — and writes the ids to `playwright/.auth/seed.json`. The journeys write to that platform and undo what they can; an invitation, an imported account, a course run and the learning platform's tasks stay behind, so they never run against a real school. The member journeys (M\*) run as the student and skip until that pair exists. `e2e/coverage.json` lists every checkpoint, and `pnpm e2e:coverage` (`pnpm test` runs it too) refuses an id without its titled test, a titled test outside the ledger, a page no journey visits, a summary that does not add up, or journeys that reach under 95 % of the app's lines; `a11y.journey.spec.ts` runs axe-core at WCAG 2.1 AA. `/iblai-vibe-connect` writes `iblai.env`; run it from an empty directory and move the file here — from this root it would make the picked platform the community one (`NEXT_PUBLIC_MAIN_TENANT_KEY`).
 
 ---
 

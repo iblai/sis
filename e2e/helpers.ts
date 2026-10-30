@@ -41,6 +41,12 @@ export async function pickCourse(page: Page, trigger: Locator, name: string) {
   await expect(cmdkInput(page)).toHaveCount(0);
 }
 
+/** Whether the installed web-containers build mentions `symbol` in `file` (its types by default; pnpm hoists one copy of every @iblai package to the root). */
+export function sdkHas(symbol: string, file = "dist/index.d.ts"): boolean {
+  const target = path.resolve(__dirname, "../node_modules/@iblai/web-containers", file);
+  return fs.existsSync(target) && fs.readFileSync(target, "utf8").includes(symbol);
+}
+
 /** What auth.setup.ts seeded on the platform; `null` until the setup project has run. */
 export function seeded(): { courseId: string; courseName: string; cohortGroupId: number } | null {
   const file = path.resolve(__dirname, "../playwright/.auth/seed.json");

@@ -4,7 +4,7 @@
 
 - Node.js 22+ (26 is what `.tool-versions` pins; the `dev` script disables Node's experimental web storage)
 - pnpm 12 — `corepack enable` installs the version pinned in `package.json`
-- An ibl.ai account that **administers a throwaway platform**. The app never works in the community platform (`main`): `/platform/main` shows a notice, and nothing resolves or signs in there.
+- An ibl.ai account that **administers a throwaway platform**. A user whose only platform is the community one (`main`) gets its trial-gated shell; nothing else resolves or signs in there, and the e2e suite runs on the throwaway platform.
 
 ## Run
 
@@ -97,7 +97,7 @@ feature on a platform:
 
 ```bash
 pnpm e2e:accounts   # once, creates the admin and the student test accounts in the platform iblai.env names
-pnpm exec playwright test --config e2e/playwright.config.ts --project=setup-chromium   # once, saves the session and seeds the school
+pnpm exec playwright test --config e2e/playwright.config.ts --project=setup-chromium   # once, saves the session, walks the admin's setup flow and seeds the school
 pnpm probe:lms --org <the platform's edX org> [--course <course-v1:…>]
 ```
 

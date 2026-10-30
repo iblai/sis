@@ -5,6 +5,7 @@ import {
   open,
   openProfileMenu,
   platformOf,
+  sdkHas,
   seeded,
   setAdminMode,
 } from "../helpers";
@@ -281,6 +282,36 @@ test.describe("shell journey", () => {
     await expect(dialog).toHaveCount(0);
   });
 
+  test("S30 · Profile opens for a user whose stored metadata has no social links", async ({
+    page,
+  }) => {
+    test.fixme(
+      !sdkHas("social_links) === null", "dist/esm/components/profile/use-profile.js"),
+      "web-containers 1.56.0 crashes the profile dialog on a stored user_metadata without social_links (fixed on sdk feat/web-containers/onboarding-initial-answers)",
+    );
+    // The auth app forwards `social_links` only when the platform returned it;
+    // a stored object without the array must still open the dialog.
+    await page.addInitScript(() => {
+      const stored = JSON.parse(localStorage.getItem("user_metadata") ?? "{}") as Record<
+        string,
+        unknown
+      >;
+      delete stored.social_links;
+      localStorage.setItem("user_metadata", JSON.stringify(stored));
+    });
+    const errors: string[] = [];
+    page.on("pageerror", (e) => errors.push(e.message));
+    await open(page, "/groups", /^Groups\b/);
+    const menu = await openProfileMenu(page);
+    await menu.getByRole("menuitem", { name: "Profile", exact: true }).click();
+    const dialog = page.getByRole("dialog", { name: /profile/i });
+    await expect(dialog).toBeVisible({ timeout: 15_000 });
+    await expect(dialog.getByRole("tab", { name: /social/i }).first()).toBeVisible();
+    expect(errors.filter((m) => m.includes("reading 'find'"))).toEqual([]);
+    await dialog.getByRole("button", { name: "Close", exact: true }).click();
+    await expect(dialog).toHaveCount(0);
+  });
+
   test("S17 · the profile's Title saves, reopens with the new value, and is set back", async ({
     page,
   }) => {
@@ -392,6 +423,33 @@ test.describe("shell journey", () => {
     expect((await context.cookies()).find((c) => c.name === "NEXT_LOCALE")?.value).toBe("en");
   });
 
+  test("S29 · the language select reaches French and Chinese too, and English is restored", async ({
+    page,
+    context,
+  }) => {
+    await open(page, "/groups", /^Groups\b/);
+    // The select's own label follows the locale.
+    const select = page.getByRole("combobox", { name: /^(Language|Langue|语言|Idioma)$/ });
+    await expect(select).toBeEnabled({ timeout: 30_000 });
+    try {
+      for (const [locale, home] of [
+        ["fr", "Accueil"],
+        ["zh", "首页"],
+      ] as const) {
+        await select.selectOption(locale);
+        await expect(page.getByRole("button", { name: home, exact: true }).first()).toBeVisible({
+          timeout: 30_000,
+        });
+        expect((await context.cookies()).find((c) => c.name === "NEXT_LOCALE")?.value).toBe(locale);
+      }
+    } finally {
+      await select.selectOption("en");
+      await expect(page.getByRole("button", { name: "Home", exact: true }).first()).toBeVisible({
+        timeout: 30_000,
+      });
+    }
+  });
+
   test("S23 · the home and every admin list render without console errors", async ({ page }) => {
     test.setTimeout(240_000);
     // Only what a run proved benign goes here, named: a 4xx the app handles is logged by
@@ -401,9 +459,10 @@ test.describe("shell journey", () => {
     ];
     page.on("response", (res) => {
       if (res.status() >= 400)
-        test
-          .info()
-          .annotations.push({ type: "refused", description: `${res.status()} ${res.url()}` });
+        test.info().annotations.push({
+          type: "refused",
+          description: `${res.status()} ${res.url()}`,
+        });
     });
     const errors: string[] = [];
     const onConsole = (msg: ConsoleMessage) => {

@@ -6,6 +6,7 @@ import { StatusPill } from "@/components/sis/status-pill";
 import { WhereTip } from "@/components/sis/where-tip";
 import { useGateLoading } from "@/components/sis/page-gate";
 import { useGuardians } from "@/hooks/use-guardians";
+import { useAdminMode } from "@/components/sis/admin-mode";
 import { useSession } from "@/hooks/use-session";
 import { useLearnerLastAccessQuery } from "@/lib/sis/api";
 import { useUserEnrollmentsQuery } from "@/lib/sis/lms-api";
@@ -29,7 +30,8 @@ export function OverviewTab({
   const tf = useTranslations("students.fields");
   const ts = useTranslations("students.enrollmentStatus");
   const locale = useLocale();
-  const { tenantKey, isAdmin } = useSession();
+  const { tenantKey } = useSession();
+  const { isAdmin } = useAdminMode();
   const enrollments = useUserEnrollmentsQuery(username, { skip: !username });
   const guardians = useGuardians(username, isAdmin);
   const lastAccess = useLearnerLastAccessQuery(
