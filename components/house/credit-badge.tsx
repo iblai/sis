@@ -4,8 +4,10 @@ import {
   CreditBalance,
   isPlatformNavbarCreditBalanceVisible,
 } from "@iblai/iblai-js/web-containers";
+import config from "@/lib/iblai/config";
 import {
   isTrialUser,
+  loginReturnUrl,
   mainOrg,
   readTenants,
   readUserEmail,
@@ -53,7 +55,8 @@ export function CreditBadge({
       username={username}
       mainPlatformKey={main}
       currentUserEmail={email}
-      redirectUrl={typeof window === "undefined" ? "" : window.location.origin}
+      // The platform takes only its own hosts as a checkout return; the sign-in app is one.
+      redirectUrl={loginReturnUrl(config.appUrl(), config.iblPlatform())}
       enabled
       className={className}
     />

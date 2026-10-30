@@ -79,6 +79,7 @@ page and has no checkpoints.
 | S24  | shell         | Log Out clears the session and leaves for the Auth SPA with the platform and a way back                             |
 | S29  | shell         | the language select reaches French and Chinese too, and English is restored                                         |
 | S30  | shell         | Profile opens for a user whose stored metadata has no social links                                                  |
+| S31  | shell         | ⌘K narrows Go To and Create to what is typed, and Enter opens the typed page                                        |
 | S6   | mobile        | a phone shows every admin page without sideways overflow                                                            |
 | S25  | mobile        | a phone keeps the Admin switch and the language select in the sheet, out of the top bar                             |
 | S26  | mobile        | the student                                                                                                         |
@@ -189,6 +190,7 @@ page and has no checkpoints.
 | H8   | house         | with nothing configured, /onboarding says so and Continue goes home                                                 |
 | H11  | house         | a named platform whose sector is set gets only the team step and the finish                                         |
 | H15  | house         | still on the community platform while the platform lists their own, the SDK moves them to it                        |
+| H16  | house         | Upgrade Plan asks for a pricing page that returns through the sign-in app                                           |
 | E1   | errors        | a platform read answered 500 shows the load error with its reason, never an empty state                             |
 | E2   | errors        | a throttled platform read is retried until the page paints                                                          |
 

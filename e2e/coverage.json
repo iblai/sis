@@ -1,7 +1,7 @@
 {
   "version": 2,
   "summary": {
-    "totalCheckpoints": 146,
+    "totalCheckpoints": 148,
     "totalJourneys": 18
   },
   "journeys": [
@@ -163,6 +163,10 @@
         {
           "id": "S30",
           "name": "Profile opens for a user whose stored metadata has no social links"
+        },
+        {
+          "id": "S31",
+          "name": "⌘K narrows Go To and Create to what is typed, and Enter opens the typed page"
         }
       ]
     },
@@ -733,6 +737,10 @@
         {
           "id": "H15",
           "name": "still on the community platform while the platform lists their own, the SDK moves them to it"
+        },
+        {
+          "id": "H16",
+          "name": "Upgrade Plan asks for a pricing page that returns through the sign-in app"
         }
       ]
     },

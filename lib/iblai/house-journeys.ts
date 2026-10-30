@@ -74,7 +74,7 @@ export function isTrialUser(
   return org === main && tenants.length === 1 && tenants[0]?.key === main && !tenants[0]?.is_admin;
 }
 
-/** The community platform runs on the sample school (`lib/sis/sample/`): reads answer from it, writes upgrade. */
+/** The community platform runs on the app's sample: reads answer from it, writes upgrade. */
 export function isSampleOrg(org: string | null | undefined, main = mainOrg()): boolean {
   return !!org && org === main;
 }

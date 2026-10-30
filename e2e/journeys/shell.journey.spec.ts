@@ -220,6 +220,19 @@ test.describe("shell journey", () => {
     await page.keyboard.press("Escape");
   });
 
+  test("S31 · ⌘K narrows Go To and Create to what is typed, and Enter opens the typed page", async ({
+    page,
+  }) => {
+    await open(page, "/staff", /^Staff\b/);
+    await page.keyboard.press(cmdK);
+    const dialog = page.getByRole("dialog");
+    await page.getByPlaceholder(/search students, staff and courses/i).fill("grades");
+    await expect(dialog.getByRole("option", { name: "Grades", exact: true })).toBeVisible();
+    await expect(dialog.getByRole("option", { name: "Invite Student" })).toHaveCount(0);
+    await page.keyboard.press("Enter");
+    await page.waitForURL((url) => url.pathname.endsWith("/grades"), { timeout: 15_000 });
+  });
+
   test("S14 · User mode shows the member's shell, survives a reload, and Admin brings the rows back", async ({
     page,
   }) => {

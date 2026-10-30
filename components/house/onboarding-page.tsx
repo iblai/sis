@@ -20,25 +20,24 @@ import config from "@/lib/iblai/config";
 import { onboardingFlow, readTenants, readUsername } from "@/lib/iblai/house-journeys";
 
 /**
- * `/platform/[tenantKey]/onboarding/[[...agentId]]` — the SDK onboarding
- * wizard, inside the shell the way the LMS mounts it. Members get the
- * platform's own form (authored in Management › Onboarding) and its agent on
- * the last step; an admin's first run is the setup flow, which asks only what
- * no official app recorded yet (the SDK reads the platform's name and sector
- * and the admin's earlier record), and `?flow=` switches. The route file is
- * one line: `export { OnboardingPage as default } from "@/components/house/onboarding-page";`
+ * The app's `…/onboarding/[[...agentId]]` route: the SDK onboarding wizard,
+ * inside the shell the way the LMS mounts it. Members get the platform's own
+ * form (authored in Management › Onboarding) and its agent on the last step;
+ * an admin's first run is the setup flow, which asks only what no official
+ * app recorded yet (the SDK reads the platform's name and sector and the
+ * admin's earlier record), and `?flow=` switches. The route file passes the
+ * platform and the home the flow leaves to.
  */
-export function OnboardingPage() {
+export function OnboardingPage({ org, home }: { org: string; home: string }) {
   return (
     <Suspense fallback={<LoadingScreen className="min-h-0 flex-1" />}>
-      <Onboarding />
+      <Onboarding org={org} home={home} />
     </Suspense>
   );
 }
 
-function Onboarding() {
-  const params = useParams<{ tenantKey: string; agentId?: string[] }>();
-  const org = decodeURIComponent(params.tenantKey ?? "");
+function Onboarding({ org, home }: { org: string; home: string }) {
+  const params = useParams<{ agentId?: string[] }>();
   const agentId = params.agentId?.[0];
   const flowParam = useSearchParams().get("flow");
   const [username] = useState(readUsername);
@@ -54,7 +53,6 @@ function Onboarding() {
     formReady: form.enabled && hasOnboardingContent(form),
   });
   const userFlow = flow === "user";
-  const home = `/platform/${encodeURIComponent(org)}`;
   // A one-way door, left by a full navigation: the gate re-reads the record
   // and a renamed platform shows its name.
   const leave = () => {

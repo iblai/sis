@@ -451,3 +451,46 @@ test.describe("the session a $0 checkout returns to", () => {
     expect(new URL(page.url()).searchParams.get("tenant")).toBe(own);
   });
 });
+
+test.describe("the credit menu's checkout", () => {
+  test("H16 · Upgrade Plan asks for a pricing page that returns through the sign-in app", async ({
+    page,
+  }) => {
+    const appUrl = (process.env.NEXT_PUBLIC_APP_URL || "https://sis.iblai.me").replace(/\/+$/, "");
+    let session = "";
+    // The admin's platform behind the paywall, on a free trial: the badge offers Upgrade Plan.
+    await page.route(/\/api\/core\/users\/platforms\//, async (route) => {
+      const res = await route.fetch();
+      const all = (await res.json()) as { key: string }[];
+      await route.fulfill({
+        response: res,
+        json: all.map((p) => (p.key === MAIN ? p : { ...p, show_paywall: true })),
+      });
+    });
+    await page.route(/\/api\/billing\/account\//, (route) =>
+      route.fulfill({
+        json: {
+          platform_key: new URL(route.request().url()).searchParams.get("platform_key"),
+          available_credits: 100,
+          has_credits: true,
+          current_plan: "Free Trial",
+          free_trial: true,
+        },
+      }),
+    );
+    // Answered like the platform answers a refused return, so nothing navigates.
+    await page.route(/\/stripe\/pricing-page-session\//, (route) => {
+      session = route.request().url();
+      return route.fulfill({ status: 400, json: { redirect_url: "stubbed" } });
+    });
+    const own = await landedOrg(page);
+    // The badge reads the stored membership this first load wrote.
+    await page.goto(`${appHost}/platform/${encodeURIComponent(own)}`);
+    await page.getByRole("button", { name: /credits remaining/i }).click({ timeout: 30_000 });
+    await page.getByRole("button", { name: "Upgrade Plan" }).click();
+    await expect.poll(() => session).toContain("/stripe/pricing-page-session/");
+    const back = new URL(new URL(session).searchParams.get("redirect_url") ?? "");
+    expect(back.searchParams.get("app")).toBe("mentor");
+    expect(back.searchParams.get("redirect-to")).toBe(appUrl);
+  });
+});

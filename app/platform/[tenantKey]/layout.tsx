@@ -20,6 +20,7 @@ import { useSession } from "@/hooks/use-session";
 import config from "@/lib/iblai/config";
 import { readStoredTenantKey } from "@/lib/iblai/tenant";
 import { decideEntry, isSampleOrg } from "@/lib/iblai/house-journeys";
+import { SAMPLE_SCHOOL } from "@/lib/sis/sample/school";
 import { canOpen } from "@/lib/sis/permissions";
 
 // The SDK sidebar remembers its desktop state in this cookie.
@@ -36,7 +37,7 @@ function readSidebarOpen(): boolean {
  * A platform the user does not belong to is previewed (/iblai-vibe-house-journeys).
  */
 export default function TenantLayout({ children }: { children: ReactNode }) {
-  const { isAdmin, tenantKey, tenants } = useSession();
+  const { isAdmin, tenantKey, tenants, href } = useSession();
   const [sidebarOpen] = useState(readSidebarOpen);
 
   if (!tenantKey) return <LoadingScreen />;
@@ -66,13 +67,17 @@ export default function TenantLayout({ children }: { children: ReactNode }) {
                   >
                     <div>
                       <TopBar />
-                      {sample ? <SampleNotice /> : null}
+                      {sample ? <SampleNotice name={SAMPLE_SCHOOL} /> : null}
                       <AccessGate>
                         <main
                           id="main-content"
                           className="flex min-h-0 flex-1 flex-col md:overflow-hidden"
                         >
-                          <FirstRunGate org={tenantKey} isAdmin={isAdmin}>
+                          <FirstRunGate
+                            org={tenantKey}
+                            isAdmin={isAdmin}
+                            onboardingPath={href("/onboarding")}
+                          >
                             {children}
                           </FirstRunGate>
                         </main>

@@ -85,7 +85,7 @@ function CommandPalette({
   const [query, setQuery] = useState("");
 
   const q = useDebounced(query.trim(), 250);
-  const { data, error } = usePlatformUsersQuery(
+  const { data, error, isFetching } = usePlatformUsersQuery(
     { platformKey: tenantKey, query: q, page_size: 8 },
     { skip: !open || !q || !isLiveAdmin },
   );
@@ -107,6 +107,21 @@ function CommandPalette({
     router.push(href(path));
   };
 
+  // Commands narrow to what is typed, so Enter opens the typed page.
+  const typed = query.trim().toLowerCase();
+  const shows = (label: string) => label.toLowerCase().includes(typed);
+  const creates = isLiveAdmin
+    ? (
+        [
+          ["inviteStudent", "/students?invite=1"],
+          ["inviteStaff", "/staff?invite=1"],
+          ["importStudents", "/students?import=1"],
+          ["newSection", "/courses?new=1"],
+          ["newGroup", "/groups?new=1"],
+          ["newEmail", "/messages"],
+        ] as const
+      ).filter(([key]) => shows(t(key)))
+    : [];
   const rows = isLiveAdmin
     ? ([
         ["home", "", Home],
@@ -118,12 +133,14 @@ function CommandPalette({
         ["credentials", "/credentials", Award],
         ["reports", "/reports", FileChartColumn],
         ["messages", "/messages", Megaphone],
+        ["setup", "/setup", Settings],
       ] as const)
     : ([
         ["home", "", Home],
         ["courses", "/courses", BookOpen],
         ["details", `/students/${encodeURIComponent(username)}`, IdCard],
       ] as const);
+  const goTo = rows.filter(([id]) => shows(tn(id)));
 
   return (
     <CommandDialog
@@ -141,7 +158,7 @@ function CommandPalette({
           onValueChange={setQuery}
         />
         <CommandList className="max-h-[50dvh] sm:max-h-[60vh]">
-          <CommandEmpty>{t("noResults")}</CommandEmpty>
+          {query.trim() === q && !isFetching ? <CommandEmpty>{t("noResults")}</CommandEmpty> : null}
           {q && error ? (
             <p role="alert" className="text-destructive px-3 py-2 text-xs">
               {errorMessage(error, tc("errorGeneric"))}
@@ -193,40 +210,24 @@ function CommandPalette({
             </CommandGroup>
           ) : null}
           <CommandSeparator />
-          {isLiveAdmin ? (
+          {creates.length ? (
             <CommandGroup heading={tc("create")}>
-              <CommandItem value="invite student" onSelect={() => go("/students?invite=1")}>
-                <Plus className="size-4" /> {t("inviteStudent")}
-              </CommandItem>
-              <CommandItem value="invite staff" onSelect={() => go("/staff?invite=1")}>
-                <Plus className="size-4" /> {t("inviteStaff")}
-              </CommandItem>
-              <CommandItem value="import students" onSelect={() => go("/students?import=1")}>
-                <Plus className="size-4" /> {t("importStudents")}
-              </CommandItem>
-              <CommandItem value="new section" onSelect={() => go("/courses?new=1")}>
-                <Plus className="size-4" /> {t("newSection")}
-              </CommandItem>
-              <CommandItem value="new group" onSelect={() => go("/groups?new=1")}>
-                <Plus className="size-4" /> {t("newGroup")}
-              </CommandItem>
-              <CommandItem value="new email" onSelect={() => go("/messages")}>
-                <Plus className="size-4" /> {t("newEmail")}
-              </CommandItem>
+              {creates.map(([key, path]) => (
+                <CommandItem key={key} value={key} onSelect={() => go(path)}>
+                  <Plus className="size-4" /> {t(key)}
+                </CommandItem>
+              ))}
             </CommandGroup>
           ) : null}
-          <CommandGroup heading={t("goTo")}>
-            {rows.map(([id, path, Icon]) => (
-              <CommandItem key={id} value={`go ${id}`} onSelect={() => go(path)}>
-                <Icon className="size-4" /> {tn(id)}
-              </CommandItem>
-            ))}
-            {isLiveAdmin ? (
-              <CommandItem value="go setup" onSelect={() => go("/setup")}>
-                <Settings className="size-4" /> {tn("setup")}
-              </CommandItem>
-            ) : null}
-          </CommandGroup>
+          {goTo.length ? (
+            <CommandGroup heading={t("goTo")}>
+              {goTo.map(([id, path, Icon]) => (
+                <CommandItem key={id} value={`go ${id}`} onSelect={() => go(path)}>
+                  <Icon className="size-4" /> {tn(id)}
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          ) : null}
         </CommandList>
         <div className="text-muted-foreground hidden flex-wrap items-center gap-x-3 gap-y-1 border-t border-gray-100 px-3 py-2 text-[11px] sm:flex">
           <span>

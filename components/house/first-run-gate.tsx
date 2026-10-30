@@ -17,23 +17,26 @@ export const SETUP_SENT = "house_setup_sent";
 
 /**
  * First run. An admin who has not finished the SDK setup flow is sent to
- * `/platform/<org>/onboarding?flow=admin` once per session; a member is sent
- * to `/platform/<org>/onboarding` while the organization's form waits for
- * their answers. Wraps the platform page tree; the onboarding route and the
- * community organization pass through, and so does a failed read.
+ * `<onboardingPath>?flow=admin` once per session; a member is sent to
+ * `<onboardingPath>` while the organization's form waits for their answers.
+ * Wraps the platform page tree; the onboarding route and the community
+ * organization pass through, and so does a failed read.
  */
 export function FirstRunGate({
   org,
   isAdmin,
+  onboardingPath,
   children,
 }: {
   org: string;
   isAdmin: boolean;
+  /** This app's onboarding route for `org`. */
+  onboardingPath: string;
   children: ReactNode;
 }) {
   const router = useRouter();
   const pathname = usePathname() ?? "";
-  const base = `/platform/${encodeURIComponent(org)}/onboarding`;
+  const base = onboardingPath;
   const [username] = useState(readUsername);
   // Read on every decision: this layout instance lives on across the flow and back.
   const sent = typeof window !== "undefined" && sessionStorage.getItem(SETUP_SENT) === org;
