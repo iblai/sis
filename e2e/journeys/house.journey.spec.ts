@@ -13,6 +13,8 @@ import { appHost, sdkHas } from "../helpers";
  */
 const MAIN = process.env.NEXT_PUBLIC_MAIN_TENANT_KEY || "main";
 const stamp = Date.now().toString(36);
+// Answers a navigation the test only inspects; a 204 never commits, and a click waits for it.
+const stub = { contentType: "text/html", body: "<title>stub</title>" };
 const noMember = !process.env.PLAYWRIGHT_MEMBER_USERNAME || !process.env.PLAYWRIGHT_MEMBER_PASSWORD;
 const NO_MEMBER =
   "no student account in e2e/.env.development (PLAYWRIGHT_MEMBER_*): pnpm e2e:accounts creates one";
@@ -26,6 +28,21 @@ async function landedOrg(page: Page): Promise<string> {
   await page.goto(`${appHost}/`);
   await page.waitForURL(/\/platform\/[^/?#]+/, { timeout: 30_000 });
   return decodeURIComponent(new URL(page.url()).pathname.split("/")[2]);
+}
+
+/** web-utils 2.18 reads a platform's metadata from the membership list: serve `edit` there too. */
+async function editListedMetadata(
+  page: Page,
+  edit: (metadata: Record<string, unknown>) => Record<string, unknown>,
+) {
+  await page.route(/\/api\/core\/users\/platforms\//, async (route) => {
+    const res = await route.fetch();
+    const all = (await res.json()) as { key: string; metadata?: Record<string, unknown> }[];
+    await route.fulfill({
+      response: res,
+      json: all.map((p) => (p.key === MAIN ? p : { ...p, metadata: edit(p.metadata ?? {}) })),
+    });
+  });
 }
 
 /** The student's session, saved per browser by auth.setup.ts. */
@@ -116,7 +133,7 @@ test.describe("a user whose only platform is the community one", () => {
     let checkout = "";
     await page.route(/credits-free-plan/, (route) => {
       checkout = route.request().url();
-      return route.fulfill({ status: 204, body: "" });
+      return route.fulfill(stub);
     });
     await page.goto(`${appHost}/platform/${encodeURIComponent(MAIN)}`);
     await page
@@ -155,7 +172,7 @@ test.describe("a visitor on a platform they do not belong to", () => {
     let joinUrl = "";
     await page.route(/\/join\?tenant=/, (route) => {
       joinUrl = route.request().url();
-      return route.fulfill({ status: 204, body: "" });
+      return route.fulfill(stub);
     });
     await page.goto(`${appHost}/platform/${stranger}`);
     const preview = page.getByTestId("organization-preview");
@@ -172,7 +189,7 @@ test.describe("a visitor on a platform they do not belong to", () => {
     let checkout = "";
     await page.route(/credits-free-plan/, (route) => {
       checkout = route.request().url();
-      return route.fulfill({ status: 204, body: "" });
+      return route.fulfill(stub);
     });
     await page.goto(`${appHost}/platform/${stranger}`);
     await page
@@ -235,6 +252,7 @@ test.describe("an admin's first run", () => {
       sectors.push(sent.metadata?.sector);
       return route.fulfill({ json: { metadata: sent.metadata ?? {} } });
     });
+    await editListedMetadata(page, ({ sector: _unset, ...rest }) => rest);
     const renames: unknown[] = [];
     await page.route(/\/api\/core\/platform\/$/, (route) => {
       renames.push(route.request().postDataJSON());
@@ -383,6 +401,11 @@ test.describe("a member's first run", () => {
       written = sent?.metadata ?? sent ?? {};
       return route.fulfill({ json: { metadata: written } });
     });
+    await editListedMetadata(page, (metadata) => ({
+      ...metadata,
+      ...written,
+      user_onboarding_form: form,
+    }));
     const org = await landedOrg(page);
     await expect(page).toHaveURL(onboarding(org), { timeout: 30_000 });
     await page.getByLabel("Your role").fill("Student");
@@ -403,5 +426,28 @@ test.describe("a member's first run", () => {
     await expect(empty).toBeVisible({ timeout: 30_000 });
     await empty.getByRole("button").click();
     await expect(page).toHaveURL(home(org), { timeout: 30_000 });
+  });
+});
+
+test.describe("the session a $0 checkout returns to", () => {
+  test("H15 · still on the community platform while the platform lists their own, the SDK moves them to it", async ({
+    page,
+  }) => {
+    await page.route(/\/login\/complete\?/, (route) => route.fulfill(stub));
+    const own = await landedOrg(page);
+    const keys = await page.evaluate(() =>
+      (JSON.parse(localStorage.getItem("tenants") ?? "[]") as { key: string }[]).map((t) => t.key),
+    );
+    // The SDK's two-platform rule: a user holding exactly [main, X] is moved to X.
+    expect(keys.sort()).toEqual([MAIN, own].sort());
+    await page.evaluate((main) => {
+      const entry = { key: main, org: main, platform_name: "ibl.ai", is_admin: false };
+      localStorage.setItem("tenant", main);
+      localStorage.setItem("current_tenant", JSON.stringify(entry));
+      localStorage.setItem("tenants", JSON.stringify([entry]));
+    }, MAIN);
+    await page.goto(`${appHost}/`);
+    await page.waitForURL(/\/login\/complete\?/, { timeout: 30_000 });
+    expect(new URL(page.url()).searchParams.get("tenant")).toBe(own);
   });
 });

@@ -1,7 +1,7 @@
 {
   "version": 2,
   "summary": {
-    "totalCheckpoints": 145,
+    "totalCheckpoints": 146,
     "totalJourneys": 18
   },
   "journeys": [
@@ -729,6 +729,10 @@
         {
           "id": "H11",
           "name": "a named platform whose sector is set gets only the team step and the finish"
+        },
+        {
+          "id": "H15",
+          "name": "still on the community platform while the platform lists their own, the SDK moves them to it"
         }
       ]
     },

@@ -188,6 +188,7 @@ page and has no checkpoints.
 | H7   | house         | a member is sent to the platform                                                                                    |
 | H8   | house         | with nothing configured, /onboarding says so and Continue goes home                                                 |
 | H11  | house         | a named platform whose sector is set gets only the team step and the finish                                         |
+| H15  | house         | still on the community platform while the platform lists their own, the SDK moves them to it                        |
 | E1   | errors        | a platform read answered 500 shows the load error with its reason, never an empty state                             |
 | E2   | errors        | a throttled platform read is retried until the page paints                                                          |
 
