@@ -3,6 +3,10 @@
     "iblai": {
       "command": "pnpm",
       "args": ["dlx", "@iblai/mcp@1.26.0"]
+    },
+    "chrome-devtools": {
+      "command": "npx",
+      "args": ["-y", "chrome-devtools-mcp@latest", "--redactNetworkHeaders"]
     }
   }
 }
