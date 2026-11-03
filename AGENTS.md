@@ -117,8 +117,11 @@ Three backends carry the data, all through existing endpoints:
     otherwise. `@tauri-apps/plugin-os` and the livekit packages are installed
     only because the SDK's bundle imports them; the app never calls them.
 13. **Verify before you say it works:** `pnpm typecheck && pnpm lint && pnpm
-    format:check && pnpm i18n:check && pnpm test:coverage && pnpm build`; open
-    the page on a **throwaway platform** (never `main`); screenshot it. E2E
+    format:check && pnpm i18n:check && pnpm test:coverage && pnpm build`; then
+    `/iblai-vibe-ops-test`'s touch test on a **throwaway platform** (never
+    `main`): the page in a real browser (Claude in Chrome, or the
+    `chrome-devtools` server in `.mcp.json`), every control you added, the
+    console, the phone width; no browser tool → say so, never call it tested. E2E
     journeys live in `e2e/journeys/` and sign in through the real Auth SPA as
     the two test accounts `pnpm e2e:accounts` creates there (an admin and a
     student; M* run as the student); never read or print `e2e/.env.development`;
