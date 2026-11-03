@@ -8,12 +8,32 @@
 
 Students, staff, courses, grades, credentials, reports and messages — for every school platform you belong to, with ibl.ai single sign-on built in. One codebase. Your platform, your data, your rules.
 
+[![Join](https://img.shields.io/badge/Join-blue)](https://ibl.ai/join)
 [![About](https://img.shields.io/badge/About-ibl.ai-blue)](https://ibl.ai)
 [![Docs](https://img.shields.io/badge/Docs-ibl.ai%2Fdocs-green)](https://ibl.ai/docs)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
+[![SOC 2 Type II](https://img.shields.io/badge/SOC_2-Type_II-blue)](https://ibl.ai)
 [![Next.js](https://img.shields.io/badge/Next.js-16-000000?logo=nextdotjs&logoColor=white)](https://nextjs.org)
 
-[Why ibl.ai/sis](#why-iblaisis) · [Features](#features) · [Quick Start](#quick-start) · [Deployment](#deployment) · [Architecture](#architecture) · [What the platform would need](#what-the-platform-would-need)
+<br>
+
+### ⬇️ Get ibl.ai/sis
+
+<img src="https://img.shields.io/badge/Web-sis.ibl.ai_(coming_soon)-2563eb?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Web — sis.ibl.ai, coming soon" height="42">
+
+<sub>Hosted web app coming soon · today: [run it locally](#quick-start) or [deploy it yourself](#deployment)</sub>
+
+<br>
+
+[Why ibl.ai/sis](#why-iblaisis) · [Every platform](#every-platform-one-codebase) · [Features](#features) · [Case studies](#case-studies) · [Screenshots](#screenshots) · [Quick Start](#quick-start) · [Deployment](#deployment) · [Architecture](#architecture)
+
+</div>
+
+---
+
+<div align="center">
+
+**SOC 2 Type II** &nbsp;·&nbsp; Universities, enterprises, and governments run on ibl.ai — [read the case studies →](https://ibl.ai/case-studies)
 
 </div>
 
@@ -29,6 +49,22 @@ Students, staff, courses, grades, credentials, reports and messages — for ever
 | 🧭 **The openSIS shape**        | Students and staff, school setup (years, terms, grade levels, periods, rooms, subjects), scheduling, grades and GPA, credentials and certificates, reports, messaging, bulk import — on ibl.ai.                    |
 | 🌍 **Four languages**           | English, Spanish, French and Chinese, following the language you chose in any other ibl.ai app.                                                                                                                    |
 | 🔐 **Enterprise-ready**         | SSO (OAuth / OIDC / SAML via the platform), platform roles, notifications, invitations that make a learner a platform user.                                                                                        |
+
+---
+
+## Every platform, one codebase
+
+ibl.ai/sis meets your school wherever it is — the same product, in any modern browser.
+
+<div align="center">
+
+| Platform |     | Status                                                                                                     |
+| -------- | --- | ---------------------------------------------------------------------------------------------------------- |
+| **Web**  | 🌐  | Coming soon at **sis.ibl.ai** — today, [run it locally](#quick-start) or [deploy it yourself](#deployment) |
+
+</div>
+
+ibl.ai/sis is web-only today: the native shells [iblai/os](https://github.com/iblai/os) and [iblai/crm](https://github.com/iblai/crm) ship (Tauri 2 for macOS, Windows, Linux, iOS and Android) are not set up in this repository yet.
 
 ---
 
@@ -74,6 +110,24 @@ Students, staff, courses, grades, credentials, reports and messages — for ever
 
 ---
 
+## Case studies
+
+Universities, enterprises, and government agencies build on ibl.ai — deploying agents on their own infrastructure, with their own models, at a fraction of the cost of closed platforms.
+
+**[Read the case studies →](https://ibl.ai/case-studies)**
+
+---
+
+## Screenshots
+
+<div align="center">
+
+<sub>Screenshots of a seeded school are on their way — run <code>pnpm screenshots --org &lt;demo platform key&gt;</code> to regenerate them into <code>docs/images/</code> (see <a href="docs/development.md">docs/development.md</a>).</sub>
+
+</div>
+
+---
+
 ## Quick Start
 
 ```bash
@@ -83,11 +137,11 @@ pnpm install --ignore-scripts
 pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000). You are sent to [login.iblai.app](https://login.iblai.app) to sign in and come back to `/platform/<your platform>` — the school your account administers. A user whose only platform is the community one gets its trial-gated shell there; an admin's first visit opens the setup flow.
+**Using [Claude Code](https://claude.ai/claude-code)?** Read [`AGENTS.md`](AGENTS.md) first.
 
 No configuration is required against hosted `iblai.app`: the service URLs default in [`lib/iblai/config.ts`](lib/iblai/config.ts). Copy `.env.example` to `.env.local` only to point at a self-hosted platform.
 
-**Using [Claude Code](https://claude.ai/claude-code)?** Read [`AGENTS.md`](AGENTS.md) first.
+Open [http://localhost:3000](http://localhost:3000). You are sent to [login.iblai.app](https://login.iblai.app) to sign in and come back to `/platform/<your platform>` — the school your account administers. A user whose only platform is the community one gets its trial-gated shell there; an admin's first visit opens the setup flow. See the full [Development Guide](docs/development.md) for sign-in, the three backends, the LMS probe and the release.
 
 Node.js 22+ and pnpm 12 (`corepack enable` picks the pinned version up from `package.json`).
 
@@ -235,17 +289,22 @@ ibl.ai/sis writes no endpoint of its own. The features that wait for a change in
 
 ## Testing
 
-```bash
-pnpm test            # Vitest — metadata parsing, grades and GPA, CSV, course runs, permissions, platform resolution, SSO landing, config, the e2e ledger
-pnpm i18n:check      # en / es / fr / zh catalogs carry the same keys and the house vocabulary
-pnpm test:coverage   # the unit tests with the coverage gate CI runs
-pnpm e2e:accounts    # once: creates the two test accounts (a platform admin and a student) in the throwaway platform iblai.env names
-pnpm test:e2e        # Playwright journeys on that platform in Chromium and on a Pixel 7 viewport, signed in as the test accounts
-pnpm test:e2e --project=chromium --no-deps e2e/journeys/groups.journey.spec.ts   # one journey on the saved session and seed
-pnpm test:e2e:all    # every browser (their builds installed with pnpm exec playwright install)
-pnpm test:e2e:ui     # interactive UI mode
-pnpm e2e:coverage    # the ledger gate and the approximate reach of the journeys (pnpm test runs it too)
-```
+This project is covered by Vitest unit tests in [`__tests__/`](__tests__/) and Playwright end-to-end journeys in [`e2e/`](e2e/). **Run the journeys for any change** so nothing regresses:
+
+| Command                                                                          | What it does                                                                                                                       |
+| -------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `pnpm test`                                                                      | Vitest — metadata parsing, grades and GPA, CSV, course runs, permissions, platform resolution, SSO landing, config, the e2e ledger |
+| `pnpm i18n:check`                                                                | en / es / fr / zh catalogs carry the same keys and the house vocabulary                                                            |
+| `pnpm test:coverage`                                                             | The unit tests with the coverage gate CI runs                                                                                      |
+| `pnpm e2e:accounts`                                                              | Once: creates the two test accounts (a platform admin and a student) in the throwaway platform `iblai.env` names                   |
+| `pnpm test:e2e`                                                                  | Playwright journeys on that platform in Chromium and on a Pixel 7 viewport, signed in as the test accounts                         |
+| `pnpm test:e2e --project=chromium --no-deps e2e/journeys/groups.journey.spec.ts` | One journey on the saved session and seed                                                                                          |
+| `pnpm test:e2e:all`                                                              | Every browser (their builds installed with `pnpm exec playwright install`)                                                         |
+| `pnpm test:e2e:ui`                                                               | Interactive UI mode                                                                                                                |
+| `pnpm test:e2e:headed`                                                           | Run with a visible browser                                                                                                         |
+| `pnpm e2e:coverage`                                                              | The ledger gate and the approximate reach of the journeys (`pnpm test` runs it too)                                                |
+
+See [e2e/COVERAGE.md](e2e/COVERAGE.md) for current coverage. Coverage must not regress — add or update a journey whenever you change user-facing behavior.
 
 The Playwright suite signs in through the real Auth SPA (`e2e/auth.setup.ts`, which finds the login page by its structure, not its copy) as two test accounts that `pnpm e2e:accounts` creates once — a platform admin and a student in the throwaway platform `iblai.env` names (`PLATFORM`), made with its Platform API Token (`TOKEN`) once the platform confirms the two belong together — and saves in the gitignored `e2e/.env.development`. The setup project then walks the admin's first run (the SDK setup flow) once and seeds the school once — a 2099 year and term, a grade level with its cohort group, the default student fields, the student's required record values and one enrollment — and writes the ids to `playwright/.auth/seed.json`. The journeys write to that platform and undo what they can; an invitation, an imported account, a course run and the learning platform's tasks stay behind, so they never run against a real school. The member journeys (M\*) run as the student and skip until that pair exists. `e2e/coverage.json` lists every checkpoint, and `pnpm e2e:coverage` (`pnpm test` runs it too) refuses an id without its titled test, a titled test outside the ledger, a page no journey visits, a summary that does not add up, or journeys that reach under 95 % of the app's lines; `a11y.journey.spec.ts` runs axe-core at WCAG 2.1 AA. `/iblai-vibe-connect` writes `iblai.env`; run it from an empty directory and move the file here — from this root it would make the picked platform the community one (`NEXT_PUBLIC_MAIN_TENANT_KEY`).
 
