@@ -32,6 +32,18 @@ export const QUERY_PARAMS = {
   TENANT: "tenant",
 } as const;
 
+/** Check if running inside a Tauri app. */
+export function isTauri(): boolean {
+  if (typeof window === "undefined") return false;
+  return "__TAURI_INTERNALS__" in window || "__TAURI__" in window;
+}
+
+/** Check if running inside a Tauri mobile app (iOS/Android). */
+export function isTauriMobile(): boolean {
+  if (!isTauri()) return false;
+  return /android|iphone|ipad|ipod/i.test(navigator.userAgent);
+}
+
 /** Non-expired session token present? */
 export function hasNonExpiredAuthToken(): boolean {
   if (typeof window === "undefined") return false;
@@ -81,6 +93,8 @@ export async function redirectToAuthSpa(
     hasNonExpiredAuthToken,
     preserveTokenKey: LOCAL_STORAGE_KEYS.EDX_TOKEN_KEY,
     authRedirectProxy: "/api/auth-redirect",
+    isNativeApp: () => isTauri(),
+    scheme: config.tauriCustomScheme(),
   });
 }
 

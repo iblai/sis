@@ -1,0 +1,252 @@
+name: Build Windows MSIX (x64 + arm64)
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version override (e.g. 1.0.0) - leave empty to use tauri.conf.json version"
+        required: false
+        type: string
+      sign:
+        description: "Sign the MSIX bundle (requires MSIX_CERT_PFX and MSIX_CERT_PASSWORD secrets)"
+        required: false
+        type: boolean
+        default: false
+      sign_publisher:
+        description: "Publisher CN for signing (must match certificate subject)"
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: msix-build
+  cancel-in-progress: false
+
+jobs:
+  build-msix:
+    name: Build MSIX (${{ matrix.arch }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: x64
+            runs_on: windows-latest
+            rust_target: x86_64-pc-windows-msvc
+          - arch: arm64
+            runs_on: windows-11-arm
+            rust_target: aarch64-pc-windows-msvc
+
+    runs-on: ${{ matrix.runs_on }}
+    defaults:
+      run:
+        shell: pwsh
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@89b12181fb390509a0842a86cc55eeb8eb928c1d # stable
+        with:
+          targets: ${{ matrix.rust_target }}
+
+      - name: Cache Rust dependencies
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            src-tauri/target/${{ matrix.rust_target }}
+          key: rust-msix-${{ matrix.rust_target }}-${{ hashFiles('src-tauri/Cargo.lock') }}
+          restore-keys: |
+            rust-msix-${{ matrix.rust_target }}-
+
+      - name: Install frontend dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build Tauri app (${{ matrix.rust_target }})
+        run: pnpm exec tauri build --target ${{ matrix.rust_target }}
+
+      - name: Override Publisher in AppxManifest for signing
+        if: inputs.sign && inputs.sign_publisher != ''
+        working-directory: src-tauri
+        env:
+          SIGN_PUBLISHER: ${{ inputs.sign_publisher }}
+        run: |
+          $manifest = Get-Content AppxManifest.xml -Raw
+          $manifest = $manifest -replace 'Publisher="[^"]*"', "Publisher=`"$env:SIGN_PUBLISHER`""
+          Set-Content -Path AppxManifest.xml -Value $manifest
+          Write-Host "Patched Publisher to: $env:SIGN_PUBLISHER"
+
+      - name: Override version in AppxManifest
+        if: inputs.version != ''
+        working-directory: src-tauri
+        env:
+          APP_VERSION: ${{ inputs.version }}
+        run: |
+          $manifest = Get-Content AppxManifest.xml -Raw
+          $manifest = $manifest -replace '(?<![A-Za-z])Version="[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+"', "Version=`"$env:APP_VERSION.0`""
+          Set-Content -Path AppxManifest.xml -Value $manifest
+
+      - name: Build MSIX package (unsigned)
+        working-directory: src-tauri
+        run: .\build-msix.ps1 -SkipTauriBuild -Architecture ${{ matrix.arch }}
+
+      - name: Upload MSIX artifact (${{ matrix.arch }})
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: msix-${{ matrix.arch }}
+          path: src-tauri/msix-output/*.msix
+          if-no-files-found: error
+
+  bundle-msix:
+    name: Create MSIX Bundle
+    needs: build-msix
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: pwsh
+
+    steps:
+      - name: Download x64 MSIX
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: msix-x64
+          path: msix-packages
+
+      - name: Download arm64 MSIX
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: msix-arm64
+          path: msix-packages
+
+      - name: List downloaded packages
+        run: Get-ChildItem -Path msix-packages -Recurse
+
+      - name: Locate SDK tools
+        id: sdk
+        run: |
+          $SdkRoot = "C:\Program Files (x86)\Windows Kits\10\bin"
+          $SdkVersions = Get-ChildItem -Path $SdkRoot -Directory |
+            Where-Object { $_.Name -match "^10\." } |
+            Sort-Object Name -Descending
+          if ($SdkVersions.Count -eq 0) {
+            Write-Error "Windows 10 SDK not found"
+            exit 1
+          }
+          $SdkBin = Join-Path $SdkVersions[0].FullName "x64"
+          $MakeAppx = Join-Path $SdkBin "makeappx.exe"
+          $SignTool = Join-Path $SdkBin "signtool.exe"
+          if (-not (Test-Path $MakeAppx)) {
+            Write-Error "makeappx.exe not found at $MakeAppx"
+            exit 1
+          }
+          Write-Host "Found MakeAppx: $MakeAppx"
+          echo "MAKEAPPX=$MakeAppx" >> $env:GITHUB_OUTPUT
+          if (Test-Path $SignTool) {
+            Write-Host "Found SignTool: $SignTool"
+            echo "SIGNTOOL=$SignTool" >> $env:GITHUB_OUTPUT
+          }
+
+      - name: Rename .msix to .appx for bundle compatibility
+        run: |
+          Get-ChildItem -Path msix-packages -Filter "*.msix" | ForEach-Object {
+            $newName = $_.FullName -replace '\.msix$', '.appx'
+            Rename-Item $_.FullName $newName
+            Write-Host "Renamed: $($_.Name) -> $(Split-Path $newName -Leaf)"
+          }
+
+      - name: Create MSIX Bundle
+        env:
+          MAKEAPPX: ${{ steps.sdk.outputs.MAKEAPPX }}
+        run: |
+          New-Item -ItemType Directory -Path bundle-output -Force | Out-Null
+
+          $appxFiles = Get-ChildItem -Path msix-packages -Filter "*.appx"
+          Write-Host "Bundling $($appxFiles.Count) packages:"
+          $appxFiles | ForEach-Object { Write-Host "  $_" }
+
+          $sampleName = $appxFiles[0].Name
+          if ($sampleName -match '(\d+\.\d+\.\d+\.\d+)') {
+            $version = $Matches[1]
+          } else {
+            $version = "0.0.0.0"
+          }
+
+          $bundlePath = "bundle-output\app-$version.msixbundle"
+
+          & $env:MAKEAPPX bundle /d msix-packages /p $bundlePath /o
+
+          if ($LASTEXITCODE -ne 0) {
+            Write-Error "makeappx bundle failed with exit code $LASTEXITCODE"
+            exit 1
+          }
+
+          Write-Host "Bundle created: $bundlePath" -ForegroundColor Green
+
+      - name: Import signing certificate
+        if: inputs.sign
+        id: cert
+        env:
+          MSIX_CERT_PFX: ${{ secrets.MSIX_CERT_PFX }}
+          MSIX_CERT_PASSWORD: ${{ secrets.MSIX_CERT_PASSWORD }}
+        run: |
+          if (-not $env:MSIX_CERT_PFX) {
+            Write-Error "Signing requested but MSIX_CERT_PFX secret is not set"
+            exit 1
+          }
+
+          $pfxBytes = [Convert]::FromBase64String($env:MSIX_CERT_PFX)
+          $pfxPath = Join-Path $env:RUNNER_TEMP "msix-signing-cert.pfx"
+          [IO.File]::WriteAllBytes($pfxPath, $pfxBytes)
+
+          $securePassword = ConvertTo-SecureString $env:MSIX_CERT_PASSWORD -AsPlainText -Force
+          $cert = Import-PfxCertificate -FilePath $pfxPath -CertStoreLocation Cert:\CurrentUser\My -Password $securePassword
+
+          Write-Host "Certificate imported: $($cert.Subject)"
+          Write-Host "Thumbprint: $($cert.Thumbprint)"
+          echo "CERT_THUMBPRINT=$($cert.Thumbprint)" >> $env:GITHUB_OUTPUT
+
+          Remove-Item $pfxPath -Force
+
+      - name: Sign MSIX Bundle
+        if: inputs.sign
+        env:
+          SIGNTOOL: ${{ steps.sdk.outputs.SIGNTOOL }}
+          CERT_THUMBPRINT: ${{ steps.cert.outputs.CERT_THUMBPRINT }}
+        run: |
+          $bundle = (Get-ChildItem -Path bundle-output -Filter "*.msixbundle")[0]
+          Write-Host "Signing: $($bundle.Name)" -ForegroundColor Yellow
+
+          & $env:SIGNTOOL sign `
+            /fd SHA256 `
+            /sha1 $env:CERT_THUMBPRINT `
+            /td SHA256 `
+            /tr http://timestamp.digicert.com `
+            $bundle.FullName
+
+          if ($LASTEXITCODE -ne 0) {
+            Write-Error "signtool sign failed with exit code $LASTEXITCODE"
+            exit 1
+          }
+
+          Write-Host "Bundle signed successfully." -ForegroundColor Green
+
+      - name: Upload MSIX Bundle
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: msixbundle
+          path: bundle-output/*.msixbundle
+          if-no-files-found: error

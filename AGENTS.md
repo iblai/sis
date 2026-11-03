@@ -113,9 +113,11 @@ Three backends carry the data, all through existing endpoints:
     component, per-row cells included); after the first paint nothing changes
     without a user action — no number, row or card fills in later. A tab panel
     gates itself the same way (`<PageGate inline>`).
-12. **Web only** — no `src-tauri/`, no Tauri workflows — until rei says
-    otherwise. `@tauri-apps/plugin-os` and the livekit packages are installed
-    only because the SDK's bundle imports them; the app never calls them.
+12. **Native shells.** `src-tauri/` is the vibe `iblai-vibe-ops-build` shell
+    with the SIS's values (`docs/development.md` → "Native shell"); the
+    generated `src-tauri/gen/` projects are committed and regenerated only by
+    `scripts/mobile-init.sh`. The app itself never calls `@tauri-apps/*`; the
+    SDK's bundle imports `plugin-os` and the livekit packages.
 13. **Verify before you say it works:** `pnpm typecheck && pnpm lint && pnpm
     format:check && pnpm i18n:check && pnpm test:coverage && pnpm build`; then
     `/iblai-vibe-ops-test`'s touch test on a **throwaway platform** (never

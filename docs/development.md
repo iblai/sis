@@ -4,6 +4,7 @@
 
 - Node.js 22+ (26 is what `.tool-versions` pins; the `dev` script disables Node's experimental web storage)
 - pnpm 12 — `corepack enable` installs the version pinned in `package.json`
+- For native builds: the Rust toolchain ([rustup](https://rustup.rs)); Xcode for iOS; JDK 17 and the Android SDK with an NDK for Android
 - An ibl.ai account that **administers a throwaway platform**. A user whose only platform is the community one (`main`) gets its trial-gated shell; nothing else resolves or signs in there, and the e2e suite runs on the throwaway platform.
 
 ## Run
@@ -173,3 +174,33 @@ the entry to `CHANGELOG.md`, commits `chore(release): v<version>`, tags
 release commit triggers no other workflow. The workflow refuses to run while no
 `v*` tag exists. `pnpm release` runs the same locally (a `GITHUB_TOKEN` with
 `repo` scope in the environment).
+
+## Native shell
+
+`src-tauri/` is the vibe `iblai-vibe-ops-build` shell with the SIS's values; the
+generated Xcode and Gradle projects under `src-tauri/gen/` are committed.
+
+```bash
+pnpm tauri:dev                       # desktop, on the dev server (devUrl in src-tauri/tauri.conf.json)
+pnpm tauri dev -c '{"build":{"devUrl":"https://sis.iblai.me","beforeDevCommand":""}}'   # the hosted app
+pnpm tauri:build                     # installer for this platform
+pnpm tauri:dev:ios "iPhone 16 Pro"   # a name from `xcrun simctl list devices`
+pnpm tauri:dev:android "Pixel_9"     # a name from `emulator -list-avds`
+```
+
+First time on a machine, `scripts/mobile-init.sh` generates the project for its
+OS: macOS makes `gen/apple` (needs Xcode and rustup); Linux makes `gen/android`
+(needs rustup, JDK 17 and the Android SDK with Platform-Tools, Build-Tools, a
+platform and an NDK, exported as `JAVA_HOME`, `ANDROID_HOME`, `NDK_HOME`). It
+prints the one build that writes the URL scheme into the project; commit
+`src-tauri/gen/` after it.
+
+Sign-in: the auth app returns to the shell through `iblai-sis://` from the
+system browser and through its own `iblai-mentor://` from inside the webview;
+`src-tauri/src/lib.rs` rewrites both onto the app URL (`/sso-login-complete`).
+Provider sign-in opens in `ASWebAuthenticationSession` (macOS, iOS), the system
+browser (Android) or a popup window (Windows, Linux). The shell loads the URL in
+`frontendDist` (`src-tauri/tauri.conf.json`); the workflows in
+`.github/workflows/tauri-*.yml` build every surface — signed macOS and Windows
+releases on an `app-v*` tag, unsigned desktop, iOS and Android builds on demand,
+and `tauri-check.yml` (fmt, check, test) on every change under `src-tauri/`.

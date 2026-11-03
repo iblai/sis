@@ -20,8 +20,16 @@ Students, staff, courses, grades, credentials, reports and messages — for ever
 ### ⬇️ Get ibl.ai/sis
 
 <img src="https://img.shields.io/badge/Web-sis.ibl.ai_(coming_soon)-2563eb?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Web — sis.ibl.ai, coming soon" height="42">
+&nbsp;
+<img src="https://img.shields.io/badge/macOS-(coming_soon)-000000?style=for-the-badge&logo=apple&logoColor=white" alt="macOS — coming soon" height="42">
+&nbsp;
+<img src="https://img.shields.io/badge/Windows-(coming_soon)-0078D4?style=for-the-badge&logo=windows&logoColor=white" alt="Windows — coming soon" height="42">
 
-<sub>Hosted web app coming soon · today: [run it locally](#quick-start) or [deploy it yourself](#deployment)</sub>
+<a href="docs/development.md#native-shell"><img src="https://img.shields.io/badge/iOS-App_Store_(coming_soon)-000000?style=for-the-badge&logo=apple&logoColor=white" alt="iOS — coming soon" height="42"></a>
+&nbsp;
+<a href="docs/development.md#native-shell"><img src="https://img.shields.io/badge/Android-Google_Play_(coming_soon)-3DDC84?style=for-the-badge&logo=android&logoColor=white" alt="Android — coming soon" height="42"></a>
+
+<sub>Hosted web app and published builds coming soon · today: [run it locally](#quick-start) or [deploy it yourself](#deployment) · [how builds are made](docs/development.md#native-shell)</sub>
 
 <br>
 
@@ -54,17 +62,22 @@ Students, staff, courses, grades, credentials, reports and messages — for ever
 
 ## Every platform, one codebase
 
-ibl.ai/sis meets your school wherever it is — the same product, in any modern browser.
+ibl.ai/sis meets your school wherever it is — the same product, native everywhere.
 
 <div align="center">
 
-| Platform |     | Status                                                                                                     |
-| -------- | --- | ---------------------------------------------------------------------------------------------------------- |
-| **Web**  | 🌐  | Coming soon at **sis.ibl.ai** — today, [run it locally](#quick-start) or [deploy it yourself](#deployment) |
+| Platform    |     | Status                                                                                                                                                     |
+| ----------- | --- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Web**     | 🌐  | Coming soon at **sis.ibl.ai** — today, [run it locally](#quick-start) or [deploy it yourself](#deployment)                                                 |
+| **macOS**   | 🍎  | Native app (universal .dmg, Intel + Apple Silicon) — built by the [release workflow](.github/workflows/tauri-release-macos-dmg.yml); downloads coming soon |
+| **Windows** | 🪟  | Native app (x64 + ARM64 installer) — built by the [release workflow](.github/workflows/tauri-release-windows.yml); downloads coming soon                   |
+| **Linux**   | 🐧  | Native app (AppImage) — built by the [desktop build workflow](.github/workflows/tauri-build-desktop.yml); downloads coming soon                            |
+| **iOS**     | 📱  | Native app — built by the [iOS workflow](.github/workflows/tauri-build-ios.yml); App Store listing coming soon                                             |
+| **Android** | 🤖  | Native app — built by the [Android workflow](.github/workflows/tauri-build-android.yml); Google Play listing coming soon                                   |
 
 </div>
 
-ibl.ai/sis is web-only today: the native shells [iblai/os](https://github.com/iblai/os) and [iblai/crm](https://github.com/iblai/crm) ship (Tauri 2 for macOS, Windows, Linux, iOS and Android) are not set up in this repository yet.
+The native apps are [Tauri 2](https://tauri.app) WebView shells around the hosted app (`src-tauri/`, the URL in `src-tauri/tauri.conf.json`) — point them at your own deployment the same way ([docs/development.md](docs/development.md#native-shell)). They are built like [iblai/os](https://github.com/iblai/os) and [iblai/recruit](https://github.com/iblai/recruit): signed macOS and Windows releases on an `app-v*` tag, unsigned desktop, iOS and Android builds on demand.
 
 ---
 
@@ -147,22 +160,23 @@ Node.js 22+ and pnpm 12 (`corepack enable` picks the pinned version up from `pac
 
 ### Scripts
 
-| Command             | What it does                                                                                                                            |
-| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| `pnpm dev`          | Dev server on port 3000                                                                                                                 |
-| `pnpm build`        | Production build (standalone output)                                                                                                    |
-| `pnpm start`        | Serve the production build                                                                                                              |
-| `pnpm typecheck`    | TypeScript 7                                                                                                                            |
-| `pnpm lint`         | oxlint, zero warnings                                                                                                                   |
-| `pnpm format`       | oxfmt (`pnpm format:check` in CI)                                                                                                       |
-| `pnpm i18n:check`   | Same keys in the four catalogs; no “tenant”, “pupil” or “class period”; no ASCII apostrophe; English labels Title Case                  |
-| `pnpm test`         | Vitest unit tests (`pnpm test:coverage` in CI: 95 % lines on `lib/`)                                                                    |
-| `pnpm test:e2e`     | Playwright journeys on a throwaway platform, Chromium and the phone project (needs `e2e/.env.development`)                              |
-| `pnpm test:e2e:all` | The same journeys in every browser (their builds installed with `pnpm exec playwright install`)                                         |
-| `pnpm e2e:accounts` | Creates the two Playwright test accounts (a platform admin and a student) in the throwaway platform `iblai.env` names                   |
-| `pnpm e2e:coverage` | The checkpoint ledger's gate: ids ↔ titles, every page visited, the journeys reaching 95 % of the app's lines (`pnpm test` runs it too) |
-| `pnpm probe:lms`    | Which learning-platform capabilities this platform really exposes ([docs](docs/development.md#the-lms-probe))                           |
-| `pnpm release`      | release-it: version from the commits, CHANGELOG, tag, GitHub Release (CI runs it on every push to main)                                 |
+| Command                          | What it does                                                                                                                            |
+| -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `pnpm dev`                       | Dev server on port 3000                                                                                                                 |
+| `pnpm build`                     | Production build (standalone output)                                                                                                    |
+| `pnpm start`                     | Serve the production build                                                                                                              |
+| `pnpm typecheck`                 | TypeScript 7                                                                                                                            |
+| `pnpm lint`                      | oxlint, zero warnings                                                                                                                   |
+| `pnpm format`                    | oxfmt (`pnpm format:check` in CI)                                                                                                       |
+| `pnpm i18n:check`                | Same keys in the four catalogs; no “tenant”, “pupil” or “class period”; no ASCII apostrophe; English labels Title Case                  |
+| `pnpm test`                      | Vitest unit tests (`pnpm test:coverage` in CI: 95 % lines on `lib/`)                                                                    |
+| `pnpm test:e2e`                  | Playwright journeys on a throwaway platform, Chromium and the phone project (needs `e2e/.env.development`)                              |
+| `pnpm test:e2e:all`              | The same journeys in every browser (their builds installed with `pnpm exec playwright install`)                                         |
+| `pnpm e2e:accounts`              | Creates the two Playwright test accounts (a platform admin and a student) in the throwaway platform `iblai.env` names                   |
+| `pnpm e2e:coverage`              | The checkpoint ledger's gate: ids ↔ titles, every page visited, the journeys reaching 95 % of the app's lines (`pnpm test` runs it too) |
+| `pnpm probe:lms`                 | Which learning-platform capabilities this platform really exposes ([docs](docs/development.md#the-lms-probe))                           |
+| `pnpm release`                   | release-it: version from the commits, CHANGELOG, tag, GitHub Release (CI runs it on every push to main)                                 |
+| `pnpm tauri:dev` / `tauri:build` | Desktop shell (needs Rust); `pnpm tauri:dev:ios` / `tauri:dev:android` for a simulator or emulator                                      |
 
 ---
 
@@ -213,6 +227,7 @@ All app config is `NEXT_PUBLIC_*` and optional against hosted `iblai.app`. Defau
 | `NEXT_PUBLIC_MAIN_TENANT_KEY`      | `main`                         | The community platform — the trial-gated shell for a user who belongs to nothing else |
 | `NEXT_PUBLIC_IBL_PLATFORM`         | `mentor`                       | `app=` sent to the Auth SPA (the OS's value, so every platform signs in)              |
 | `NEXT_PUBLIC_ENABLE_RBAC`          | `false`                        | Gate SDK admin surfaces on RBAC policies as well as the admin flag                    |
+| `NEXT_PUBLIC_TAURI_CUSTOM_SCHEME`  | `iblai-sis`                    | Deep-link scheme the native shells return through after SSO                           |
 
 ---
 
@@ -242,7 +257,8 @@ sis/
 ├── lib/iblai/                               # config · platform resolution · auth helpers
 ├── i18n/ · messages/                        # next-intl config · en/es/fr/zh catalogs
 ├── providers/iblai-providers.tsx            # Redux > AuthProvider > TenantProvider
-├── scripts/probe-lms.mjs                    # the learning-platform contract probe
+├── scripts/                                 # probe-lms.mjs (the learning-platform contract probe) · mobile-init.sh
+├── src-tauri/                               # Tauri 2 shell (macOS · Windows · Linux · iOS · Android)
 ├── e2e/ · __tests__/                        # Playwright journeys · Vitest
 └── docs/                                    # development guide
 ```

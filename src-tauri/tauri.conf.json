@@ -1,0 +1,64 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "ibl.ai SIS",
+  "identifier": "ai.ibl.sis",
+  "version": "0.1.0",
+  "build": {
+    "devUrl": "http://localhost:3000",
+    "beforeDevCommand": "pnpm dev",
+    "frontendDist": "https://sis.iblai.me"
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["dmg", "app", "nsis", "msi", "appimage"],
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "publisher": "IBL.ai",
+    "homepage": "https://ibl.ai",
+    "copyright": "© 2026 ibl.ai",
+    "category": "Education",
+    "shortDescription": "The open-source student information system for schools on the ibl.ai platform",
+    "longDescription": "ibl.ai/sis — students, staff, courses, terms, grades, credentials and reports for every school platform you belong to on the ibl.ai platform. One codebase on web, macOS, Windows, Linux, iOS and Android.",
+    "macOS": {
+      "minimumSystemVersion": "10.15",
+      "hardenedRuntime": true,
+      "entitlements": "entitlements.mac.plist"
+    },
+    "windows": {
+      "certificateThumbprint": null,
+      "digestAlgorithm": "sha256",
+      "timestampUrl": "http://timestamp.digicert.com",
+      "webviewInstallMode": {
+        "type": "downloadBootstrapper"
+      },
+      "nsis": {
+        "installMode": "currentUser"
+      }
+    },
+    "iOS": {
+      "developmentTeam": "L4FWRM8W5Z",
+      "minimumSystemVersion": "15.0"
+    },
+    "android": {
+      "minSdkVersion": 24
+    }
+  },
+  "plugins": {
+    "deep-link": {
+      "mobile": [{ "scheme": ["iblai-sis"] }]
+    }
+  },
+  "app": {
+    "withGlobalTauri": true,
+    "security": {
+      "csp": null,
+      "capabilities": ["default"]
+    },
+    "windows": []
+  }
+}
