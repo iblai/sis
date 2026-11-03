@@ -4,8 +4,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { Languages } from "lucide-react";
 import { toast } from "sonner";
-import { useGetUserMetadataQuery } from "@iblai/iblai-js/data-layer";
-import { useUserProfileUpdate } from "@iblai/iblai-js/web-utils";
+import { useStoredUserMetadata, useUserProfileUpdate } from "@iblai/iblai-js/web-utils";
 import { LOCALE_LABELS, SUPPORTED_LOCALES } from "@/i18n/config";
 import { syncLanguageCookies } from "@/lib/locale-cookie";
 import { errorMessage } from "@/lib/sis/api";
@@ -20,10 +19,7 @@ export function LanguageMenu({ className }: { className?: string }) {
   const tc = useTranslations("common");
   const { username } = useSession();
   const { updateProfile } = useUserProfileUpdate(username);
-  const { data: userMetadata, isLoading: metadataLoading } = useGetUserMetadataQuery(
-    { params: { username } },
-    { skip: !username },
-  );
+  const [userMetadata] = useStoredUserMetadata();
   const choose = async (value: string) => {
     // The profile is the language of record; cookies only when there is none.
     if (!username || !userMetadata) {
@@ -31,7 +27,7 @@ export function LanguageMenu({ className }: { className?: string }) {
       router.refresh();
       return;
     }
-    const current = (userMetadata as { public_metadata?: Record<string, unknown> }).public_metadata;
+    const current = userMetadata.public_metadata;
     try {
       await updateProfile({ public_metadata: { ...current, language: value } });
     } catch (err) {
@@ -51,7 +47,6 @@ export function LanguageMenu({ className }: { className?: string }) {
             <span className="sr-only">{t("label")}</span>
             <select
               value={locale}
-              disabled={metadataLoading}
               onChange={(event) => void choose(event.target.value)}
               className="h-8 cursor-pointer rounded-md border border-transparent bg-transparent pr-1 text-sm font-medium text-[#646464] hover:bg-[#f0f4fa] focus-visible:border-[#0058cc] focus-visible:outline-none"
             >

@@ -41,7 +41,9 @@ Three backends carry the data, all through existing endpoints:
    (`lib/iblai/house-journeys.ts#isSampleOrg`, served by `lib/sis/base-query.ts`;
    this app's pages treat that visitor as an admin through `AdminModeProvider`,
    the SDK keeps the session's role); nothing else resolves or defaults to
-   `main` (`lib/iblai/tenant.ts#pickLandingTenant`, `app/page.tsx`).
+   `main` (`lib/iblai/tenant.ts#pickLandingTenant`, `app/page.tsx`). The
+   signed-in user's metadata comes from the stored `user_metadata` key
+   (`useStoredUserMetadata`), never a query.
 2. **SDK components first.** The shell is the SDK's `SidebarProvider →
    PlatformSidebar + SidebarInset` (`components/sis/app-sidebar.tsx`), loading
    is the SDK `Spinner`; profile dropdown, notifications, Account /
