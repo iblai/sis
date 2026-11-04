@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # The Android shell on the phone (or emulator) on adb, built from src-tauri/
-# with this app's own values: a debug APK (installable — a release APK is
-# unsigned), the scheme, a cold launch, a warm deep link, a screenshot, a
+# with this app's own values and loading the app's live `<app>.iblai.me` host
+# (`--host` overrides; a prebuilt `--apk` loads what it was built with): a debug
+# APK (installable — a release APK is unsigned), the scheme, a cold launch, a warm deep link, a screenshot, a
 # checklist, logcat judged at the end. Prerequisites: /iblai-vibe-ops-build.
 #
 #   bash scripts/shell-test-android.sh --check      # the values and the manifest; builds nothing
@@ -22,10 +23,10 @@ MANIFEST=src-tauri/gen/android/app/src/main/AndroidManifest.xml
 [[ -f $MANIFEST ]] || { echo "missing: $MANIFEST (scripts/mobile-init.sh on Linux generates the project)" >&2; exit 1; }
 grep -q "android:scheme=\"$SCHEME\"" "$MANIFEST" || { echo "missing: the $SCHEME intent filter in $MANIFEST (one tauri android build --debug --apk writes it; commit it)" >&2; exit 1; }
 grep -q 'android:launchMode="singleTask"' "$MANIFEST" || { echo "missing: launchMode=\"singleTask\" in $MANIFEST" >&2; exit 1; }
-echo "id=$IDENT scheme=$SCHEME manifest=ok"
+HOST=https://${IDENT##*.}.iblai.me # phones load the live app, not frontendDist
+echo "id=$IDENT scheme=$SCHEME manifest=ok loads=$HOST"
 
 APK=
-HOST=
 case "${1:-}" in
   --check) exit 0 ;;
   --apk) APK=${2:?--apk needs a path} ;;
@@ -50,9 +51,7 @@ if [[ -z $APK ]]; then
     [ -n "${!v:-}" ] || { echo "missing: \$$v (references/mobile-projects.md of /iblai-vibe-ops-build)" >&2; exit 1; }
   done
   need pnpm "https://pnpm.io"
-  CFG=()
-  if [[ -n $HOST ]]; then CFG=(-c "{\"build\":{\"frontendDist\":\"$HOST\"}}"); fi
-  pnpm exec tauri android build --debug --apk --target "$TARGET" ${CFG[@]+"${CFG[@]}"}
+  pnpm exec tauri android build --debug --apk --target "$TARGET" -c "{\"build\":{\"frontendDist\":\"$HOST\"}}"
   APK=$(ls -t src-tauri/gen/android/app/build/outputs/apk/*/debug/*.apk | head -1)
 fi
 echo "== installing $APK"

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # The iOS shell on a simulator (or a connected device) from a Mac, built from
 # src-tauri/ with this app's own values through `tauri ios dev` pointed at the
-# hosted app: the installed app's URL types, the scheme opened from outside, a
+# app's live `<app>.iblai.me` host (`--host` overrides): the installed app's URL types, the scheme opened from outside, a
 # screenshot, a checklist, the app's log judged at the end. Prerequisites:
 # /iblai-vibe-ops-build (Xcode, the iOS rust targets, scripts/mobile-init.sh
 # once for src-tauri/gen/apple).
@@ -21,10 +21,10 @@ console.log(`APP_ORIGIN=${new URL(c.build.frontendDist).origin} SCHEME=${c.plugi
 PLIST=$(ls src-tauri/gen/apple/*_iOS/Info.plist 2>/dev/null | head -1 || true)
 [[ -n $PLIST ]] || { echo "missing: src-tauri/gen/apple (scripts/mobile-init.sh on a Mac generates it)" >&2; exit 1; }
 grep -q "<string>$SCHEME</string>" "$PLIST" || echo "note: $PLIST has no $SCHEME URL type yet — the first tauri ios dev|build writes it; commit that change"
-echo "app=$APP_ORIGIN scheme=$SCHEME id=$IDENT plist=$PLIST"
+HOST=https://${IDENT##*.}.iblai.me # simulators load the live app, not frontendDist
+echo "app=$APP_ORIGIN scheme=$SCHEME id=$IDENT plist=$PLIST loads=$HOST"
 
 DEVICE=
-HOST=$APP_ORIGIN
 case "${1:-}" in
   --check) exit 0 ;;
   "") echo "usage: $0 [--check | \"<device name>\" [--host URL]]   (names: xcrun simctl list devices)" >&2; exit 2 ;;
