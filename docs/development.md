@@ -181,12 +181,11 @@ release commit triggers no other workflow. The workflow refuses to run while no
 generated Xcode and Gradle projects under `src-tauri/gen/` are committed.
 
 ```bash
-pnpm tauri:dev                       # desktop, on the dev server (devUrl in src-tauri/tauri.conf.json)
-pnpm tauri dev -c '{"build":{"devUrl":"https://sis.iblai.me","beforeDevCommand":""}}'   # the hosted app
+pnpm tauri:dev                       # desktop, loading the live app (devUrl in src-tauri/tauri.conf.json)
+pnpm tauri dev -c '{"build":{"devUrl":"http://localhost:3000","beforeDevCommand":"pnpm dev"}}'   # the web app from the dev server, inside the shell
 pnpm tauri:build                     # installer for this platform
 pnpm tauri:dev:ios "iPhone 16 Pro"   # a name from `xcrun simctl list devices`
 pnpm tauri:dev:android "Pixel_9"     # a name from `emulator -list-avds`
-pnpm tauri:dev:ios "iPhone 16 Pro" -c '{"build":{"devUrl":"https://sis.iblai.me","beforeDevCommand":""}}'   # the live app on the simulator (tauri:dev:android alike)
 pnpm shell:smoke                     # headless: the guard and both sign-in returns against a local page (CI runs it)
 pnpm shell:touch                     # the installer's app against the hosted app, with the checklist (Linux, macOS)
 pnpm shell:touch:android             # the debug APK on the phone over adb, loading https://sis.iblai.me: scheme, launch, deep link, checklist
@@ -206,8 +205,9 @@ Sign-in: the auth app returns to the shell through `iblai-sis://` from the
 system browser and through its own `iblai-mentor://` from inside the webview;
 `src-tauri/src/lib.rs` rewrites both onto the app URL (`/sso-login-complete`).
 Provider sign-in opens in `ASWebAuthenticationSession` (macOS, iOS), the system
-browser (Android) or a popup window (Windows, Linux). The shell loads the URL in
-`frontendDist` (`src-tauri/tauri.conf.json`); the workflows in
+browser (Android) or a popup window (Windows, Linux). The shell loads `devUrl` under
+`tauri dev` and `frontendDist` in every build, both the app's live `.iblai.me` host
+(`src-tauri/tauri.conf.json`); the workflows in
 `.github/workflows/tauri-*.yml` build every surface — signed macOS and Windows
 releases on an `app-v*` tag, unsigned desktop, iOS and Android builds on demand,
 and `tauri-check.yml` on every change under `src-tauri/`: fmt, check and test on

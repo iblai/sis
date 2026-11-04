@@ -4,8 +4,7 @@
   "identifier": "ai.ibl.sis",
   "version": "0.1.0",
   "build": {
-    "devUrl": "http://localhost:3000",
-    "beforeDevCommand": "pnpm dev",
+    "devUrl": "https://sis.iblai.me",
     "frontendDist": "https://sis.iblai.me"
   },
   "bundle": {
@@ -50,7 +49,11 @@
   },
   "plugins": {
     "deep-link": {
-      "mobile": [{ "scheme": ["iblai-sis"] }]
+      "mobile": [
+        {
+          "scheme": ["iblai-sis"]
+        }
+      ]
     }
   },
   "app": {

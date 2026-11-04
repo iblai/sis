@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # The Android shell on the phone (or emulator) on adb, built from src-tauri/
-# with this app's own values and loading the app's live `<app>.iblai.me` host
-# (`--host` overrides; a prebuilt `--apk` loads what it was built with): a debug
+# with this app's own values and loading the config's `frontendDist` — the app's
+# live `.iblai.me` host (`--host` overrides; a prebuilt `--apk` loads what it was
+# built with): a debug
 # APK (installable — a release APK is unsigned), the scheme, a cold launch, a warm deep link, a screenshot, a
 # checklist, logcat judged at the end. Prerequisites: /iblai-vibe-ops-build.
 #
@@ -17,13 +18,13 @@ need() { command -v "$1" >/dev/null 2>&1 || { echo "missing: $1 ($2)" >&2; exit 
 need node "https://nodejs.org"
 eval "$(node -e '
 const c = require("./src-tauri/tauri.conf.json");
-console.log(`SCHEME=${c.plugins["deep-link"].mobile[0].scheme[0]} IDENT=${c.identifier}`);
+console.log(`DIST=${c.build.frontendDist} SCHEME=${c.plugins["deep-link"].mobile[0].scheme[0]} IDENT=${c.identifier}`);
 ')"
 MANIFEST=src-tauri/gen/android/app/src/main/AndroidManifest.xml
 [[ -f $MANIFEST ]] || { echo "missing: $MANIFEST (scripts/mobile-init.sh on Linux generates the project)" >&2; exit 1; }
 grep -q "android:scheme=\"$SCHEME\"" "$MANIFEST" || { echo "missing: the $SCHEME intent filter in $MANIFEST (one tauri android build --debug --apk writes it; commit it)" >&2; exit 1; }
 grep -q 'android:launchMode="singleTask"' "$MANIFEST" || { echo "missing: launchMode=\"singleTask\" in $MANIFEST" >&2; exit 1; }
-HOST=https://${IDENT##*.}.iblai.me # phones load the live app, not frontendDist
+HOST=$DIST
 echo "id=$IDENT scheme=$SCHEME manifest=ok loads=$HOST"
 
 APK=

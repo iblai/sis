@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # The iOS shell on a simulator (or a connected device) from a Mac, built from
-# src-tauri/ with this app's own values through `tauri ios dev` pointed at the
-# app's live `<app>.iblai.me` host (`--host` overrides): the installed app's URL types, the scheme opened from outside, a
+# src-tauri/ with this app's own values through `tauri ios dev` on the config's
+# `devUrl` — the app's live `.iblai.me` host (`--host` overrides): the installed app's URL types, the scheme opened from outside, a
 # screenshot, a checklist, the app's log judged at the end. Prerequisites:
 # /iblai-vibe-ops-build (Xcode, the iOS rust targets, scripts/mobile-init.sh
 # once for src-tauri/gen/apple).
@@ -16,13 +16,13 @@ need() { command -v "$1" >/dev/null 2>&1 || { echo "missing: $1 ($2)" >&2; exit 
 need node "https://nodejs.org"
 eval "$(node -e '
 const c = require("./src-tauri/tauri.conf.json");
-console.log(`APP_ORIGIN=${new URL(c.build.frontendDist).origin} SCHEME=${c.plugins["deep-link"].mobile[0].scheme[0]} IDENT=${c.identifier}`);
+console.log(`DEV_URL=${c.build.devUrl} SCHEME=${c.plugins["deep-link"].mobile[0].scheme[0]} IDENT=${c.identifier}`);
 ')"
 PLIST=$(ls src-tauri/gen/apple/*_iOS/Info.plist 2>/dev/null | head -1 || true)
 [[ -n $PLIST ]] || { echo "missing: src-tauri/gen/apple (scripts/mobile-init.sh on a Mac generates it)" >&2; exit 1; }
 grep -q "<string>$SCHEME</string>" "$PLIST" || echo "note: $PLIST has no $SCHEME URL type yet — the first tauri ios dev|build writes it; commit that change"
-HOST=https://${IDENT##*.}.iblai.me # simulators load the live app, not frontendDist
-echo "app=$APP_ORIGIN scheme=$SCHEME id=$IDENT plist=$PLIST loads=$HOST"
+HOST=$DEV_URL
+echo "scheme=$SCHEME id=$IDENT plist=$PLIST loads=$HOST"
 
 DEVICE=
 case "${1:-}" in
@@ -39,8 +39,8 @@ OUT=src-tauri/target/shell-test-ios
 mkdir -p "$OUT"
 LOG=$OUT/app.log
 # `tauri ios dev` builds, installs and launches the app and keeps streaming its
-# output; devUrl overridden, so the app is the hosted one, not the dev server.
-pnpm exec tauri ios dev "$DEVICE" -c "{\"build\":{\"devUrl\":\"$HOST\",\"beforeDevCommand\":\"\"}}" >"$LOG" 2>&1 &
+# output; devUrl passed explicitly so --host can point it elsewhere.
+pnpm exec tauri ios dev "$DEVICE" -c "{\"build\":{\"devUrl\":\"$HOST\"}}" >"$LOG" 2>&1 &
 DEV=$!
 trap 'kill "$DEV" 2>/dev/null || true' EXIT
 echo "== building and installing on $DEVICE (log: $LOG)"
