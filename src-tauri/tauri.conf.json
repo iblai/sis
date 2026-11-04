@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "ibl.ai SIS",
+  "productName": "SIS",
   "identifier": "ai.ibl.sis",
   "version": "0.1.0",
   "build": {

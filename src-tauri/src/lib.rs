@@ -881,7 +881,7 @@ pub fn run() {
                     "main",
                     tauri::WebviewUrl::App("index.html".into()),
                 )
-                .title("ibl.ai SIS")
+                .title("SIS")
                 .inner_size(1200.0, 800.0)
                 .center()
                 .on_navigation(move |url| {

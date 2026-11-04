@@ -3,7 +3,7 @@ import type { MetadataRoute } from "next";
 export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "ibl.ai/sis",
-    short_name: "ibl.ai SIS",
+    short_name: "SIS",
     description: "The open-source student information system for schools on the ibl.ai platform.",
     start_url: "/",
     display: "standalone",

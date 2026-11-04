@@ -12,10 +12,10 @@
     ProcessorArchitecture="x64" />
 
   <Properties>
-    <DisplayName>ibl.ai SIS</DisplayName>
-    <PublisherDisplayName>ibl.ai SIS</PublisherDisplayName>
+    <DisplayName>SIS</DisplayName>
+    <PublisherDisplayName>ibl.ai</PublisherDisplayName>
     <Logo>icons\StoreLogo.png</Logo>
-    <Description>ibl.ai SIS desktop application</Description>
+    <Description>SIS desktop application</Description>
   </Properties>
 
   <Dependencies>
@@ -33,8 +33,8 @@
       EntryPoint="Windows.FullTrustApplication">
 
       <uap:VisualElements
-        DisplayName="ibl.ai SIS"
-        Description="ibl.ai SIS desktop application"
+        DisplayName="SIS"
+        Description="SIS desktop application"
         BackgroundColor="transparent"
         Square150x150Logo="icons\Square150x150Logo.png"
         Square44x44Logo="icons\Square44x44Logo.png">
@@ -43,7 +43,7 @@
           Square71x71Logo="icons\Square71x71Logo.png"
           Wide310x150Logo="icons\Wide310x150Logo.png"
           Square310x310Logo="icons\Square310x310Logo.png"
-          ShortName="ibl.ai SIS" />
+          ShortName="SIS" />
       </uap:VisualElements>
     </Application>
   </Applications>
