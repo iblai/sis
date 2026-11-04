@@ -186,6 +186,12 @@ pnpm tauri dev -c '{"build":{"devUrl":"https://sis.iblai.me","beforeDevCommand":
 pnpm tauri:build                     # installer for this platform
 pnpm tauri:dev:ios "iPhone 16 Pro"   # a name from `xcrun simctl list devices`
 pnpm tauri:dev:android "Pixel_9"     # a name from `emulator -list-avds`
+pnpm shell:smoke                     # headless: the guard and both sign-in returns against a local page (CI runs it)
+pnpm shell:touch                     # the installer's app against the hosted app, with the checklist (Linux, macOS)
+pnpm shell:touch:android             # the debug APK on the phone over adb: scheme, launch, deep link, checklist
+pnpm shell:touch:ios "iPhone 16 Pro" # the app on a simulator through `tauri ios dev`: URL types, the scheme, checklist
+pnpm shell:touch:windows             # Windows: the debug exe (the one with a console) against the hosted app; `shell:smoke:windows` headless
+pnpm shell:clear [android | ios]     # forget the shell's cookies and localStorage so the next run starts signed out (Windows: shell:clear:windows)
 ```
 
 First time on a machine, `scripts/mobile-init.sh` generates the project for its
@@ -203,4 +209,7 @@ browser (Android) or a popup window (Windows, Linux). The shell loads the URL in
 `frontendDist` (`src-tauri/tauri.conf.json`); the workflows in
 `.github/workflows/tauri-*.yml` build every surface — signed macOS and Windows
 releases on an `app-v*` tag, unsigned desktop, iOS and Android builds on demand,
-and `tauri-check.yml` (fmt, check, test) on every change under `src-tauri/`.
+and `tauri-check.yml` on every change under `src-tauri/`: fmt, check and test on
+Linux, macOS and Windows, the iOS arm from the Mac, then `pnpm shell:smoke`
+headless. The touch tests (`pnpm shell:touch`, `shell:touch:windows`,
+`shell:touch:ios`, `shell:touch:android`) are yours: a throwaway platform, the checklist each prints, the log judged at the end.

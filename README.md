@@ -160,23 +160,26 @@ Node.js 22+ and pnpm 12 (`corepack enable` picks the pinned version up from `pac
 
 ### Scripts
 
-| Command                          | What it does                                                                                                                            |
-| -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| `pnpm dev`                       | Dev server on port 3000                                                                                                                 |
-| `pnpm build`                     | Production build (standalone output)                                                                                                    |
-| `pnpm start`                     | Serve the production build                                                                                                              |
-| `pnpm typecheck`                 | TypeScript 7                                                                                                                            |
-| `pnpm lint`                      | oxlint, zero warnings                                                                                                                   |
-| `pnpm format`                    | oxfmt (`pnpm format:check` in CI)                                                                                                       |
-| `pnpm i18n:check`                | Same keys in the four catalogs; no “tenant”, “pupil” or “class period”; no ASCII apostrophe; English labels Title Case                  |
-| `pnpm test`                      | Vitest unit tests (`pnpm test:coverage` in CI: 95 % lines on `lib/`)                                                                    |
-| `pnpm test:e2e`                  | Playwright journeys on a throwaway platform, Chromium and the phone project (needs `e2e/.env.development`)                              |
-| `pnpm test:e2e:all`              | The same journeys in every browser (their builds installed with `pnpm exec playwright install`)                                         |
-| `pnpm e2e:accounts`              | Creates the two Playwright test accounts (a platform admin and a student) in the throwaway platform `iblai.env` names                   |
-| `pnpm e2e:coverage`              | The checkpoint ledger's gate: ids ↔ titles, every page visited, the journeys reaching 95 % of the app's lines (`pnpm test` runs it too) |
-| `pnpm probe:lms`                 | Which learning-platform capabilities this platform really exposes ([docs](docs/development.md#the-lms-probe))                           |
-| `pnpm release`                   | release-it: version from the commits, CHANGELOG, tag, GitHub Release (CI runs it on every push to main)                                 |
-| `pnpm tauri:dev` / `tauri:build` | Desktop shell (needs Rust); `pnpm tauri:dev:ios` / `tauri:dev:android` for a simulator or emulator                                      |
+| Command                                                                                | What it does                                                                                                                                                                  |
+| -------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pnpm dev`                                                                             | Dev server on port 3000                                                                                                                                                       |
+| `pnpm build`                                                                           | Production build (standalone output)                                                                                                                                          |
+| `pnpm start`                                                                           | Serve the production build                                                                                                                                                    |
+| `pnpm typecheck`                                                                       | TypeScript 7                                                                                                                                                                  |
+| `pnpm lint`                                                                            | oxlint, zero warnings                                                                                                                                                         |
+| `pnpm format`                                                                          | oxfmt (`pnpm format:check` in CI)                                                                                                                                             |
+| `pnpm i18n:check`                                                                      | Same keys in the four catalogs; no “tenant”, “pupil” or “class period”; no ASCII apostrophe; English labels Title Case                                                        |
+| `pnpm test`                                                                            | Vitest unit tests (`pnpm test:coverage` in CI: 95 % lines on `lib/`)                                                                                                          |
+| `pnpm test:e2e`                                                                        | Playwright journeys on a throwaway platform, Chromium and the phone project (needs `e2e/.env.development`)                                                                    |
+| `pnpm test:e2e:all`                                                                    | The same journeys in every browser (their builds installed with `pnpm exec playwright install`)                                                                               |
+| `pnpm e2e:accounts`                                                                    | Creates the two Playwright test accounts (a platform admin and a student) in the throwaway platform `iblai.env` names                                                         |
+| `pnpm e2e:coverage`                                                                    | The checkpoint ledger's gate: ids ↔ titles, every page visited, the journeys reaching 95 % of the app's lines (`pnpm test` runs it too)                                       |
+| `pnpm probe:lms`                                                                       | Which learning-platform capabilities this platform really exposes ([docs](docs/development.md#the-lms-probe))                                                                 |
+| `pnpm release`                                                                         | release-it: version from the commits, CHANGELOG, tag, GitHub Release (CI runs it on every push to main)                                                                       |
+| `pnpm tauri:dev` / `tauri:build`                                                       | Desktop shell (needs Rust); `pnpm tauri:dev:ios` / `tauri:dev:android` for a simulator or emulator                                                                            |
+| `pnpm shell:smoke` / `shell:smoke:windows`                                             | The shell headless against a local page: the navigation guard and both sign-in returns (CI runs the Linux one on every shell change)                                          |
+| `pnpm shell:touch` / `shell:touch:windows` / `shell:touch:ios` / `shell:touch:android` | The built shell on this machine (Linux, macOS, Windows), on an iOS simulator or on an Android phone, with the touch-test checklist ([docs](docs/development.md#native-shell)) |
+| `pnpm shell:clear` [`android`, `ios`] / `shell:clear:windows`                          | Forgets the shell's cookies, localStorage and caches on this machine, the phone or the simulator, so the next touch test starts signed out                                    |
 
 ---
 
@@ -312,6 +315,7 @@ This project is covered by Vitest unit tests in [`__tests__/`](__tests__/) and P
 | `pnpm test`                                                                      | Vitest — metadata parsing, grades and GPA, CSV, course runs, permissions, platform resolution, SSO landing, config, the e2e ledger |
 | `pnpm i18n:check`                                                                | en / es / fr / zh catalogs carry the same keys and the house vocabulary                                                            |
 | `pnpm test:coverage`                                                             | The unit tests with the coverage gate CI runs                                                                                      |
+| `pnpm shell:smoke`                                                               | The Tauri shell headless (`shell:smoke:windows` on Windows): the navigation guard and both sign-in returns on a local page         |
 | `pnpm e2e:accounts`                                                              | Once: creates the two test accounts (a platform admin and a student) in the throwaway platform `iblai.env` names                   |
 | `pnpm test:e2e`                                                                  | Playwright journeys on that platform in Chromium and on a Pixel 7 viewport, signed in as the test accounts                         |
 | `pnpm test:e2e --project=chromium --no-deps e2e/journeys/groups.journey.spec.ts` | One journey on the saved session and seed                                                                                          |
