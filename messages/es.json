@@ -80,10 +80,6 @@
     },
     "signInAgain": "Volver a iniciar sesión"
   },
-  "language": {
-    "hint": "Idioma de esta y de las demás aplicaciones de ibl.ai",
-    "label": "Idioma"
-  },
   "notifications": {
     "description": "Eventos de la escuela y avisos de la plataforma para ti",
     "title": "Notificaciones"

@@ -46,7 +46,7 @@
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",
-    "@iblai/iblai-js": "2.59.0",
+    "@iblai/iblai-js": "3.1.0",
     "@livekit/components-react": "^2.9.24",
     "@reduxjs/toolkit": "^2.13.0",
     "@tauri-apps/api": "^2.12.4",

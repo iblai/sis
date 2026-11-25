@@ -80,10 +80,6 @@
     },
     "signInAgain": "Sign In Again"
   },
-  "language": {
-    "hint": "Language for this and the other ibl.ai apps",
-    "label": "Language"
-  },
   "notifications": {
     "description": "School events and platform alerts for you",
     "title": "Notifications"

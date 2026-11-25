@@ -12,14 +12,13 @@ import { UserMenu } from "@/components/sis/user-menu";
 import { AdminModeSwitch } from "@/components/sis/admin-mode-switch";
 import { useAdminMode } from "@/components/sis/admin-mode";
 import { CreditBadge } from "@/components/house/credit-badge";
-import { LanguageMenu } from "@/components/sis/language-menu";
 import { Breadcrumbs } from "@/components/sis/breadcrumbs";
 import { useSession } from "@/hooks/use-session";
 
 /**
  * The top bar — the OS's navbar shape and type (h-16, white, `#D0E0FF` hairline,
  * the system font at 14 px medium `#646464`):
- * sidebar toggle + breadcrumbs on the left; the credit badge, Admin switch,
+ * sidebar toggle + breadcrumbs on the left; the Admin switch, the credit badge,
  * the SDK notification bell and the SDK profile dropdown on the right.
  */
 export function TopBar() {
@@ -37,7 +36,7 @@ export function TopBar() {
   );
 
   return (
-    <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center justify-between border-b border-[#D0E0FF] bg-white pr-3 pl-2 font-[ui-sans-serif,system-ui,sans-serif] md:static md:pr-4">
+    <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center justify-between border-b border-[#D0E0FF] bg-white pr-4 pl-2 font-[ui-sans-serif,system-ui,sans-serif] md:static">
       <div className="flex min-w-0 items-center gap-1">
         <Tooltip>
           <TooltipTrigger
@@ -57,23 +56,24 @@ export function TopBar() {
         </Tooltip>
         <Breadcrumbs />
       </div>
-      <div className="flex items-center gap-3 lg:gap-5">
-        <CreditBadge
-          org={tenantKey}
-          isLiveAdmin={isAdmin && adminMode}
-          className="hidden md:flex"
-        />
+      <div className="flex items-center gap-0 md:gap-6">
         <AdminModeSwitch className="hidden md:flex" />
-        <LanguageMenu className="hidden items-center gap-1 md:flex" />
-        {tenantKey && username ? (
-          <NotificationDropdown
+        <div className="flex items-center gap-2">
+          <CreditBadge
             org={tenantKey}
-            userId={username}
-            isAdmin={isAdmin}
-            onViewNotifications={handleViewNotifications}
+            isLiveAdmin={isAdmin && adminMode}
+            className="hidden md:flex"
           />
-        ) : null}
-        <UserMenu />
+          {tenantKey && username ? (
+            <NotificationDropdown
+              org={tenantKey}
+              userId={username}
+              isAdmin={isAdmin}
+              onViewNotifications={handleViewNotifications}
+            />
+          ) : null}
+          <UserMenu />
+        </div>
       </div>
     </header>
   );

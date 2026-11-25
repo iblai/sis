@@ -79,19 +79,19 @@ test.describe("mobile journey", () => {
     await expectNoSidewaysOverflow(page);
   });
 
-  test("S25 · a phone keeps the Admin switch and the language select in the sheet, out of the top bar", async ({
+  test("S25 · a phone keeps the Admin switch in the sheet, out of the top bar, and no language select anywhere", async ({
     page,
   }) => {
     await open(page, "/groups", /^Groups\b/);
     const header = page.locator("header");
     await expect(header.getByRole("switch", { name: "Admin Mode" })).toBeHidden();
-    await expect(header.getByRole("combobox", { name: "Language" })).toBeHidden();
+    await expect(header.getByRole("combobox")).toHaveCount(0);
     const [scroll, client] = await header.evaluate((el) => [el.scrollWidth, el.clientWidth]);
     expect(scroll).toBeLessThanOrEqual(client);
     await openSheet(page);
     const sheet = page.locator(SHEET);
     await expect(sheet.getByRole("switch", { name: "Admin Mode" })).toBeVisible();
-    await expect(sheet.getByRole("combobox", { name: "Language" })).toBeVisible();
+    await expect(sheet.getByRole("combobox")).toHaveCount(0);
   });
 
   test("S28 · the setup flow and the platform preview fit a phone without sideways overflow", async ({

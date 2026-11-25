@@ -9,9 +9,8 @@
  *   hosted Auth SPA. `PUBLIC_ROUTES` marks the routes that need no sign-in.
  * - TenantProvider: the platform requested by the URL
  *   (`/platform/[tenantKey]/…`) versus the one the session is scoped to. When
- *   they differ it re-authenticates against the requested platform and hands
- *   back a fresh platform-scoped token pair, which we persist (saveUserTokens)
- *   — without that the provider loops on "User still does not belong to tenant".
+ *   they differ it hands the switch to the Auth SPA, which mints the requested
+ *   platform's tokens and returns the user here.
  *
  * The requested platform is the route's when the user belongs to it, else the
  * one they own (a route platform they lack is previewed by the platform layout,
@@ -22,11 +21,7 @@
 import { useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from "react";
 import { Provider as ReduxProvider, useDispatch } from "react-redux";
 import { useParams, usePathname, useRouter } from "next/navigation";
-import {
-  initializeDataLayer,
-  useLazyGetUserTenantsQuery,
-  type TokenResponse,
-} from "@iblai/iblai-js/data-layer";
+import { initializeDataLayer, useLazyGetUserTenantsQuery } from "@iblai/iblai-js/data-layer";
 import {
   AuthProvider,
   TenantProvider,
@@ -190,16 +185,6 @@ function Providers({ children }: { children: ReactNode }) {
             localStorage.setItem(LOCAL_STORAGE_KEYS.VISITING_TENANT, JSON.stringify(t))
           }
           removeVisitingTenant={() => localStorage.removeItem(LOCAL_STORAGE_KEYS.VISITING_TENANT)}
-          saveUserTokens={(tokens: TokenResponse) => {
-            if (tokens?.axd_token) {
-              localStorage.setItem(LOCAL_STORAGE_KEYS.AXD_TOKEN, tokens.axd_token.token);
-              localStorage.setItem(LOCAL_STORAGE_KEYS.AXD_TOKEN_EXPIRES, tokens.axd_token.expires);
-            }
-            if (tokens?.dm_token) {
-              localStorage.setItem(LOCAL_STORAGE_KEYS.DM_TOKEN, tokens.dm_token.token);
-              localStorage.setItem(LOCAL_STORAGE_KEYS.DM_TOKEN_EXPIRES, tokens.dm_token.expires);
-            }
-          }}
           saveTenant={(t: string) => localStorage.setItem(LOCAL_STORAGE_KEYS.TENANT, t)}
           handleTenantSwitch={async (tenant: string, saveRedirect: boolean) => {
             await handleTenantSwitch(tenant, saveRedirect);

@@ -130,6 +130,40 @@ export async function openProfileMenu(page: Page): Promise<Locator> {
   return menu;
 }
 
+/** The SDK profile menu and dialog in the languages its Language field lists: a restore runs translated. */
+const LANGUAGE = {
+  menu: /^(More options|Más opciones|Plus d['’]options)$/,
+  profile: /^(Profile|Perfil|Profil)$/,
+  save: /^(Save Changes|Guardar cambios|Enregistrer les modifications)$/,
+  option: {
+    en: /^(English|Inglés|Anglais)$/,
+    es: /^(Spanish|Español|Espagnol)$/,
+    fr: /^(French|Francés|Français)$/,
+  },
+} as const;
+
+/** Choose the language as a user does: profile menu → Profile → Language → Save Changes. */
+export async function setLanguage(page: Page, code: keyof typeof LANGUAGE.option) {
+  await page.getByRole("button", { name: LANGUAGE.menu }).click();
+  await page.getByRole("menuitem", { name: LANGUAGE.profile }).click();
+  const profile = page.getByRole("dialog").filter({ has: page.locator("#language") });
+  const language = profile.locator("#language");
+  await expect(language).toBeEnabled({ timeout: 30_000 });
+  await language.click();
+  await page.getByRole("listbox").getByRole("option", { name: LANGUAGE.option[code] }).click();
+  await profile.getByRole("button", { name: LANGUAGE.save }).click();
+  // The save refreshes the stored profile, which the app's language sync follows.
+  await page.waitForFunction(
+    (saved) =>
+      JSON.parse(localStorage.getItem("user_metadata") ?? "{}")?.public_metadata?.language ===
+      saved,
+    code,
+    { timeout: 30_000 },
+  );
+  await page.keyboard.press("Escape");
+  await expect(profile).toHaveCount(0);
+}
+
 /** Flip the Admin Mode switch only when it differs from `on`. */
 export async function setAdminMode(page: Page, on: boolean) {
   const sw = page.getByRole("switch", { name: "Admin Mode" });

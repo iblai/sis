@@ -8,12 +8,13 @@ import {
   sdkHas,
   seeded,
   setAdminMode,
+  setLanguage,
 } from "../helpers";
 
 /**
  * Shell journey — the SDK shell around the SIS pages: sidebar, top bar,
  * ⌘K, the Admin/User switch, the profile menu and its SDK dialogs, the
- * footer cluster, the language select, console hygiene, and sign-out.
+ * footer cluster, the Profile dialog's language, console hygiene, and sign-out.
  * Requires auth.setup.ts and a platform admin on a throwaway platform.
  */
 const stamp = Date.now().toString(36);
@@ -62,7 +63,7 @@ test.describe("shell journey", () => {
   test("S3 · the shell names the current platform and the profile menu opens", async ({ page }) => {
     await open(page, "/groups", /^Groups\b/);
     const platform = platformOf(page);
-    // The breadcrumb root is the platform's name; the SDK menu names it only in a switcher that needs several platforms.
+    // The breadcrumb root is the platform's name; the SDK menu names it only for a user of several platforms.
     const expected: string = await page.evaluate((key) => {
       const t = JSON.parse(localStorage.getItem("tenants") ?? "[]").find(
         (x: { key: string }) => x.key === key,
@@ -170,18 +171,31 @@ test.describe("shell journey", () => {
     await expect(crumbs.locator("[aria-current='page']")).toHaveText(/\S/);
   });
 
-  test("S11 · the top bar holds its six controls and never overflows the viewport", async ({
+  test("S11 · the top bar holds its five controls in the OS order, 64 px tall, and never overflows the viewport", async ({
     page,
   }) => {
     await open(page, "/groups", /^Groups\b/);
     const header = page.locator("header");
     await expect(header.getByRole("button", { name: "Toggle Sidebar" })).toBeVisible();
     await expect(header.getByRole("navigation", { name: "Breadcrumb" })).toBeVisible();
-    await expect(header.getByRole("switch", { name: "Admin Mode" })).toBeVisible();
-    await expect(header.getByRole("combobox", { name: "Language" })).toBeVisible();
-    await expect(header.getByRole("button", { name: /notification/i })).toBeVisible();
-    await expect(header.getByRole("button", { name: "More options" })).toBeVisible();
-    const [scroll, client] = await header.evaluate((el) => [el.scrollWidth, el.clientWidth]);
+    const lefts: number[] = [];
+    for (const control of [
+      header.getByRole("switch", { name: "Admin Mode" }),
+      header.getByRole("button", { name: /notification/i }),
+      header.getByRole("button", { name: "More options" }),
+    ]) {
+      await expect(control).toBeVisible();
+      lefts.push((await control.boundingBox())!.x);
+    }
+    expect(lefts).toEqual([...lefts].sort((a, b) => a - b));
+    // Language is the Profile dialog's, as in the OS: the bar has no select.
+    await expect(header.getByRole("combobox")).toHaveCount(0);
+    const [height, scroll, client] = await header.evaluate((el) => [
+      el.getBoundingClientRect().height,
+      el.scrollWidth,
+      el.clientWidth,
+    ]);
+    expect(height).toBe(64);
     expect(scroll).toBeLessThanOrEqual(client);
   });
 
@@ -263,16 +277,41 @@ test.describe("shell journey", () => {
     await expect(page.getByRole("button", { name: "Setup", exact: true })).toBeVisible();
   });
 
-  test("S15 · the profile menu lists Profile, Account, Help and Log Out, with no platform switcher", async ({
+  test("S15 · the profile menu lists Profile, Account, Organizations, Help and Log Out, with no picker of its own", async ({
     page,
   }) => {
     await open(page, "/groups", /^Groups\b/);
     const menu = await openProfileMenu(page);
-    for (const item of ["Profile", "Account", "Help", "Log Out"]) {
+    for (const item of ["Profile", "Account", "Organizations", "Help", "Log Out"]) {
       await expect(menu.getByRole("menuitem", { name: item, exact: true })).toBeVisible();
     }
     await expect(menu.getByRole("menuitem", { name: /switch/i })).toHaveCount(0);
+    await expect(menu.getByRole("combobox")).toHaveCount(0);
     await page.keyboard.press("Escape");
+  });
+
+  test("S32 · Organizations opens the sign-in chooser in its own tab and this tab stays put", async ({
+    page,
+  }) => {
+    await open(page, "/groups", /^Groups\b/);
+    const before = page.url();
+    const menu = await openProfileMenu(page);
+    const [chooser] = await Promise.all([
+      page.context().waitForEvent("page", { timeout: 20_000 }),
+      menu.getByRole("menuitem", { name: "Organizations", exact: true }).click(),
+    ]);
+    await chooser.waitForURL((url) => url.pathname === "/me", {
+      waitUntil: "commit",
+      timeout: 20_000,
+    });
+    const asked = new URL(chooser.url()).searchParams;
+    expect(asked.get("action")).toBe("switch-tenant");
+    expect(asked.get("popup")).toBe("1");
+    expect(asked.get("tenant")).toBe(platformOf(page));
+    expect(asked.get("redirect-to")).toBe(new URL(appHost).origin);
+    // Nobody picks: closing the chooser is no switch.
+    await chooser.close();
+    expect(page.url()).toBe(before);
   });
 
   test("S16 · Profile opens the SDK profile dialog with its tabs, the prefilled identity and tab ARIA", async ({
@@ -414,21 +453,20 @@ test.describe("shell journey", () => {
     await page.keyboard.press("Escape");
   });
 
-  test("S22 · the language select switches the app to Spanish and back", async ({
+  test("S22 · the Profile dialog switches the app to Spanish and back", async ({
     page,
     context,
   }) => {
+    test.setTimeout(180_000);
     await open(page, "/groups", /^Groups\b/);
-    const select = page.getByRole("combobox", { name: "Language" });
-    await expect(select).toBeEnabled({ timeout: 30_000 });
     try {
-      await select.selectOption("es");
+      await setLanguage(page, "es");
       await expect(page.getByRole("button", { name: "Inicio", exact: true }).first()).toBeVisible({
         timeout: 30_000,
       });
       expect((await context.cookies()).find((c) => c.name === "NEXT_LOCALE")?.value).toBe("es");
     } finally {
-      await page.getByRole("combobox", { name: "Idioma" }).or(select).first().selectOption("en");
+      await setLanguage(page, "en");
       await expect(page.getByRole("button", { name: "Home", exact: true }).first()).toBeVisible({
         timeout: 30_000,
       });
@@ -436,27 +474,21 @@ test.describe("shell journey", () => {
     expect((await context.cookies()).find((c) => c.name === "NEXT_LOCALE")?.value).toBe("en");
   });
 
-  test("S29 · the language select reaches French and Chinese too, and English is restored", async ({
+  test("S29 · the Profile dialog reaches French too, and English is restored", async ({
     page,
     context,
   }) => {
+    test.setTimeout(180_000);
     await open(page, "/groups", /^Groups\b/);
-    // The select's own label follows the locale.
-    const select = page.getByRole("combobox", { name: /^(Language|Langue|语言|Idioma)$/ });
-    await expect(select).toBeEnabled({ timeout: 30_000 });
     try {
-      for (const [locale, home] of [
-        ["fr", "Accueil"],
-        ["zh", "首页"],
-      ] as const) {
-        await select.selectOption(locale);
-        await expect(page.getByRole("button", { name: home, exact: true }).first()).toBeVisible({
-          timeout: 30_000,
-        });
-        expect((await context.cookies()).find((c) => c.name === "NEXT_LOCALE")?.value).toBe(locale);
-      }
+      // Chinese comes back here once the SDK's Language field lists it.
+      await setLanguage(page, "fr");
+      await expect(page.getByRole("button", { name: "Accueil", exact: true }).first()).toBeVisible({
+        timeout: 30_000,
+      });
+      expect((await context.cookies()).find((c) => c.name === "NEXT_LOCALE")?.value).toBe("fr");
     } finally {
-      await select.selectOption("en");
+      await setLanguage(page, "en");
       await expect(page.getByRole("button", { name: "Home", exact: true }).first()).toBeVisible({
         timeout: 30_000,
       });

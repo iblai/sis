@@ -21,14 +21,6 @@ export const LOCALE_COOKIE = "NEXT_LOCALE";
  */
 export const OPENEDX_LOCALE_COOKIE = "openedx-language-preference";
 
-/** Human-readable labels for the language selector. */
-export const LOCALE_LABELS: Record<Locale, string> = {
-  en: "English",
-  fr: "Français",
-  es: "Español",
-  zh: "中文",
-};
-
 /**
  * Narrow an arbitrary string to a supported locale, falling back to default.
  * Normalizes region/script subtags so Open edX codes resolve too, e.g.

@@ -11,7 +11,7 @@ const AccountSheetContext = createContext<{
   openInvite: () => void;
 }>({ openTab: () => {}, openInvite: () => {} });
 
-/** The SDK account dialog (Management, Integrations, …) and the invite dialog, openable from anywhere in the shell. */
+/** The SDK account dialog (Management, Secrets, …) and the invite dialog, openable from anywhere in the shell. */
 export function useAccountSheet() {
   return useContext(AccountSheetContext);
 }

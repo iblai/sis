@@ -452,13 +452,13 @@ test.describe("the session a $0 checkout returns to", () => {
   });
 });
 
-test.describe("the credit menu's checkout", () => {
-  test("H16 · Upgrade Plan asks for a pricing page that returns through the sign-in app", async ({
+test.describe("the credit menu's plan picker", () => {
+  test("H16 · Change Plan opens the plan picker, whose pricing page returns through the sign-in app", async ({
     page,
   }) => {
     const appUrl = (process.env.NEXT_PUBLIC_APP_URL || "https://sis.iblai.me").replace(/\/+$/, "");
     let session = "";
-    // The admin's platform behind the paywall, on a free trial: the badge offers Upgrade Plan.
+    // The admin's platform behind the paywall, on a plan: the badge offers Change Plan.
     await page.route(/\/api\/core\/users\/platforms\//, async (route) => {
       const res = await route.fetch();
       const all = (await res.json()) as { key: string }[];
@@ -473,8 +473,8 @@ test.describe("the credit menu's checkout", () => {
           platform_key: new URL(route.request().url()).searchParams.get("platform_key"),
           available_credits: 100,
           has_credits: true,
-          current_plan: "Free Trial",
-          free_trial: true,
+          plan_key: "free",
+          plan_name: "Free",
         },
       }),
     );
@@ -486,8 +486,25 @@ test.describe("the credit menu's checkout", () => {
     const own = await landedOrg(page);
     // The badge reads the stored membership this first load wrote.
     await page.goto(`${appHost}/platform/${encodeURIComponent(own)}`);
-    await page.getByRole("button", { name: /credits remaining/i }).click({ timeout: 30_000 });
-    await page.getByRole("button", { name: "Upgrade Plan" }).click();
+    const credits = page.getByTestId("credit-balance-trigger");
+    await expect(credits).toBeVisible({ timeout: 30_000 });
+    // With the badge on, the bar reads Admin switch, credits, bell: the OS's order.
+    const lefts: number[] = [];
+    for (const control of [
+      page.getByRole("switch", { name: "Admin Mode" }),
+      credits,
+      page.locator("header").getByRole("button", { name: /notification/i }),
+    ]) {
+      lefts.push((await control.boundingBox())!.x);
+    }
+    expect(lefts).toEqual([...lefts].sort((a, b) => a - b));
+    await credits.click();
+    await page.getByRole("button", { name: "Change Plan", exact: true }).click();
+    await expect(
+      page
+        .getByRole("dialog")
+        .filter({ has: page.getByRole("heading", { name: /^(Choose|Change) Your Plan$/ }) }),
+    ).toBeVisible({ timeout: 15_000 });
     await expect.poll(() => session).toContain("/stripe/pricing-page-session/");
     const back = new URL(new URL(session).searchParams.get("redirect_url") ?? "");
     expect(back.searchParams.get("app")).toBe("mentor");

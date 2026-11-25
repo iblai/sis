@@ -80,10 +80,6 @@
     },
     "signInAgain": "Se reconnecter"
   },
-  "language": {
-    "hint": "Langue de cette application et des autres applications ibl.ai",
-    "label": "Langue"
-  },
   "notifications": {
     "description": "Événements de l’école et alertes de la plateforme qui vous concernent",
     "title": "Notifications"

@@ -49,12 +49,14 @@ platform).
    (`lib/iblai/tenant.ts#pickLandingTenant`). A user whose only platform is
    `main` sees the notice; a signed-out visitor is sent to sign in without a platform.
 5. `TenantProvider` gets `requestedTenant` from the route and `currentTenant`
-   from storage. When they differ it re-authenticates against the requested
-   platform and hands back a fresh platform-scoped token pair (`saveUserTokens`).
+   from storage. When they differ it hands the switch to the Auth SPA, which
+   mints the requested platform's tokens and returns the user here.
    A refused platform lands on `/error/403?tenant=<key>`.
-6. Switching platforms (the SDK profile dropdown) calls the SDK's
-   `handleTenantSwitch`, which clears storage, broadcasts to other tabs and
-   re-enters the Auth SPA with `tenant=<new>`.
+6. Switching platforms is the SDK profile dropdown's Organizations entry: the
+   Auth SPA's chooser opens in its own tab and the pick drives this tab to
+   `/sso-login-complete` on the new platform. A switch the SDK starts itself
+   goes through `handleTenantSwitch`, which clears storage, broadcasts to other
+   tabs and re-enters the Auth SPA with `tenant=<new>`.
 
 ## The three backends
 
@@ -145,7 +147,8 @@ The UI is in English, Spanish, French and Chinese. The active language comes fro
 the profile's `public_metadata.language` (applied on load by
 `components/language-preference-sync.tsx`), then the shared
 `openedx-language-preference` cookie, then this app's `NEXT_LOCALE` cookie, then
-English; the top bar has a selector that saves the profile and writes both cookies.
+English. The user chooses it in the profile menu's Profile dialog (Language, which
+lists English, Spanish and French).
 Strings live in `messages/{en,es,fr,zh}.json`; `pnpm i18n:check` fails when the four
 files disagree, when a value says "tenant", "pupil" or "class period", or when it
 uses an ASCII apostrophe instead of `’`.

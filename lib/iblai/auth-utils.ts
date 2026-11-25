@@ -91,7 +91,6 @@ export async function redirectToAuthSpa(
     },
     redirectPathStorageKey: LOCAL_STORAGE_KEYS.REDIRECT_TO,
     hasNonExpiredAuthToken,
-    preserveTokenKey: LOCAL_STORAGE_KEYS.EDX_TOKEN_KEY,
     authRedirectProxy: "/api/auth-redirect",
     isNativeApp: () => isTauri(),
     scheme: config.tauriCustomScheme(),
@@ -116,7 +115,6 @@ export async function handleTenantSwitch(tenantKey: string, saveRedirect = false
   await sdkHandleTenantSwitch(tenantKey, {
     authUrl: config.authUrl(),
     redirectPathStorageKey: LOCAL_STORAGE_KEYS.REDIRECT_TO,
-    preserveTokenKey: LOCAL_STORAGE_KEYS.EDX_TOKEN_KEY,
     tenantStorageKey: LOCAL_STORAGE_KEYS.TENANT,
     queryParams: { tenant: QUERY_PARAMS.TENANT, redirectTo: QUERY_PARAMS.REDIRECT_TO },
     saveRedirect,

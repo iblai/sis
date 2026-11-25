@@ -7,7 +7,7 @@ import { UserProfileDropdown } from "@iblai/iblai-js/web-containers/next";
 import { useTenantMetadata, type Tenant } from "@iblai/iblai-js/web-utils";
 import { useSession } from "@/hooks/use-session";
 import config from "@/lib/iblai/config";
-import { handleLogout, handleTenantSwitch } from "@/lib/iblai/auth-utils";
+import { handleLogout } from "@/lib/iblai/auth-utils";
 import { isUnnamedTenant, shortTenantKey, type TenantEntry } from "@/lib/iblai/tenant";
 
 /**
@@ -81,7 +81,6 @@ export function UserMenu() {
       authURL={config.authUrl()}
       currentPlatformBaseDomain={config.platformBaseDomain()}
       onLogout={() => handleLogout()}
-      onTenantChange={(key: string) => void handleTenantSwitch(key)}
       onTenantUpdate={onTenantUpdate}
       onHelpClick={(url: string) => {
         if (/^https?:\/\//.test(url)) window.open(url, "_blank", "noopener");

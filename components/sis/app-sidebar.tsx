@@ -30,7 +30,6 @@ import { useAccountSheet } from "@/components/sis/account-sheet";
 import { useAdminMode } from "@/components/sis/admin-mode";
 import { AdminModeSwitch } from "@/components/sis/admin-mode-switch";
 import { useCommandPalette } from "@/components/sis/command-palette";
-import { LanguageMenu } from "@/components/sis/language-menu";
 import { NavRow } from "@/components/sis/nav-row";
 import { useSession } from "@/hooks/use-session";
 import config from "@/lib/iblai/config";
@@ -124,15 +123,14 @@ export function AppSidebar() {
     });
   }
 
-  // The top bar's switch and language menu are desktop-only; the sheet carries them on phones.
-  if (isMobile) {
+  // The top bar's switch is desktop-only; the sheet carries it on phones.
+  if (isMobile && canAdmin) {
     sections.push({ type: "divider", id: "preferences-divider" });
     sections.push({
       type: "custom",
       id: "preferences",
       render: () => (
-        <div className="flex items-center justify-between gap-3 px-2 py-1">
-          <LanguageMenu className="flex items-center gap-1" />
+        <div className="px-2 py-1">
           <AdminModeSwitch />
         </div>
       ),

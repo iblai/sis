@@ -24,7 +24,7 @@ page and has no checkpoints.
 | File            | Ids      | Runs as | What it covers                                                                                                                                                                                                                                           |
 | --------------- | -------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `auth`          | A\*      | admin   | the sign-in round trip, `/platform/main`, the preview of an unknown platform, the 403 and 404 pages, the auth-redirect proxy                                                                                                                             |
-| `shell`         | S\*      | admin   | sidebar, top bar, ⌘K, Admin/User mode, the SDK profile, help, footer and Management dialogs, the languages, logout                                                                                                                                       |
+| `shell`         | S\*      | admin   | sidebar, top bar, ⌘K, Admin/User mode, the SDK profile, its language, the Organizations chooser, help, footer and Management dialogs, logout                                                                                                             |
 | `mobile`        | S6, S25+ | both    | every page, the setup flow and the preview at a Pixel 7 width without sideways overflow; the sheet                                                                                                                                                       |
 | `member`        | M\*      | student | the student's home, courses, own record, inbox; every admin surface sends them home                                                                                                                                                                      |
 | `a11y`          | AX\*     | both    | axe-core at WCAG 2.1 AA on the SIS pages, the invite dialog, the setup flow and the preview                                                                                                                                                              |
@@ -63,25 +63,26 @@ page and has no checkpoints.
 | S8   | shell         | ⌘B collapses the sidebar to its rail, the state survives a reload, ⌘B expands it                                    |
 | S9   | shell         | the logo goes to the platform home                                                                                  |
 | S10  | shell         | a student record                                                                                                    |
-| S11  | shell         | the top bar holds its six controls and never overflows the viewport                                                 |
+| S11  | shell         | the top bar holds its five controls in the OS order, 64 px tall, and never overflows the viewport                   |
 | S12  | shell         | ⌘K navigates from Go To, Escape closes it, and the sidebar Search reopens it                                        |
 | S13  | shell         | ⌘K Create opens the New Group dialog and a typed course name lists the course                                       |
 | S14  | shell         | User mode shows the member                                                                                          |
-| S15  | shell         | the profile menu lists Profile, Account, Help and Log Out, with no platform switcher                                |
+| S15  | shell         | the profile menu lists Profile, Account, Organizations, Help and Log Out, with no picker of its own                 |
 | S16  | shell         | Profile opens the SDK profile dialog with its tabs, the prefilled identity and tab ARIA                             |
 | S17  | shell         | the profile                                                                                                         |
 | S18  | shell         | Help opens the help center in a new tab                                                                             |
 | S19  | shell         | the footer                                                                                                          |
 | S20  | shell         | the profile menu                                                                                                    |
 | S21  | shell         | Management finds the e2e student and View profile opens their profile                                               |
-| S22  | shell         | the language select switches the app to Spanish and back                                                            |
+| S22  | shell         | the Profile dialog switches the app to Spanish and back                                                             |
 | S23  | shell         | the home and every admin list render without console errors                                                         |
 | S24  | shell         | Log Out clears the session and leaves for the Auth SPA with the platform and a way back                             |
-| S29  | shell         | the language select reaches French and Chinese too, and English is restored                                         |
+| S29  | shell         | the Profile dialog reaches French too, and English is restored                                                      |
 | S30  | shell         | Profile opens for a user whose stored metadata has no social links                                                  |
 | S31  | shell         | ⌘K narrows Go To and Create to what is typed, and Enter opens the typed page                                        |
+| S32  | shell         | Organizations opens the sign-in chooser in its own tab and this tab stays put                                       |
 | S6   | mobile        | a phone shows every admin page without sideways overflow                                                            |
-| S25  | mobile        | a phone keeps the Admin switch and the language select in the sheet, out of the top bar                             |
+| S25  | mobile        | a phone keeps the Admin switch in the sheet, out of the top bar, and no language select anywhere                    |
 | S26  | mobile        | the student                                                                                                         |
 | S27  | mobile        | the student                                                                                                         |
 | S28  | mobile        | the setup flow and the platform preview fit a phone without sideways overflow                                       |
@@ -190,7 +191,7 @@ page and has no checkpoints.
 | H8   | house         | with nothing configured, /onboarding says so and Continue goes home                                                 |
 | H11  | house         | a named platform whose sector is set gets only the team step and the finish                                         |
 | H15  | house         | still on the community platform while the platform lists their own, the SDK moves them to it                        |
-| H16  | house         | Upgrade Plan asks for a pricing page that returns through the sign-in app                                           |
+| H16  | house         | Change Plan opens the plan picker, whose pricing page returns through the sign-in app                               |
 | E1   | errors        | a platform read answered 500 shows the load error with its reason, never an empty state                             |
 | E2   | errors        | a throttled platform read is retried until the page paints                                                          |
 

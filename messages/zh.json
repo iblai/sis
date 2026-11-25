@@ -80,10 +80,6 @@
     },
     "signInAgain": "重新登录"
   },
-  "language": {
-    "hint": "本应用及其他 ibl.ai 应用的语言",
-    "label": "语言"
-  },
   "notifications": {
     "description": "与你相关的学校事件和平台提醒",
     "title": "通知"
