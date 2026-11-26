@@ -222,7 +222,8 @@ function Announcement({ initialGroupId }: { initialGroupId: string }) {
   const [body, setBody] = useState("");
   const [email, setEmail] = useState(true);
   const [inApp, setInApp] = useState(true);
-  const [preview, setPreview] = useState<NotificationPreview | null>(null);
+  /** The last preview and the draft it was built from. */
+  const [built, setBuilt] = useState<{ preview: NotificationPreview; draft: string } | null>(null);
   const [runPreview, previewState] = usePreviewNotificationMutation();
   const [runSend, sendState] = useSendNotificationMutation();
   const context = useNotificationContextQuery(tenantKey);
@@ -242,6 +243,9 @@ function Announcement({ initialGroupId }: { initialGroupId: string }) {
       .filter(Boolean);
     return names.length ? { type: "username", data: names } : null;
   };
+  // A preview's build sends exactly what it was built from: any edit since means no preview.
+  const draft = JSON.stringify([source(), channels, title.trim(), body]);
+  const preview = built?.draft === draft ? built.preview : null;
 
   const doPreview = async () => {
     const s = source();
@@ -255,7 +259,8 @@ function Announcement({ initialGroupId }: { initialGroupId: string }) {
           template_data: { message_title: title.trim(), message_body: body },
         },
       }).unwrap();
-      setPreview(res);
+      // `draft` is this render's: what the request above was built from.
+      setBuilt({ preview: res, draft });
     } catch (err) {
       toastError(err);
     }
@@ -265,7 +270,7 @@ function Announcement({ initialGroupId }: { initialGroupId: string }) {
     try {
       const res = await runSend({ platformKey: tenantKey, build_id: preview.build_id }).unwrap();
       toast.success(t("sent", { count: res.notifications_sent }));
-      setPreview(null);
+      setBuilt(null);
       setTitle("");
       setBody("");
     } catch (err) {
@@ -286,10 +291,7 @@ function Announcement({ initialGroupId }: { initialGroupId: string }) {
         <SimpleSelect
           id="announce-audience"
           value={audience}
-          onChange={(v) => {
-            setAudience(v as typeof audience);
-            setPreview(null);
-          }}
+          onChange={(v) => setAudience(v as typeof audience)}
           options={[
             { value: "platform", label: t("everyone") },
             { value: "usergroup", label: t("group") },
@@ -302,10 +304,7 @@ function Announcement({ initialGroupId }: { initialGroupId: string }) {
           id="announce-group"
           aria-label={t("pickGroup")}
           value={groupId}
-          onChange={(v) => {
-            setGroupId(v);
-            setPreview(null);
-          }}
+          onChange={setGroupId}
           options={(groups.data?.results ?? []).map((g) => ({
             value: String(g.id),
             label: g.name,

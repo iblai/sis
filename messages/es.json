@@ -806,7 +806,12 @@
       "points": "Puntos",
       "saved": "Guardado",
       "timezone": "Zona horaria",
-      "title": "Escuela"
+      "title": "Escuela",
+      "scaleErrors": {
+        "empty": "Deja al menos una letra en la escala GPA.",
+        "blankLetter": "Cada fila de la escala GPA necesita una letra.",
+        "duplicateLetter": "Cada letra solo puede aparecer una vez en la escala GPA."
+      }
     },
     "subjects": {
       "hint": "Materias bajo las que se archiva un curso.",

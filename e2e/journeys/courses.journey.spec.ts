@@ -315,4 +315,24 @@ test.describe("courses journey", () => {
       page.getByRole("heading", { level: 1, name: new RegExp(`^E2E ${stamp}\\b`) }),
     ).toBeVisible({ timeout: 120_000 });
   });
+
+  test("CO12 · the Course card opens on the stored values after a reload", async ({ page }) => {
+    test.skip(!seed, "run the setup project first");
+    await open(page, coursePath("settings"));
+    const credits = () => card(page, "Course").locator("#section-credits");
+    const before = await credits().inputValue();
+    try {
+      await credits().fill("4.5");
+      await card(page, "Course").getByRole("button", { name: "Save", exact: true }).click();
+      await toast(page, "Saved");
+      // The card used to start before the courses answered, so a reload showed it empty.
+      await page.reload();
+      await ready(page);
+      await expect(credits()).toHaveValue("4.5");
+    } finally {
+      await credits().fill(before);
+      await card(page, "Course").getByRole("button", { name: "Save", exact: true }).click();
+      await toast(page, "Saved");
+    }
+  });
 });

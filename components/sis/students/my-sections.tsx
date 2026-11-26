@@ -11,7 +11,13 @@ import { useProgressQuery, useUserEnrollmentsQuery } from "@/lib/sis/lms-api";
 import { formatPercent } from "@/lib/sis/format";
 
 /** The LMS enrollments of a user as section rows, each with its grade and progress. */
-export function MySections({ username, studentId }: { username: string; studentId?: number }) {
+export function MySections({
+  username,
+  studentId,
+}: {
+  username: string;
+  studentId?: number | null;
+}) {
   const t = useTranslations("enrollment");
   const { href } = useSession();
   const enrollments = useUserEnrollmentsQuery(username, { skip: !username });
@@ -58,11 +64,27 @@ export function MySections({ username, studentId }: { username: string; studentI
   );
 }
 
-/** Grade and completion of one enrollment, from the course-home progress API. */
-export function ProgressCells({ courseId, studentId }: { courseId: string; studentId?: number }) {
+/** Grade and completion of one enrollment, from the course-home progress API; "—" for an unknown student. */
+export function ProgressCells({
+  courseId,
+  studentId,
+}: {
+  courseId: string;
+  /** `undefined` is the caller's own progress; `null` asks nothing. */
+  studentId?: number | null;
+}) {
   const locale = useLocale();
   const t = useTranslations("enrollment");
-  const { data, isLoading, error } = useProgressQuery({ courseId, studentId });
+  // `currentData`: an answer for another id never shows here.
+  const {
+    currentData: data,
+    isFetching,
+    error,
+  } = useProgressQuery(
+    { courseId, studentId: studentId ?? undefined },
+    { skip: studentId === null },
+  );
+  const isLoading = isFetching && !data;
   useGateLoading(isLoading);
   if (isLoading)
     return (

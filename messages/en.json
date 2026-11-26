@@ -806,7 +806,12 @@
       "points": "Points",
       "saved": "Saved",
       "timezone": "Time Zone",
-      "title": "School"
+      "title": "School",
+      "scaleErrors": {
+        "empty": "Keep at least one letter on the GPA scale.",
+        "blankLetter": "Every row on the GPA scale needs a letter.",
+        "duplicateLetter": "Each letter can appear only once on the GPA scale."
+      }
     },
     "subjects": {
       "hint": "Subjects a course is filed under.",

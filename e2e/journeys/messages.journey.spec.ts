@@ -120,4 +120,29 @@ test.describe("messages journey", () => {
     await expect(announce.locator("#announce-group")).toContainText("E2E Grade cohort");
     await expect(announce.getByRole("button", { name: "Send", exact: true })).toBeDisabled();
   });
+
+  test("MS5 · an edit after Preview takes the preview back, so Send waits for a new one", async ({
+    page,
+  }) => {
+    // The preview is answered here: this checks the form, not the platform's template setting.
+    await page.route(/\/notification-builder\/preview\/$/, (route) =>
+      route.fulfill({ json: { status: "ok", build_id: `e2e-${stamp}`, count: 1, warning: null } }),
+    );
+    await open(page, "/messages", /^Messages\b/);
+    const announce = card(page, "Announcement");
+    await announce.locator("#announce-title").fill(`E2E notice ${stamp}`);
+    await announce.locator("#announce-body").fill("Built once.");
+    const preview = announce.getByRole("button", { name: "Preview" });
+    const send = announce.getByRole("button", { name: "Send", exact: true });
+    test.skip(await preview.isDisabled(), "the platform offers no channel to preview");
+    await preview.click();
+    await expect(announce.getByText("1 recipient")).toBeVisible({ timeout: 30_000 });
+    await expect(send).toBeEnabled();
+
+    await announce.locator("#announce-body").fill("Built once, then edited.");
+    await expect(send).toBeDisabled();
+    await expect(announce.getByText("1 recipient")).toHaveCount(0);
+    await preview.click();
+    await expect(send).toBeEnabled();
+  });
 });

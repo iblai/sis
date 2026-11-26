@@ -29,7 +29,13 @@ import { isoDay } from "@/lib/sis/dates";
 import type { Progress } from "@/lib/sis/types";
 
 /** Per-section grades from the LMS progress API, a term filter and the term's GPA from the school's scale. */
-export function GradesTab({ username, studentId }: { username: string; studentId?: number }) {
+export function GradesTab({
+  username,
+  studentId,
+}: {
+  username: string;
+  studentId?: number | null;
+}) {
   const t = useTranslations("grades");
   const locale = useLocale();
   const { href } = useSession();
@@ -145,13 +151,22 @@ function GradeRow({
   name: string;
   href: string;
   credits?: number;
-  studentId?: number;
+  studentId?: number | null;
   locale: string;
   onGrade: (courseId: string, letter: string | null) => void;
 }) {
   const t = useTranslations("grades");
   const [open, setOpen] = useState(false);
-  const { data, isLoading, error } = useProgressQuery({ courseId, studentId });
+  // As ProgressCells: nothing asked without an id, and no answer for another id lingers.
+  const {
+    currentData: data,
+    isFetching,
+    error,
+  } = useProgressQuery(
+    { courseId, studentId: studentId ?? undefined },
+    { skip: studentId === null },
+  );
+  const isLoading = isFetching && !data;
   useGateLoading(isLoading);
   const letter = data?.course_grade.letter_grade ?? null;
   useEffect(() => {
@@ -172,7 +187,7 @@ function GradeRow({
           </TableCell>
         ) : error || !data ? (
           <TableCell colSpan={3} className="text-muted-foreground">
-            {t("unavailable")}
+            {studentId === null ? "—" : t("unavailable")}
           </TableCell>
         ) : (
           <>

@@ -40,8 +40,8 @@ export function ListEditor<T extends { id: string }>({
   blank: () => Omit<T, "id">;
   save: (rows: T[], base: T[]) => Promise<void>;
   description?: string;
-  /** Extra cells per row (e.g. a cohort-group action). */
-  extra?: (row: T, update: (patch: Partial<T>) => void) => React.ReactNode;
+  /** Extra cells per row; `save` stores the list with `patch` on the row, absent while it cannot. */
+  extra?: (row: T, save?: (patch: Partial<T>) => Promise<boolean>) => React.ReactNode;
 }) {
   const t = useTranslations("setup.editor");
   const tc = useTranslations("common");
@@ -55,18 +55,26 @@ export function ListEditor<T extends { id: string }>({
     columns.every((c) => !c.required || String(r[c.key] ?? "").trim() !== ""),
   );
 
-  const submit = async () => {
+  /** Saves `next` whole; a failure is toasted and leaves the form as it was. */
+  const persist = async (next: T[]) => {
     setSaving(true);
     try {
-      await save(rows, initial);
-      toast.success(t("saved"));
+      await save(next, initial);
+      setRows(next);
+      return true;
     } catch (err) {
       if (err instanceof MetadataConflictError) toast.error(t("conflict"));
       else toastError(err);
+      return false;
     } finally {
       setSaving(false);
     }
   };
+  const submit = async () => {
+    if (await persist(rows)) toast.success(t("saved"));
+  };
+  const saveRow = (id: string) => (patch: Partial<T>) =>
+    persist(rows.map((r) => (r.id === id ? { ...r, ...patch } : r)));
 
   return (
     <div className="space-y-3">
@@ -133,7 +141,9 @@ export function ListEditor<T extends { id: string }>({
                     </td>
                   ))}
                   {extra ? (
-                    <td className="px-2 py-1">{extra(r, (patch) => update(r.id, patch))}</td>
+                    <td className="px-2 py-1">
+                      {extra(r, valid && !saving ? saveRow(r.id) : undefined)}
+                    </td>
                   ) : null}
                   <td className="px-2 py-1">
                     <Button

@@ -29,9 +29,11 @@ import { PageGate } from "@/components/sis/page-gate";
 import { useSession } from "@/hooks/use-session";
 import { useSisMetadata } from "@/hooks/use-sis-metadata";
 import { useToastError } from "@/hooks/use-toast-error";
-import { useCreateUserGroupMutation } from "@/lib/sis/api";
+import { useCreateUserGroupMutation, useDeleteUserGroupMutation } from "@/lib/sis/api";
 import {
   EMPTY_SIS_METADATA,
+  createThenLink,
+  gpaScaleUpdate,
   type GradeLevel,
   type Period,
   type Room,
@@ -149,18 +151,20 @@ function SchoolTab({ meta }: { meta: SisMetadata }) {
     Object.entries(meta.gpaScale).map(([letter, points]) => ({ letter, points: String(points) })),
   );
   const submit = async () => {
+    const update = gpaScaleUpdate(meta.gpaScale, scale);
+    if ("error" in update) {
+      toast.error(t(`scaleErrors.${update.error}`));
+      return;
+    }
     try {
+      // "" rather than undefined: a cleared field must reach the JSON to replace the stored one.
       await saveSchool(
         {
-          address: school.address || undefined,
-          phone: school.phone || undefined,
-          timezone: school.timezone || undefined,
+          address: school.address ?? "",
+          phone: school.phone ?? "",
+          timezone: school.timezone ?? "",
         },
-        Object.fromEntries(
-          scale
-            .filter((s) => s.letter.trim())
-            .map((s) => [s.letter.trim().toUpperCase(), Number(s.points) || 0]),
-        ),
+        update.scale,
       );
       toast.success(t("saved"));
     } catch (err) {
@@ -289,31 +293,39 @@ function LevelsTab({ meta }: { meta: SisMetadata }) {
   const { saveList } = useSisMetadata();
   const toastError = useToastError();
   const [createGroup, createState] = useCreateUserGroupMutation();
+  const [deleteGroup] = useDeleteUserGroupMutation();
   const columns: Column<GradeLevel>[] = [
     { key: "name", label: t("name"), required: true },
     { key: "order", label: t("order"), type: "number", width: "6rem" },
   ];
-  // The cohort group is created at once and its id written into the row the editor saves.
-  const makeGroup = async (row: GradeLevel, update: (patch: Partial<GradeLevel>) => void) => {
+  // The cohort group and the list that points at it are saved in one click.
+  const makeGroup = async (
+    row: GradeLevel,
+    save: (patch: Partial<GradeLevel>) => Promise<boolean>,
+  ) => {
     try {
-      const group = await createGroup({
-        platform_key: tenantKey,
-        name: t("groupName", { name: row.name }),
-      }).unwrap();
-      update({ groupId: group.id });
-      toast.success(t("groupCreated", { name: group.name }));
+      const group = await createThenLink(
+        () =>
+          createGroup({
+            platform_key: tenantKey,
+            name: t("groupName", { name: row.name }),
+          }).unwrap(),
+        (made) => save({ groupId: made.id }),
+        (made) => deleteGroup(made.id).unwrap(),
+      );
+      if (group) toast.success(t("groupCreated", { name: group.name }));
     } catch (err) {
       toastError(err);
     }
   };
   return (
     <ListEditor
-      rows={[...meta.gradeLevels].sort((a, b) => a.order - b.order)}
+      rows={meta.gradeLevels}
       columns={columns}
       blank={() => ({ name: "", order: meta.gradeLevels.length + 1 })}
       save={(rows, base) => saveList("gradeLevels", rows, base)}
       description={t("hint")}
-      extra={(row, update) =>
+      extra={(row, save) =>
         row.groupId ? (
           <span className="text-muted-foreground text-xs">
             {t("groupLinked", { id: row.groupId })}
@@ -322,8 +334,8 @@ function LevelsTab({ meta }: { meta: SisMetadata }) {
           <Button
             variant="outline"
             size="sm"
-            disabled={!row.name.trim() || createState.isLoading}
-            onClick={() => void makeGroup(row, update)}
+            disabled={!save || createState.isLoading}
+            onClick={() => save && void makeGroup(row, save)}
           >
             {t("createGroup")}
           </Button>

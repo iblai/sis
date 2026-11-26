@@ -59,7 +59,7 @@ export function useSisMetadata() {
   );
 
   const saveSchool = useCallback(
-    async (school: SisMetadata["school"], gpaScale?: Record<string, number>) => {
+    async (school: SisMetadata["school"], gpaScale?: Record<string, number | null>) => {
       await update({
         platformKey: tenantKey,
         metadata: {

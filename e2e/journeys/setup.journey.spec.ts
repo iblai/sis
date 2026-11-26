@@ -127,7 +127,7 @@ test.describe("setup journey", () => {
     await toast(page, "Saved");
   });
 
-  test("SU4 · a grade level gets a cohort group, saves linked, and both are removed again", async ({
+  test("SU4 · Create Cohort Group saves the new grade level linked in the same click; both are removed again", async ({
     page,
   }) => {
     await open(page, "/setup?tab=levels", /^Setup\b/);
@@ -136,9 +136,8 @@ test.describe("setup journey", () => {
     await page.getByLabel("Order").last().fill("999");
     const row = rowWith(page, `Level ${stamp}`);
     await row.getByRole("button", { name: "Create Cohort Group" }).click();
+    // The click saved the list too: there is no separate Save.
     await toast(page, `Group “Level ${stamp} cohort” created`);
-    await page.getByRole("button", { name: "Save" }).click();
-    await toast(page, "Saved");
     await page.reload();
     await ready(page, /^Setup\b/);
     const linked = await row.getByText(/Group #\d+/).textContent({ timeout: 15_000 });
@@ -272,6 +271,86 @@ test.describe("setup journey", () => {
         await page.getByRole("button", { name: "Save" }).click();
         await toast(page, "Saved");
       }
+    }
+  });
+
+  test("SU13 · grade levels saved out of their order keep saving after a reload", async ({
+    page,
+  }) => {
+    const a = `Level A ${stamp}`;
+    const b = `Level B ${stamp}`;
+    const save = page.getByRole("button", { name: "Save" });
+    await open(page, "/setup?tab=levels", /^Setup\b/);
+    for (const [name, order] of [
+      [a, "901"],
+      [b, "902"],
+    ]) {
+      await page.getByRole("button", { name: "Add Row" }).click();
+      await page.getByLabel("Level").last().fill(name);
+      await page.getByLabel("Order").last().fill(order);
+    }
+    await save.click();
+    await toast(page, "Saved");
+    try {
+      // The saved list remounts the editor when the refetch lands: start from the reload.
+      await page.reload();
+      await ready(page, /^Setup\b/);
+      // A now sorts after B but stays ahead of it in the stored list.
+      await rowWith(page, a).getByLabel("Order").fill("903");
+      await save.click();
+      await toast(page, "Saved");
+      await page.reload();
+      await ready(page, /^Setup\b/);
+      // This save used to be refused as someone else's change, forever.
+      await rowWith(page, b).getByLabel("Level").fill(`${b} 2`);
+      await save.click();
+      await toast(page, "Saved");
+    } finally {
+      await page.reload();
+      await ready(page, /^Setup\b/);
+      for (const name of [a, b, `${b} 2`]) {
+        const row = rowWith(page, name);
+        if (await row.count()) await row.getByRole("button", { name: "Remove" }).click();
+      }
+      await save.click();
+      await toast(page, "Saved");
+    }
+  });
+
+  test("SU14 · a removed GPA letter and a cleared phone stay gone after a reload", async ({
+    page,
+  }) => {
+    const letter = `Z${stamp}`.toUpperCase();
+    const letterBox = () => page.locator(`input[aria-label="Letter"][value="${letter}"]`);
+    const remove = () => letterBox().locator("xpath=..").getByRole("button", { name: "Remove" });
+    const save = page.getByRole("button", { name: "Save", exact: true });
+    await open(page, "/setup", /^Setup\b/);
+    const phone = page.locator("#school-phone");
+    const before = await phone.inputValue();
+    try {
+      await phone.fill(`E2E phone ${stamp}`);
+      await page.getByRole("button", { name: "Add Letter" }).click();
+      await page.getByLabel("Letter").last().fill(letter);
+      await page.getByLabel("Points").last().fill("0.5");
+      await save.click();
+      await toast(page, "Saved");
+      await page.reload();
+      await ready(page, /^Setup\b/);
+      await expect(letterBox()).toHaveCount(1);
+
+      await remove().click();
+      await phone.fill("");
+      await save.click();
+      await toast(page, "Saved");
+      await page.reload();
+      await ready(page, /^Setup\b/);
+      await expect(letterBox()).toHaveCount(0);
+      await expect(phone).toHaveValue("");
+    } finally {
+      if (await letterBox().count()) await remove().click();
+      await phone.fill(before);
+      await save.click();
+      await toast(page, "Saved");
     }
   });
 });

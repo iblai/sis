@@ -24,7 +24,7 @@ import {
   useUpdateCourseDetailsMutation,
   useUpdateCourseGradingMutation,
 } from "@/lib/sis/studio-api";
-import { WEEKDAYS, type Section, type Weekday } from "@/lib/sis/metadata";
+import { WEEKDAYS, type Section, type SisMetadata, type Weekday } from "@/lib/sis/metadata";
 import { upsertSection, type SectionRow } from "@/lib/sis/sections";
 import type { CourseGrading, CourseRole, PlatformUser, StudioCourseDetails } from "@/lib/sis/types";
 
@@ -173,12 +173,35 @@ function DatesForm({ courseId, details }: { courseId: string; details: StudioCou
 
 function SectionCard({ courseId, row }: { courseId: string; row?: SectionRow }) {
   const t = useTranslations("courses.settings");
+  const { meta, isLoading } = useSisMetadata();
+  useGateLoading(isLoading);
+  if (!meta)
+    return (
+      <Card title={t("section")} where="section">
+        <p className="text-muted-foreground text-sm">{t("noSetup")}</p>
+      </Card>
+    );
+  // Keyed: the gate renders this before the sections answer, and the form must start from the stored row.
+  return (
+    <SectionForm key={JSON.stringify(row?.section)} courseId={courseId} row={row} meta={meta} />
+  );
+}
+
+function SectionForm({
+  courseId,
+  row,
+  meta,
+}: {
+  courseId: string;
+  row?: SectionRow;
+  meta: SisMetadata;
+}) {
+  const t = useTranslations("courses.settings");
   const tw = useTranslations("courses.weekday");
   const tc = useTranslations("common");
   const isLiveAdmin = useIsLiveAdmin();
   const toastError = useToastError();
-  const { meta, saveList, isSaving, isLoading } = useSisMetadata();
-  useGateLoading(isLoading);
+  const { saveList, isSaving } = useSisMetadata();
   const current = row?.section;
   const [form, setForm] = useState<Section>({
     courseId,
@@ -191,12 +214,6 @@ function SectionCard({ courseId, row }: { courseId: string; row?: SectionRow }) 
     credits: current?.credits,
     seats: current?.seats,
   });
-  if (!meta)
-    return (
-      <Card title={t("section")} where="section">
-        <p className="text-muted-foreground text-sm">{t("noSetup")}</p>
-      </Card>
-    );
   const pick = (key: keyof Section, label: string, rows: { id: string; name: string }[]) => (
     <div className="space-y-1">
       <Label htmlFor={`section-${key}`}>{label}</Label>

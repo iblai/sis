@@ -118,6 +118,7 @@ page and has no checkpoints.
 | ST11 | students      | the Issue Credential dialog opens with its three fields and cancels                                                 |
 | ST12 | students      | Deactivate confirms, deactivates the membership, and Reactivate undoes it                                           |
 | ST13 | students      | the pagination bar counts the first page and cannot go back from it                                                 |
+| ST14 | students      | a student the page cannot identify asks for no one's progress                                                       |
 | SF1  | staff         | the list shows the e2e admin as Admin, searches, and nonsense finds nothing                                         |
 | SF2  | staff         | Invite Staff opens the invite dialog on ?invite=1 and closing returns to the list                                   |
 | SF3  | staff         | the admin                                                                                                           |
@@ -135,6 +136,7 @@ page and has no checkpoints.
 | CO9  | courses       | the Grading Policy card renders the types, the weight total and the cutoffs; Add Type is undone by a reload         |
 | CO10 | courses       | New Course derives the run id and the name from the source and the term before Create Course enables                |
 | CO11 | courses       | New Course reruns the seeded course into the seeded term and lands on the new run                                   |
+| CO12 | courses       | the Course card opens on the stored values after a reload                                                           |
 | G1   | groups        | search finds the seeded cohort group and a nonsense query finds nothing                                             |
 | G7   | groups        | the New Group dialog refuses an empty name and Cancel returns to the list                                           |
 | C6   | groups        | a group is created and the app lands on it                                                                          |
@@ -160,11 +162,12 @@ page and has no checkpoints.
 | MS2  | messages      | a schedule time turns Send into Schedule and the email lands in the Scheduled list                                  |
 | MS3  | messages      | an in-app announcement to the named e2e student reaches their inbox                                                 |
 | MS4  | messages      | ?group= preselects the group audience and Send waits for a preview                                                  |
+| MS5  | messages      | an edit after Preview takes the preview back, so Send waits for a new one                                           |
 | C1   | setup         | Setup adds a school year, keeps it, and removes it again                                                            |
 | SU1  | setup         | the seven tabs open from ?tab= and the tab list never widens the page                                               |
 | SU2  | setup         | School saves the address, phone and time zone, keeps them, and gets them back                                       |
 | SU3  | setup         | a term under the seeded year saves, survives a reload and is removed again                                          |
-| SU4  | setup         | a grade level gets a cohort group, saves linked, and both are removed again                                         |
+| SU4  | setup         | Create Cohort Group saves the new grade level linked in the same click; both are removed again                      |
 | SU5  | setup         | a period saves, survives a reload and is removed again                                                              |
 | SU6  | setup         | a room saves, survives a reload and is removed again                                                                |
 | SU7  | setup         | a subject saves, survives a reload and is removed again                                                             |
@@ -173,6 +176,8 @@ page and has no checkpoints.
 | SU10 | setup         | Export downloads the field definitions as student-fields.csv                                                        |
 | SU11 | setup         | Save stays disabled until a list is dirty and every required cell is filled                                         |
 | SU12 | setup         | a list changed meanwhile refuses the stale save and shows the other change                                          |
+| SU13 | setup         | grade levels saved out of their order keep saving after a reload                                                    |
+| SU14 | setup         | a removed GPA letter and a cleared phone stay gone after a reload                                                   |
 | N1   | notifications | the bell opens the notification dropdown and View all goes to the inbox                                             |
 | N2   | notifications | the inbox page renders the SDK inbox and alerts tabs                                                                |
 | N3   | notifications | an admin                                                                                                            |

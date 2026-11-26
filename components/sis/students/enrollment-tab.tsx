@@ -30,7 +30,13 @@ import config from "@/lib/iblai/config";
 import { formatDate } from "@/lib/sis/format";
 
 /** A student's sections from the LMS; enroll = course invitation, drop = the instructor dashboard. */
-export function EnrollmentTab({ username, studentId }: { username: string; studentId?: number }) {
+export function EnrollmentTab({
+  username,
+  studentId,
+}: {
+  username: string;
+  studentId?: number | null;
+}) {
   const t = useTranslations("enrollment");
   const locale = useLocale();
   const { tenantKey, href } = useSession();

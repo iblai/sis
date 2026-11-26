@@ -57,7 +57,7 @@ function StudentView() {
   const username = decodeURIComponent(params.username);
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { tenantKey, href, displayName: ownName } = useSession();
+  const { tenantKey, href, displayName: ownName, username: ownUsername } = useSession();
   const { isAdmin } = useAdminMode();
   const isLiveAdmin = useIsLiveAdmin();
   const toastError = useToastError();
@@ -69,6 +69,9 @@ function StudentView() {
     { skip: !isAdmin },
   );
   const member = directory.data?.results.find((u) => u.username === username);
+  // Progress without an id is the caller's own: only on your own page; `null` asks nothing.
+  const studentId =
+    username === ownUsername ? undefined : (link?.user_id ?? member?.user_id ?? null);
   const demographics = useDemographicsQuery({ platformKey: tenantKey, username });
   const [setLink, linkState] = useSetUserLinkMutation();
   const tabs = isLiveAdmin ? ADMIN_TABS : SELF_TABS;
@@ -183,12 +186,12 @@ function StudentView() {
           </TabsContent>
           <TabsContent value="enrollment">
             <PageGate inline>
-              <EnrollmentTab username={username} studentId={link?.user_id} />
+              <EnrollmentTab username={username} studentId={studentId} />
             </PageGate>
           </TabsContent>
           <TabsContent value="grades">
             <PageGate inline>
-              <GradesTab username={username} studentId={link?.user_id} />
+              <GradesTab username={username} studentId={studentId} />
             </PageGate>
           </TabsContent>
           <TabsContent value="credentials">

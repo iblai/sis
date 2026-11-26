@@ -806,7 +806,12 @@
       "points": "绩点",
       "saved": "已保存",
       "timezone": "时区",
-      "title": "学校"
+      "title": "学校",
+      "scaleErrors": {
+        "empty": "GPA 等级表中至少保留一个等级。",
+        "blankLetter": "GPA 等级表的每一行都需要填写等级。",
+        "duplicateLetter": "每个等级在 GPA 等级表中只能出现一次。"
+      }
     },
     "subjects": {
       "hint": "课程归属的科目。",

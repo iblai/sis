@@ -156,11 +156,12 @@ export function parseSisMetadata(raw: unknown): SisMetadata | null {
         ? { id: t.id, yearId: t.yearId, name: t.name, start: t.start, end: t.end }
         : null,
     ),
+    // Sorted once here, so every reader and both sides of compare-on-save see one order.
     gradeLevels: list(raw.gradeLevels, (g) =>
       str(g.id) && str(g.name)
         ? { id: g.id, name: g.name, order: num(g.order) ? g.order : 0, groupId: optNum(g.groupId) }
         : null,
-    ),
+    ).sort((a, b) => a.order - b.order),
     periods: list(raw.periods, (p) =>
       str(p.id) && str(p.name)
         ? {
@@ -215,4 +216,41 @@ export function currentTerm(terms: readonly Term[], today: string): Term | undef
 /** `true` when two arrays hold the same rows (the compare-on-save conflict check). */
 export function sameRows(a: unknown[], b: unknown[]): boolean {
   return JSON.stringify(a) === JSON.stringify(b);
+}
+
+export type GpaScaleError = "empty" | "blankLetter" | "duplicateLetter";
+
+/**
+ * The `gpaScale` a save sends: letters trimmed and upper-cased, and every stored
+ * letter no longer on it as `null` (the DM merge never deletes a key; the parser
+ * drops it). An empty scale is refused: the parser would bring the defaults back.
+ */
+export function gpaScaleUpdate(
+  stored: Record<string, number>,
+  rows: readonly { letter: string; points: string }[],
+): { scale: Record<string, number | null> } | { error: GpaScaleError } {
+  const letters = rows.map((r) => r.letter.trim().toUpperCase());
+  if (!letters.length) return { error: "empty" };
+  if (letters.some((l) => !l)) return { error: "blankLetter" };
+  if (new Set(letters).size !== letters.length) return { error: "duplicateLetter" };
+  const scale: Record<string, number | null> = {};
+  for (const letter of Object.keys(stored)) scale[letter] = null;
+  rows.forEach((r, i) => (scale[letters[i]] = Number(r.points) || 0));
+  return { scale };
+}
+
+/**
+ * Creates a record a metadata row points at (a level's cohort group), then
+ * saves the row; when the save fails the record is removed again, so nothing
+ * is left that no row points at. Resolves to the record, or `null` if undone.
+ */
+export async function createThenLink<T>(
+  create: () => Promise<T>,
+  link: (made: T) => Promise<boolean>,
+  undo: (made: T) => Promise<unknown>,
+): Promise<T | null> {
+  const made = await create();
+  if (await link(made)) return made;
+  await undo(made);
+  return null;
 }

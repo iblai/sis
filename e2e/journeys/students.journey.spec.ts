@@ -241,4 +241,31 @@ test.describe("students journey", () => {
     await expect(page.getByText(/^1–\d+ of \d+ students$/)).toBeVisible();
     await expect(page.getByRole("button", { name: "Previous", exact: true })).toBeDisabled();
   });
+
+  test("ST14 · a student the page cannot identify asks for no one's progress", async ({ page }) => {
+    test.skip(!STUDENT || !seed, "needs the student account and the seed");
+    // Neither the membership nor the directory names the student here, so there is no id to ask with.
+    await page.route(
+      (url) =>
+        url.pathname.endsWith("/api/core/users/platforms/") &&
+        url.searchParams.get("username") === STUDENT,
+      (route) => route.fulfill({ json: [] }),
+    );
+    await page.route(
+      (url) =>
+        url.pathname.endsWith("/api/core/platform/users/") &&
+        url.searchParams.get("query") === STUDENT,
+      (route) => route.fulfill({ json: { count: 0, next: null, previous: null, results: [] } }),
+    );
+    const progress: string[] = [];
+    page.on("request", (r) => {
+      if (r.url().includes("/api/course_home/v1/progress/")) progress.push(r.url());
+    });
+    await open(page, `/students/${encodeURIComponent(STUDENT)}?tab=enrollment`);
+    await expect(page.getByRole("link", { name: seed!.courseName }).first()).toBeVisible({
+      timeout: 30_000,
+    });
+    // Without an id the progress API answers for the caller: the admin's own grades.
+    expect(progress).toEqual([]);
+  });
 });

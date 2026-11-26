@@ -806,7 +806,12 @@
       "points": "Points",
       "saved": "Enregistré",
       "timezone": "Fuseau horaire",
-      "title": "École"
+      "title": "École",
+      "scaleErrors": {
+        "empty": "Gardez au moins une lettre dans l’échelle GPA.",
+        "blankLetter": "Chaque ligne de l’échelle GPA a besoin d’une lettre.",
+        "duplicateLetter": "Chaque lettre ne peut figurer qu’une fois dans l’échelle GPA."
+      }
     },
     "subjects": {
       "hint": "Matières sous lesquelles un cours est classé.",

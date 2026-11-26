@@ -3,7 +3,9 @@ import { describe, expect, it } from "vitest";
 import {
   DEFAULT_GPA_SCALE,
   EMPTY_SIS_METADATA,
+  createThenLink,
   currentTerm,
+  gpaScaleUpdate,
   newId,
   parseSisMetadata,
   sameRows,
@@ -89,6 +91,101 @@ describe("parseSisMetadata", () => {
 
   it("accepts an empty object as a fresh school", () => {
     expect(parseSisMetadata({})).toEqual(EMPTY_SIS_METADATA);
+  });
+});
+
+describe("parseSisMetadata, what a save must be able to undo", () => {
+  it("sorts grade levels by order once, stably, so compare-on-save sees the stored order", () => {
+    const levels = [
+      { id: "b", name: "B", order: 2 },
+      { id: "a1", name: "A1", order: 1 },
+      { id: "x", name: "No order" },
+      { id: "a2", name: "A2", order: 1 },
+    ];
+    const once = parseSisMetadata({ version: 1, gradeLevels: levels })!.gradeLevels;
+    expect(once.map((g) => g.id)).toEqual(["x", "a1", "a2", "b"]);
+    // Saved back in the editor's order and read again: the same rows, so the next save is not a conflict.
+    const again = parseSisMetadata({ version: 1, gradeLevels: once })!.gradeLevels;
+    expect(sameRows(again, once)).toBe(true);
+  });
+
+  it("drops a letter stored as null and keeps a field stored as an empty string", () => {
+    const meta = parseSisMetadata({
+      version: 1,
+      school: { phone: "", address: "1 Main St" },
+      gpaScale: { A: 4, X: null },
+    })!;
+    expect(meta.gpaScale).toEqual({ A: 4 });
+    expect(meta.school.phone).toBe("");
+  });
+});
+
+describe("gpaScaleUpdate", () => {
+  const rows = (...pairs: [string, string][]) =>
+    pairs.map(([letter, points]) => ({ letter, points }));
+
+  it("sends every stored letter no longer on the scale as null", () => {
+    expect(gpaScaleUpdate({ A: 4, B: 3, X: 9 }, rows(["A", "4"], ["B", "3"]))).toEqual({
+      scale: { A: 4, B: 3, X: null },
+    });
+  });
+
+  it("trims and upper-cases letters, and replaces a stored spelling that differs", () => {
+    expect(gpaScaleUpdate({ a: 4 }, rows([" a ", "4"], ["b+", "3.3"]))).toEqual({
+      scale: { a: null, A: 4, "B+": 3.3 },
+    });
+  });
+
+  it("reads a points value that is not a number as 0", () => {
+    expect(gpaScaleUpdate({}, rows(["F", "abc"]))).toEqual({ scale: { F: 0 } });
+  });
+
+  it("refuses an empty scale, a blank letter and a letter twice", () => {
+    expect(gpaScaleUpdate({ A: 4 }, [])).toEqual({ error: "empty" });
+    expect(gpaScaleUpdate({ A: 4 }, rows(["A", "4"], [" ", "1"]))).toEqual({
+      error: "blankLetter",
+    });
+    expect(gpaScaleUpdate({ A: 4 }, rows(["A", "4"], ["a ", "3"]))).toEqual({
+      error: "duplicateLetter",
+    });
+  });
+});
+
+describe("createThenLink", () => {
+  it("keeps the record when the row saves", async () => {
+    const undone: number[] = [];
+    const made = await createThenLink(
+      async () => ({ id: 7 }),
+      async () => true,
+      async (g) => undone.push(g.id),
+    );
+    expect(made).toEqual({ id: 7 });
+    expect(undone).toEqual([]);
+  });
+
+  it("removes the record again when the row does not save", async () => {
+    const undone: number[] = [];
+    const made = await createThenLink(
+      async () => ({ id: 7 }),
+      async () => false,
+      async (g) => undone.push(g.id),
+    );
+    expect(made).toBeNull();
+    expect(undone).toEqual([7]);
+  });
+
+  it("saves nothing when the record cannot be made", async () => {
+    let linked = false;
+    await expect(
+      createThenLink(
+        async () => {
+          throw new Error("refused");
+        },
+        async () => (linked = true),
+        async () => undefined,
+      ),
+    ).rejects.toThrow("refused");
+    expect(linked).toBe(false);
   });
 });
 
